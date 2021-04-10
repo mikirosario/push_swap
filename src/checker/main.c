@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/04/10 09:33:40 by miki             ###   ########.fr       */
+/*   Updated: 2021/04/10 21:55:28 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_bintree.h"
+#include "limits.h"
 #include <unistd.h>
 #include <stdio.h>
 //#include "ansi_color_codes.h"
@@ -33,52 +34,39 @@ int	exit_failure(char *error_msg)
 	exit(EXIT_FAILURE);
 }
 
+/*
+**
+** OK, so we get an unspecified number of arguments, each with numbers to be
+** checked for adequacy and then put in stack a.
+**
+** OK, first I'll use numbuf to store each individual number in the arguments
+** and convert them into integers. I have a handy libft function to find the
+** numbers called ft_getnextnum.
+*/
 
 int	main(int argc, char **argv)
 {
+	size_t		i;
+	char		numbuf[11];
+	char		*num;
+
 	if (argc < 2 || argv[1][0] == '\0')
 		exit_failure("Fatal error: No argument provided");
-	else if (argc > 2)
-		exit_failure("Fatal error: Too many arguments");
-	
-	//BINTREE TEST
-	t_bstnode *root = NULL;
-
-	// root = ft_bintree_add(NULL, 200);
-	// ft_bintree_add(root, 300);
-	// ft_bintree_add(root, 220);
-	// ft_bintree_add(root, 140);
-	// ft_bintree_add(root, 567);
-	// ft_bintree_add(root, 890);
-	// ft_bintree_add(root, 24);
-	// ft_bintree_add(root, 42);
-	
-	//Style 2
-	//t_bstnode *new_node;
-
-	int arr[19] = {200, 300, 220, 140, 567, 890, 24, 42, 9, 0, 192, 384, 283, 475, 49, 273, 44, 485, 987};
-	for (int i = 0; i < 19; i++)
+	num = argv[1];
+	while (*num)
 	{
-		//Style 2
-		// new_node = create_new_node(arr[i]);
-		// root = ft_bintree_add(root, new_node);
-		//Style 1
-		root = ft_bintree_add(root, arr[i]);
+		ft_bzero(numbuf, 11);
+		//If the number is not a digit and is not a space, non-number failure
+		if (ft_isspace(*num))
+			num = ft_getnextnum(num);
+		if (!ft_isdigit(*num))
+			exit_failure("Argument contains non-numbers");
+		i = 0;
+		while (ft_isdigit(num[i]))
+			i++;
+		while (ft_isdigit(*num))
+			numbuf[10 - --i] = *num++;
 	}
-
-
-
-	if (ft_bintree_search(root, 42))
-		printf("42 Exists\n");
-	//ft_bintree_print(root, 4);
-	t_bstnode *tmp1 = ft_bintree_search(root, 140);
-	printf("DOES 140 REALLY HAVE RIGHT CHILD?: %s\n", tmp1->right ? "YES" : "NO");
-	t_bstnode *tmp2 = ft_bintree_search(root, 567);
-	printf("DOES 567 REALLY HAVE LEFT CHILD?: %s\n", tmp2->left ? "YES" : "NO");
-	printf("DO 140 and 567 REALLY HAVE THE SAME CHILD?: %s\n", tmp1->right == tmp2->left ? "YES" : "NO");
-	printf("WHO IS 140's RIGHT CHILD? %d\n", (int)tmp1->right->data);
-	printf("WHO IS 567's LEFT CHILD? %d\n", (int)tmp2->left->data);
-	root = ft_bintree_free(root);
-	//printf("Sizeof T_bstnode: %zu\n", sizeof(long long int *));
+	printf("TEST: %d", ft_atoi(numbuf));
 	return (0);
 }

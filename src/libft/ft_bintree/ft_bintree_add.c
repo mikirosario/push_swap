@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_add.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/06 07:58:04 by miki              #+#    #+#             */
-/*   Updated: 2021/04/10 07:30:46 by miki             ###   ########.fr       */
+/*   Updated: 2021/04/10 20:15:14 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ t_bstnode	*ft_bintree_add(t_bstnode *root, long int data)
 	}
 	root = ft_bintree_insert(NULL, root, data);
 	new_node = ft_bintree_search(root, data);
-	printf("Search Check %d\n", (int)new_node->data);
 	ft_bintree_balance(&root, new_node);
 	return (root);
 }

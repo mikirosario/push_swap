@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bintree_balance.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 06:48:50 by miki              #+#    #+#             */
-/*   Updated: 2021/04/10 09:21:30 by miki             ###   ########.fr       */
+/*   Updated: 2021/04/10 20:18:31 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,8 +210,7 @@ void	ft_bintree_balance(t_bstnode **root, t_bstnode *new_node)
 	t_bstnode	*parent;
 	t_bstnode	*uncle;
 
-	while (new_node != *root && new_node->color != 0 \
-	 && new_node->parent->color == 1)
+	while (new_node != *root && new_node->color && new_node->parent->color)
 	{
 		parent = new_node->parent;
 		granny = new_node->parent->parent;
