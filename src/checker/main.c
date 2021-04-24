@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/04/23 20:19:56 by miki             ###   ########.fr       */
+/*   Updated: 2021/04/24 21:48:21 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 void	print_error(char *error_msg, char *ansi_color_code)
 {
 	write(STDERR_FILENO, ansi_color_code, ft_strlen(ansi_color_code));
-	ft_putendl_fd(error_msg, STDERR_FILENO);
+ft_putendl_fd(error_msg, STDERR_FILENO);
 	write(STDERR_FILENO, RESET, 4);
 }
 
@@ -28,7 +28,8 @@ int	exit_failure(char *error_msg, t_checker *checker)
 	//freeme
 	if (checker->bintree)
 		checker->bintree = ft_bintree_free(checker->bintree);
-	print_error(error_msg, RED);
+	if (error_msg)
+		print_error(error_msg, RED);
 	exit(EXIT_FAILURE);
 }
 
@@ -80,8 +81,9 @@ int	main(int argc, char **argv)
 	t_checker	checker;
 
 	ft_bzero(&checker, sizeof(t_checker));
+	//No argument provided :p
 	if (argc < 2 || argv[1][0] == '\0')
-		exit_failure("Fatal error: No argument provided", &checker);
+		exit_failure(NULL, &checker);
 	numbuf[11] = 0;
 	//x = 1;
 	args = &argv[1];
@@ -114,13 +116,26 @@ int	main(int argc, char **argv)
 			checker.stack_a[(stack_size - 4) / 4] = ft_atoi(numbuf);
 		}
 	}
+	//DEBUG CODE
 	ft_bintree_print(checker.bintree, 0);
-	checker.bintree = ft_bintree_free(checker.bintree);
 	printf("Stack A:\n");
 	for (size_t i = 0; i < stack_size; i += 4)
 	{
 		printf("%d\n", checker.stack_a[i/4]);
 	}
+	//DEBUG CODE
+
+	//WAIT FOR STDIN COMMANDS
+	ssize_t	size;
+	char	buf[3];
+
+	ft_bzero(buf, 3);
+	//ft_memset(buf, '0', 3);
+	size = read(STDIN_FILENO, buf, 3);
+
+	printf("%s\n", buf);
+	//
 	checker.stack_a = ft_del(checker.stack_a);
+	checker.bintree = ft_bintree_free(checker.bintree);
 	return (0);
 }
