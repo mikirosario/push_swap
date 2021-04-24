@@ -6,12 +6,12 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/07 03:14:24 by miki              #+#    #+#             */
-/*   Updated: 2021/04/08 10:35:32 by miki             ###   ########.fr       */
+/*   Updated: 2021/04/15 13:47:43 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <sys/ioctl.h>
+
 #include <termcap.h>
 #include <curses.h>
 #include <term.h>

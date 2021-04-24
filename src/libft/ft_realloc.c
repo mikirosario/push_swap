@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/25 22:09:22 by miki              #+#    #+#             */
-/*   Updated: 2021/03/26 02:47:50 by miki             ###   ########.fr       */
+/*   Updated: 2021/04/23 20:19:09 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,14 @@ void	*ft_realloc(void *ptr, size_t new_size, size_t old_size)
 {
 	void	*tmp;
 
-	if (!ptr || !new_size || new_size < old_size)
+	if ((!ptr && old_size) || !new_size || new_size < old_size)
 		return (NULL);
+	tmp = ptr;
 	ptr = ft_calloc(new_size, 1);
 	if (!ptr)
 		return (NULL);
 	if (old_size)
 	{
-		tmp = ptr;
 		ft_memcpy(ptr, tmp, old_size);
 		tmp = ft_del(tmp);
 	}
