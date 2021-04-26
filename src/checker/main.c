@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/04/24 21:48:21 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/04/26 20:44:30 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,15 +100,20 @@ int	main(int argc, char **argv)
 			i = 0;
 			while (ft_isdigit(num[i]))
 				i++;
+			//Argument is not an integer
 			if (!ft_isspace(num[i]) && num[i])
-				exit_failure("Argument is not an integer", &checker);
+				exit_failure("Error", &checker);
+			//Number too large
 			else if (i > 10 || (i == 10 && exceeded_max_int(num, numbuf[0])))
-				exit_failure("Number too large", &checker);
+				exit_failure("Error", &checker);
 			while (&num[i] > num)
 				numbuf[11 - i--] = *num++;
+			//DEBUG
 			printf("TEST: %d\n", ft_atoi(numbuf));
+			//DEBUG
+			//Duplicate number
 			if (ft_bintree_search(checker.bintree, ft_atoi(numbuf)))
-				exit_failure("Duplicate number", &checker);
+				exit_failure("Error", &checker);
 			checker.bintree = ft_bintree_add(checker.bintree, ft_atoi(numbuf));
 			stack_size += 4;
 			checker.stack_a = ft_realloc(checker.stack_a, stack_size, stack_size - 4);
