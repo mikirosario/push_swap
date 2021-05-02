@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/04/26 20:44:30 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/02 21:39:10 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,18 @@
 
 //#include "removeme.h"
 
+
+void	freeme(t_checker *checker)
+{
+		//freeme
+	checker->stack_a = ft_del(checker->stack_a);
+	checker->bintree = ft_bintree_free(checker->bintree);
+	if (checker->bintree)
+		checker->bintree = ft_bintree_free(checker->bintree);
+	if (checker->lst)
+		ft_lstclear(&checker->lst, free);
+		
+}
 
 void	print_error(char *error_msg, char *ansi_color_code)
 {
@@ -25,9 +37,7 @@ ft_putendl_fd(error_msg, STDERR_FILENO);
 
 int	exit_failure(char *error_msg, t_checker *checker)
 {
-	//freeme
-	if (checker->bintree)
-		checker->bintree = ft_bintree_free(checker->bintree);
+
 	if (error_msg)
 		print_error(error_msg, RED);
 	exit(EXIT_FAILURE);
@@ -58,6 +68,14 @@ int	exceeded_max_int(char *num, char neg)
 		return (1);
 	return (0);
 }
+
+/*
+** Find an exact match for a null-terminated string in a string separated by
+** separator.
+*/
+
+int	str_match()
+{}
 
 /*
 **
@@ -133,14 +151,47 @@ int	main(int argc, char **argv)
 	//WAIT FOR STDIN COMMANDS
 	ssize_t	size;
 	char	buf[3];
+	char	*content;
+	t_list	*new;
+	char	*instructions;
+	size_t	i;
 
 	ft_bzero(buf, 3);
 	//ft_memset(buf, '0', 3);
 	size = read(STDIN_FILENO, buf, 3);
+	instructions = INSTRUCTIONS;
+	while(size)
+	{
+		//printf("%s\n", buf);
+		i = 0;
+		while (*instructions)
+		{
+			while (*instructions && instructions[i] != ':')
+				i++;
+		}
+		
+		content = ft_strdup(buf);
+		new = ft_lstnew(content);
+		//printf("%s\n", new->content);
+		if(checker.lst)
+			ft_lstadd_back(&checker.lst, new);
+		else
+			checker.lst = new;
+		//printf("%s\n", checker.lst->content);
+		//if (checker.lst->next)
+		//	printf("%s\n", checker.lst->next->content);
+		ft_bzero(buf, 3);
+		size = read(STDIN_FILENO, buf, 3);
+	}
 
-	printf("%s\n", buf);
-	//
-	checker.stack_a = ft_del(checker.stack_a);
-	checker.bintree = ft_bintree_free(checker.bintree);
+	//debug code//
+	t_list *tmp = checker.lst;
+	while(tmp)
+	{
+		printf("%s\n", tmp->content);
+		tmp = tmp->next;
+	}
+	//debug code
+
 	return (0);
 }
