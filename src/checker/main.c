@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/02 21:39:10 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/03 21:41:22 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,28 @@
 
 //#include "removeme.h"
 
-
 void	freeme(t_checker *checker)
 {
-		//freeme
 	checker->stack_a = ft_del(checker->stack_a);
 	checker->bintree = ft_bintree_free(checker->bintree);
 	if (checker->bintree)
 		checker->bintree = ft_bintree_free(checker->bintree);
 	if (checker->lst)
 		ft_lstclear(&checker->lst, free);
-		
 }
 
 void	print_error(char *error_msg, char *ansi_color_code)
 {
 	write(STDERR_FILENO, ansi_color_code, ft_strlen(ansi_color_code));
-ft_putendl_fd(error_msg, STDERR_FILENO);
+	ft_putendl_fd(error_msg, STDERR_FILENO);
 	write(STDERR_FILENO, RESET, 4);
 }
 
 int	exit_failure(char *error_msg, t_checker *checker)
 {
-
 	if (error_msg)
 		print_error(error_msg, RED);
+	freeme(checker);
 	exit(EXIT_FAILURE);
 }
 
@@ -70,40 +67,53 @@ int	exceeded_max_int(char *num, char neg)
 }
 
 /*
-** Find an exact match for a null-terminated string in a string separated by
-** separator.
+** Find an exact match for a null-terminated string 'match' in a string 'str'
+** separated by a separator 'sep'. The separator 'sep' must be standard ASCII
+** and may not be NUL and both string pointers must be valid.
+**
+** In case of an error, -1 is returned. In case of a match, 1 is returned. In
+** case of no match, 0 is returned.
 */
 
-int	str_match()
-{}
+int	ft_str_match(char *match, char *str, char sep)
+{
+	size_t	i;
+	size_t	matchlen;
+	size_t	toklen;
+
+	if (sep == '\0' || !ft_isascii(sep) || str == NULL || match == NULL)
+		return (-1);
+	matchlen = ft_strlen(match);
+	while (*str)
+	{
+		i = 0;
+		if (*str == sep)
+			while (*str == sep)
+				str++;
+		while (str[i] && str[i] != sep)
+			i++;
+		toklen = &str[i] - str;
+		if (matchlen == toklen && !ft_strncmp(match, str, toklen))
+			return (1);
+		str = &str[i];
+	}
+	return (0);
+}
+
 
 /*
-**
-** OK, so we get an unspecified number of arguments, each with numbers to be
-** checked for adequacy and then put in stack a.
-**
-** OK, first I'll use numbuf to store each individual number in the arguments
-** and convert them into integers. The numbuf has room for 11 bytes plus the
-** nul byte to make space for the minus sign if needed.
+** 
 */
 
-int	main(int argc, char **argv)
+int	generate_stack_a(char **argv, t_checker *checker)
 {
 	size_t		i;
-	//size_t		x;
 	char		**args;
 	char		numbuf[12];
 	char		*num;
-	//t_bstnode	*bintree = NULL;
 	size_t		stack_size;
-	t_checker	checker;
 
-	ft_bzero(&checker, sizeof(t_checker));
-	//No argument provided :p
-	if (argc < 2 || argv[1][0] == '\0')
-		exit_failure(NULL, &checker);
 	numbuf[11] = 0;
-	//x = 1;
 	args = &argv[1];
 	stack_size = 0;
 	while (*args)
@@ -120,56 +130,113 @@ int	main(int argc, char **argv)
 				i++;
 			//Argument is not an integer
 			if (!ft_isspace(num[i]) && num[i])
-				exit_failure("Error", &checker);
+				exit_failure("Error", checker);
 			//Number too large
 			else if (i > 10 || (i == 10 && exceeded_max_int(num, numbuf[0])))
-				exit_failure("Error", &checker);
+				exit_failure("Error", checker);
 			while (&num[i] > num)
 				numbuf[11 - i--] = *num++;
-			//DEBUG
-			printf("TEST: %d\n", ft_atoi(numbuf));
-			//DEBUG
+			// //DEBUG
+			// printf("TEST: %d\n", ft_atoi(numbuf));
+			// //DEBUG
 			//Duplicate number
-			if (ft_bintree_search(checker.bintree, ft_atoi(numbuf)))
-				exit_failure("Error", &checker);
-			checker.bintree = ft_bintree_add(checker.bintree, ft_atoi(numbuf));
+			if (ft_bintree_search(checker->bintree, ft_atoi(numbuf)))
+				exit_failure("Error", checker);
+			checker->bintree = ft_bintree_add(checker->bintree, ft_atoi(numbuf));
 			stack_size += 4;
-			checker.stack_a = ft_realloc(checker.stack_a, stack_size, stack_size - 4);
+			checker->stack_a = ft_realloc(checker->stack_a, stack_size, stack_size - 4);
 			//size to pos ya sé que es feo :p
-			checker.stack_a[(stack_size - 4) / 4] = ft_atoi(numbuf);
+			checker->stack_a[(stack_size - 4) / 4] = ft_atoi(numbuf);
 		}
-	}
+
 	//DEBUG CODE
-	ft_bintree_print(checker.bintree, 0);
+	ft_bintree_print(checker->bintree, 0);
 	printf("Stack A:\n");
 	for (size_t i = 0; i < stack_size; i += 4)
 	{
-		printf("%d\n", checker.stack_a[i/4]);
+		printf("%d\n", checker->stack_a[i/4]);
 	}
 	//DEBUG CODE
+	}
+	return (1);
+}
 
+/*
+**
+** OK, so we get an unspecified number of arguments, each with numbers to be
+** checked for adequacy and then put in stack a.
+**
+** OK, first I'll use numbuf to store each individual number in the arguments
+** and convert them into integers. The numbuf has room for 11 bytes plus the
+** nul byte to make space for the minus sign if needed.
+*/
+
+int	main(int argc, char **argv)
+{
+	// size_t		i;
+	// char		**args;
+	// char		numbuf[12];
+	// char		*num;
+	// size_t		stack_size;
+	t_checker	checker;
+
+	ft_bzero(&checker, sizeof(t_checker));
+	//No argument provided :p
+	if (argc < 2 || argv[1][0] == '\0')
+		exit_failure("Error", &checker);
+	generate_stack_a(argv, &checker);
+	// numbuf[11] = 0;
+	// //x = 1;
+	// args = &argv[1];
+	// stack_size = 0;
+	// while (*args)
+	// {
+	// 	num = *args++;
+	// 	while (*num)
+	// 	{
+	// 		ft_memset(numbuf, '0', 11);
+	// 		num = ft_skipspaces(num);
+	// 		if (*num == '-')
+	// 			numbuf[0] = *num++;
+	// 		i = 0;
+	// 		while (ft_isdigit(num[i]))
+	// 			i++;
+	// 		//Argument is not an integer
+	// 		if (!ft_isspace(num[i]) && num[i])
+	// 			exit_failure("Error", &checker);
+	// 		//Number too large
+	// 		else if (i > 10 || (i == 10 && exceeded_max_int(num, numbuf[0])))
+	// 			exit_failure("Error", &checker);
+	// 		while (&num[i] > num)
+	// 			numbuf[11 - i--] = *num++;
+	// 		//DEBUG
+	// 		printf("TEST: %d\n", ft_atoi(numbuf));
+	// 		//DEBUG
+	// 		//Duplicate number
+	// 		if (ft_bintree_search(checker.bintree, ft_atoi(numbuf)))
+	// 			exit_failure("Error", &checker);
+	// 		checker.bintree = ft_bintree_add(checker.bintree, ft_atoi(numbuf));
+	// 		stack_size += 4;
+	// 		checker.stack_a = ft_realloc(checker.stack_a, stack_size, stack_size - 4);
+	// 		//size to pos ya sé que es feo :p
+	// 		checker.stack_a[(stack_size - 4) / 4] = ft_atoi(numbuf);
+	// 	}
+	// }
+
+//printf("DONE\n");
 	//WAIT FOR STDIN COMMANDS
 	ssize_t	size;
-	char	buf[3];
+	//char	buf[4];
+	char	*buf;
 	char	*content;
 	t_list	*new;
-	char	*instructions;
-	size_t	i;
 
-	ft_bzero(buf, 3);
 	//ft_memset(buf, '0', 3);
-	size = read(STDIN_FILENO, buf, 3);
-	instructions = INSTRUCTIONS;
-	while(size)
+
+	while(ft_get_next_line(STDIN_FILENO, &buf) > 0)
 	{
-		//printf("%s\n", buf);
-		i = 0;
-		while (*instructions)
-		{
-			while (*instructions && instructions[i] != ':')
-				i++;
-		}
-		
+		if (ft_str_match(buf, INSTRUCTIONS, ':') < 1)
+			exit_failure("Error", &checker);
 		content = ft_strdup(buf);
 		new = ft_lstnew(content);
 		//printf("%s\n", new->content);
@@ -180,15 +247,21 @@ int	main(int argc, char **argv)
 		//printf("%s\n", checker.lst->content);
 		//if (checker.lst->next)
 		//	printf("%s\n", checker.lst->next->content);
-		ft_bzero(buf, 3);
-		size = read(STDIN_FILENO, buf, 3);
+		buf = ft_del(buf);
+		size = read(STDIN_FILENO, buf, 4);
 	}
 
 	//debug code//
 	t_list *tmp = checker.lst;
 	while(tmp)
 	{
-		printf("%s\n", tmp->content);
+		//printf("%s\n", tmp->content);
+		if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 0)
+			printf("BAD BUNNY, %s no existe\n", tmp->content);
+		else if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 1)
+			printf("GOOD BUNNY, %s existe\n", tmp->content);
+		else
+			printf("WTF BUNNY?\n");
 		tmp = tmp->next;
 	}
 	//debug code
