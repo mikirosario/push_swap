@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/05 21:38:20 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/05 21:42:44 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ int	main(int argc, char **argv)
 	ft_bzero(&checker, sizeof(t_checker));
 	//No argument provided :p
 	if (argc < 2 || argv[1][0] == '\0')
-		exit_failure("Error", &checker);
+		exit_failure(NULL, &checker);
 	generate_stack_a(argv, &checker);
 	// numbuf[11] = 0;
 	// //x = 1;
