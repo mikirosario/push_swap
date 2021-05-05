@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/03 21:41:22 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/05 21:38:20 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,26 @@ int	ft_str_match(char *match, char *str, char sep)
 
 
 /*
-** 
+** This function will generate stack_a out of the integers passed to the program
+** as arguments in order of receipt. Arguments with multiple integers separated
+** spaces will be processed. Integers may be passed in one argument per integer
+** or in several integers to an argument.
+**
+** The program will throw an error and terminate if:
+**
+** 1. An argument does not contain an integer.
+** 2. An integer is too large (greater than INT_MAX or less than INT_MIN).
+** 3. An integer is repeated.
+**
+** In case of an error the progam will print Error to stderr and terminate.
+**
+** A red-black binary tree is created out of the integers to check for
+** duplicates. This is just a voluntary exercise on my part to practise writing
+** and using binary tree functions. :)
+**
+** The function returns 1 if successful, because it will probably be further
+** split and rewritten to return 0 if unsuccessful for a single exit_failure
+** call instruction...
 */
 
 int	generate_stack_a(char **argv, t_checker *checker)
@@ -123,12 +142,20 @@ int	generate_stack_a(char **argv, t_checker *checker)
 		{
 			ft_memset(numbuf, '0', 11);
 			num = ft_skipspaces(num);
-			if (*num == '-')
+			if (*num == '-' || *num == '+')
 				numbuf[0] = *num++;
+			else if (!ft_isdigit(*num)) //Argument is not an integer if number starts with char that is not a digit, '-' or '+'.
+				exit_failure("Error", checker);
 			i = 0;
+			//Elimina ceros a la izquierda
+			while (*num == '0')
+				num++;
+			//Si después de los ceros no hay un dígito, vuelve uno al último cero
+			if (!ft_isdigit(num[i]))
+				num--;
 			while (ft_isdigit(num[i]))
 				i++;
-			//Argument is not an integer
+			//Argument is not an integer if we find char that is neither space nor nul
 			if (!ft_isspace(num[i]) && num[i])
 				exit_failure("Error", checker);
 			//Number too large
@@ -162,7 +189,6 @@ int	generate_stack_a(char **argv, t_checker *checker)
 }
 
 /*
-**
 ** OK, so we get an unspecified number of arguments, each with numbers to be
 ** checked for adequacy and then put in stack a.
 **
