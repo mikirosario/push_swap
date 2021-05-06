@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/05 21:42:44 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/06 20:19:12 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ int	exit_failure(char *error_msg, t_checker *checker)
 ** how many bytes are in an integer in the local implementation and all. :p
 */
 
-int	exceeded_max_int(char *num, char neg)
+int	exceeded_max_int(char *num, char sign)
 {
 	char	*intmax;
 	int		result;
 
-	if (neg == '-')
+	if (sign == '-')
 		intmax = "2147483648";
 	else
 		intmax = "2147483647";
@@ -100,6 +100,34 @@ int	ft_str_match(char *match, char *str, char sep)
 	return (0);
 }
 
+/*
+** This function identifies the next number in the string, if valid. I
+*/
+
+static char	*next_num(t_checker *checker, char *numstart, char *numbuf, size_t *numlen)
+{
+	//Number may start with a single '-' or '+'. A space for the sign is reserved in the first byte of numbuf.
+	//If there is no sign, the first byte in numbuf defaults to '0' (in ASCII).
+	//If there is a sign, the number is assumed to begin after the sign.
+	if (*numstart == '-' || *numstart == '+')
+		numbuf[0] = *numstart++;
+	if (!ft_isdigit(*numstart)) //Argument is not an integer if number starts with char that is not a digit.
+		exit_failure("Error", checker);
+	*numlen = 0;
+	//Salta ceros a la izquierda mientras *num == 0 y el carácter siguiente sea cualquier dígito
+	while (*numstart == '0' && ft_isdigit(*(numstart + 1)))
+		numstart++;
+	while (ft_isdigit(numstart[*numlen]))
+		(*numlen)++;
+	//Argument is not an integer if after all the digits we find char that is neither space nor nul
+	if (!ft_isspace(numstart[*numlen]) && numstart[*numlen])
+		exit_failure("Error", checker);
+	//Number too large
+	else if (*numlen > 10 || (*numlen == 10 && exceeded_max_int(numstart, numbuf[0])))
+		exit_failure("Error", checker);
+	return (numstart);
+}
+
 
 /*
 ** This function will generate stack_a out of the integers passed to the program
@@ -126,7 +154,7 @@ int	ft_str_match(char *match, char *str, char sep)
 
 int	generate_stack_a(char **argv, t_checker *checker)
 {
-	size_t		i;
+	size_t		numlen;
 	char		**args;
 	char		numbuf[12];
 	char		*num;
@@ -142,27 +170,30 @@ int	generate_stack_a(char **argv, t_checker *checker)
 		{
 			ft_memset(numbuf, '0', 11);
 			num = ft_skipspaces(num);
-			if (*num == '-' || *num == '+')
-				numbuf[0] = *num++;
-			else if (!ft_isdigit(*num)) //Argument is not an integer if number starts with char that is not a digit, '-' or '+'.
-				exit_failure("Error", checker);
-			i = 0;
-			//Elimina ceros a la izquierda
-			while (*num == '0')
-				num++;
-			//Si después de los ceros no hay un dígito, vuelve uno al último cero
-			if (!ft_isdigit(num[i]))
-				num--;
-			while (ft_isdigit(num[i]))
-				i++;
-			//Argument is not an integer if we find char that is neither space nor nul
-			if (!ft_isspace(num[i]) && num[i])
-				exit_failure("Error", checker);
-			//Number too large
-			else if (i > 10 || (i == 10 && exceeded_max_int(num, numbuf[0])))
-				exit_failure("Error", checker);
-			while (&num[i] > num)
-				numbuf[11 - i--] = *num++;
+			num = next_num(checker, num, numbuf, &numlen);
+
+			// //Number may start with a single '-' or '+'. A space for the sign is reserved in the first byte of numbuf.
+			// //If there is no sign, the first byte in numbuf defaults to '0' (in ASCII).
+			// //If there is a sign, the number is assumed to begin after the sign.
+			// if (*num == '-' || *num == '+')
+			// 	numbuf[0] = *num++;
+			// if (!ft_isdigit(*num)) //Argument is not an integer if number starts with char that is not a digit.
+			// 	exit_failure("Error", checker);
+			// numlen = 0;
+			// //Salta ceros a la izquierda mientras *num == 0 y el carácter siguiente sea cualquier dígito
+			// while (*num == '0' && ft_isdigit(*(num + 1)))
+			// 	num++;
+			// while (ft_isdigit(num[numlen]))
+			// 	numlen++;
+			// //Argument is not an integer if after all the digits we find char that is neither space nor nul
+			// if (!ft_isspace(num[numlen]) && num[numlen])
+			// 	exit_failure("Error", checker);
+			// //Number too large
+			// else if (numlen > 10 || (numlen == 10 && exceeded_max_int(num, numbuf[0])))
+			// 	exit_failure("Error", checker);
+		
+			while (&num[numlen] > num)
+				numbuf[11 - numlen--] = *num++;
 			// //DEBUG
 			// printf("TEST: %d\n", ft_atoi(numbuf));
 			// //DEBUG
