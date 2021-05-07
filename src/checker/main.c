@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/06 20:19:12 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/07 20:36:41 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@
 
 void	freeme(t_checker *checker)
 {
-	checker->stack_a = ft_del(checker->stack_a);
+	if (checker->stack_a)
+		checker->stack_a = ft_del(checker->stack_a);
+	if (checker->stack_b)
+		checker->stack_a = ft_del(checker->stack_b);
 	checker->bintree = ft_bintree_free(checker->bintree);
 	if (checker->bintree)
 		checker->bintree = ft_bintree_free(checker->bintree);
@@ -101,11 +104,23 @@ int	ft_str_match(char *match, char *str, char sep)
 }
 
 /*
-** This function identifies the next number in the string, if valid. I
+** This function identifies the next token in the string (the sub-string after
+** any spaces are skipped and until the next space or NUL char). If that token
+** is a valid number, the size of the number is saved to *numlen and the start
+** address of the number is returned. The number's sign is also copied to the
+** first byte of the number buffer numbuf.
+**
+** If the number is invalid the program terminates and throws an error.
+** (Probably will eventually do the termination elsewhere and return NULL).
+**
+** A valid number may start with a single '-' or '+' and contain up to 10
+** digits, may not be larger than INT_MAX or smaller than INT_MIN, and zeros on
+** the left are skipped.
 */
 
 static char	*next_num(t_checker *checker, char *numstart, char *numbuf, size_t *numlen)
 {
+	numstart = ft_skipspaces(numstart);
 	//Number may start with a single '-' or '+'. A space for the sign is reserved in the first byte of numbuf.
 	//If there is no sign, the first byte in numbuf defaults to '0' (in ASCII).
 	//If there is a sign, the number is assumed to begin after the sign.
@@ -169,29 +184,7 @@ int	generate_stack_a(char **argv, t_checker *checker)
 		while (*num)
 		{
 			ft_memset(numbuf, '0', 11);
-			num = ft_skipspaces(num);
 			num = next_num(checker, num, numbuf, &numlen);
-
-			// //Number may start with a single '-' or '+'. A space for the sign is reserved in the first byte of numbuf.
-			// //If there is no sign, the first byte in numbuf defaults to '0' (in ASCII).
-			// //If there is a sign, the number is assumed to begin after the sign.
-			// if (*num == '-' || *num == '+')
-			// 	numbuf[0] = *num++;
-			// if (!ft_isdigit(*num)) //Argument is not an integer if number starts with char that is not a digit.
-			// 	exit_failure("Error", checker);
-			// numlen = 0;
-			// //Salta ceros a la izquierda mientras *num == 0 y el carácter siguiente sea cualquier dígito
-			// while (*num == '0' && ft_isdigit(*(num + 1)))
-			// 	num++;
-			// while (ft_isdigit(num[numlen]))
-			// 	numlen++;
-			// //Argument is not an integer if after all the digits we find char that is neither space nor nul
-			// if (!ft_isspace(num[numlen]) && num[numlen])
-			// 	exit_failure("Error", checker);
-			// //Number too large
-			// else if (numlen > 10 || (numlen == 10 && exceeded_max_int(num, numbuf[0])))
-			// 	exit_failure("Error", checker);
-		
 			while (&num[numlen] > num)
 				numbuf[11 - numlen--] = *num++;
 			// //DEBUG
@@ -206,6 +199,8 @@ int	generate_stack_a(char **argv, t_checker *checker)
 			//size to pos ya sé que es feo :p
 			checker->stack_a[(stack_size - 4) / 4] = ft_atoi(numbuf);
 		}
+	checker->stack_b = ft_calloc(stack_size / 4, sizeof(int));
+
 
 	//DEBUG CODE
 	ft_bintree_print(checker->bintree, 0);
@@ -213,6 +208,15 @@ int	generate_stack_a(char **argv, t_checker *checker)
 	for (size_t i = 0; i < stack_size; i += 4)
 	{
 		printf("%d\n", checker->stack_a[i/4]);
+	}
+	for (size_t j = 0; j < stack_size; j += 4)
+	{
+		checker->stack_b[j/4] = checker->stack_a[j/4];
+	}
+	printf("Stack B:\n");
+	for (size_t i = 0; i < stack_size; i += 4)
+	{
+		printf("%d\n", checker->stack_b[i/4]);
 	}
 	//DEBUG CODE
 	}
@@ -242,43 +246,6 @@ int	main(int argc, char **argv)
 	if (argc < 2 || argv[1][0] == '\0')
 		exit_failure(NULL, &checker);
 	generate_stack_a(argv, &checker);
-	// numbuf[11] = 0;
-	// //x = 1;
-	// args = &argv[1];
-	// stack_size = 0;
-	// while (*args)
-	// {
-	// 	num = *args++;
-	// 	while (*num)
-	// 	{
-	// 		ft_memset(numbuf, '0', 11);
-	// 		num = ft_skipspaces(num);
-	// 		if (*num == '-')
-	// 			numbuf[0] = *num++;
-	// 		i = 0;
-	// 		while (ft_isdigit(num[i]))
-	// 			i++;
-	// 		//Argument is not an integer
-	// 		if (!ft_isspace(num[i]) && num[i])
-	// 			exit_failure("Error", &checker);
-	// 		//Number too large
-	// 		else if (i > 10 || (i == 10 && exceeded_max_int(num, numbuf[0])))
-	// 			exit_failure("Error", &checker);
-	// 		while (&num[i] > num)
-	// 			numbuf[11 - i--] = *num++;
-	// 		//DEBUG
-	// 		printf("TEST: %d\n", ft_atoi(numbuf));
-	// 		//DEBUG
-	// 		//Duplicate number
-	// 		if (ft_bintree_search(checker.bintree, ft_atoi(numbuf)))
-	// 			exit_failure("Error", &checker);
-	// 		checker.bintree = ft_bintree_add(checker.bintree, ft_atoi(numbuf));
-	// 		stack_size += 4;
-	// 		checker.stack_a = ft_realloc(checker.stack_a, stack_size, stack_size - 4);
-	// 		//size to pos ya sé que es feo :p
-	// 		checker.stack_a[(stack_size - 4) / 4] = ft_atoi(numbuf);
-	// 	}
-	// }
 
 //printf("DONE\n");
 	//WAIT FOR STDIN COMMANDS
@@ -307,7 +274,6 @@ int	main(int argc, char **argv)
 		buf = ft_del(buf);
 		size = read(STDIN_FILENO, buf, 4);
 	}
-
 	//debug code//
 	t_list *tmp = checker.lst;
 	while(tmp)
@@ -322,6 +288,7 @@ int	main(int argc, char **argv)
 		tmp = tmp->next;
 	}
 	//debug code
+
 
 	return (0);
 }

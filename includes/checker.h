@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/21 14:07:56 by miki              #+#    #+#             */
-/*   Updated: 2021/05/03 20:23:26 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/07 20:30:29 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef struct s_checker
 {
 	t_bstnode	*bintree;
 	int			*stack_a;
+	int			*stack_b;
 	t_list		*lst;
 }				t_checker;
 
