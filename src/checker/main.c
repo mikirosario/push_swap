@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/07 20:36:41 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/08 21:59:25 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ static char	*next_num(t_checker *checker, char *numstart, char *numbuf, size_t *
 ** call instruction...
 */
 
-int	generate_stack_a(char **argv, t_checker *checker)
+int	generate_stacks(char **argv, t_checker *checker)
 {
 	size_t		numlen;
 	char		**args;
@@ -194,30 +194,30 @@ int	generate_stack_a(char **argv, t_checker *checker)
 			if (ft_bintree_search(checker->bintree, ft_atoi(numbuf)))
 				exit_failure("Error", checker);
 			checker->bintree = ft_bintree_add(checker->bintree, ft_atoi(numbuf));
-			stack_size += 4;
-			checker->stack_a = ft_realloc(checker->stack_a, stack_size, stack_size - 4);
+			stack_size += sizeof(int*);
+			checker->stack_a = ft_realloc(checker->stack_a, stack_size, stack_size - sizeof(int*));
 			//size to pos ya sé que es feo :p
-			checker->stack_a[(stack_size - 4) / 4] = ft_atoi(numbuf);
+			checker->stack_a[(stack_size - sizeof(int*)) / sizeof(int*)] = ft_calloc(1, sizeof(int));
+			*checker->stack_a[(stack_size - sizeof(int*)) / sizeof(int*)] = ft_atoi(numbuf);
 		}
-	checker->stack_b = ft_calloc(stack_size / 4, sizeof(int));
-
+	checker->stack_b = ft_calloc(stack_size / sizeof(int*), sizeof(int*));
 
 	//DEBUG CODE
 	ft_bintree_print(checker->bintree, 0);
 	printf("Stack A:\n");
-	for (size_t i = 0; i < stack_size; i += 4)
+	for (size_t i = 0; i < stack_size; i += 8)
 	{
-		printf("%d\n", checker->stack_a[i/4]);
+		printf("%d\n", *checker->stack_a[i/8]);
 	}
-	for (size_t j = 0; j < stack_size; j += 4)
-	{
-		checker->stack_b[j/4] = checker->stack_a[j/4];
-	}
-	printf("Stack B:\n");
-	for (size_t i = 0; i < stack_size; i += 4)
-	{
-		printf("%d\n", checker->stack_b[i/4]);
-	}
+	// for (size_t j = 0; j < stack_size; j += 8)
+	// {
+	// 	*checker->stack_b[j/8] = *checker->stack_a[j/8];
+	// }
+	// printf("Stack B:\n");
+	// for (size_t i = 0; i < stack_size; i += 8)
+	// {
+	// 	printf("%d\n", *checker->stack_b[i/8]);
+	// }
 	//DEBUG CODE
 	}
 	return (1);
@@ -245,7 +245,7 @@ int	main(int argc, char **argv)
 	//No argument provided :p
 	if (argc < 2 || argv[1][0] == '\0')
 		exit_failure(NULL, &checker);
-	generate_stack_a(argv, &checker);
+	generate_stacks(argv, &checker);
 
 //printf("DONE\n");
 	//WAIT FOR STDIN COMMANDS
