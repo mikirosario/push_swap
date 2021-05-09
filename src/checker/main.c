@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/08 21:59:25 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/09 21:55:51 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,30 @@
 
 void	freeme(t_checker *checker)
 {
+	size_t	i;
+
 	if (checker->stack_a)
+	{
+		i = 0;
+		while (i < checker->stack_size / sizeof(int *))
+		{
+			if (checker->stack_a[i])
+				checker->stack_a[i] = ft_del(checker->stack_a[i]);
+			i++;
+		}
 		checker->stack_a = ft_del(checker->stack_a);
+	}
 	if (checker->stack_b)
-		checker->stack_a = ft_del(checker->stack_b);
+	{
+		i = 0;
+		while (i < checker->stack_size / sizeof(int *))
+		{
+			if (checker->stack_b[i])
+				checker->stack_b[i] = ft_del(checker->stack_b[i]);
+			i++;
+		}
+		checker->stack_b = ft_del(checker->stack_b);
+	}
 	checker->bintree = ft_bintree_free(checker->bintree);
 	if (checker->bintree)
 		checker->bintree = ft_bintree_free(checker->bintree);
@@ -43,31 +63,7 @@ int	exit_failure(char *error_msg, t_checker *checker)
 	exit(EXIT_FAILURE);
 }
 
-/*
-** For numbers of 10 digits, we check to make sure they don't exceed INT_MAX or
-** INT_MIN (if negative), which I hardcode here since I'm already assuming it
-** will be 10 digits long and all, so I'm assuming 4 byte integers. :p Otherwise
-** any number less than 10 digits long will always be below the maximum and any
-** number more than 10 digits long will always be above it.
-**
-** Yeah I know if I really wanted to make my push_swap portable I should check
-** how many bytes are in an integer in the local implementation and all. :p
-*/
 
-int	exceeded_max_int(char *num, char sign)
-{
-	char	*intmax;
-	int		result;
-
-	if (sign == '-')
-		intmax = "2147483648";
-	else
-		intmax = "2147483647";
-	result = ft_strncmp(num, intmax, 10);
-	if (result > 0)
-		return (1);
-	return (0);
-}
 
 /*
 ** Find an exact match for a null-terminated string 'match' in a string 'str'
@@ -103,122 +99,37 @@ int	ft_str_match(char *match, char *str, char sep)
 	return (0);
 }
 
-/*
-** This function identifies the next token in the string (the sub-string after
-** any spaces are skipped and until the next space or NUL char). If that token
-** is a valid number, the size of the number is saved to *numlen and the start
-** address of the number is returned. The number's sign is also copied to the
-** first byte of the number buffer numbuf.
-**
-** If the number is invalid the program terminates and throws an error.
-** (Probably will eventually do the termination elsewhere and return NULL).
-**
-** A valid number may start with a single '-' or '+' and contain up to 10
-** digits, may not be larger than INT_MAX or smaller than INT_MIN, and zeros on
-** the left are skipped.
-*/
-
-static char	*next_num(t_checker *checker, char *numstart, char *numbuf, size_t *numlen)
+int	sort_stack(t_checker *checker, char *instruction)
 {
-	numstart = ft_skipspaces(numstart);
-	//Number may start with a single '-' or '+'. A space for the sign is reserved in the first byte of numbuf.
-	//If there is no sign, the first byte in numbuf defaults to '0' (in ASCII).
-	//If there is a sign, the number is assumed to begin after the sign.
-	if (*numstart == '-' || *numstart == '+')
-		numbuf[0] = *numstart++;
-	if (!ft_isdigit(*numstart)) //Argument is not an integer if number starts with char that is not a digit.
-		exit_failure("Error", checker);
-	*numlen = 0;
-	//Salta ceros a la izquierda mientras *num == 0 y el carácter siguiente sea cualquier dígito
-	while (*numstart == '0' && ft_isdigit(*(numstart + 1)))
-		numstart++;
-	while (ft_isdigit(numstart[*numlen]))
-		(*numlen)++;
-	//Argument is not an integer if after all the digits we find char that is neither space nor nul
-	if (!ft_isspace(numstart[*numlen]) && numstart[*numlen])
-		exit_failure("Error", checker);
-	//Number too large
-	else if (*numlen > 10 || (*numlen == 10 && exceeded_max_int(numstart, numbuf[0])))
-		exit_failure("Error", checker);
-	return (numstart);
-}
+	size_t	i;
+	int		tmp;
 
-
-/*
-** This function will generate stack_a out of the integers passed to the program
-** as arguments in order of receipt. Arguments with multiple integers separated
-** spaces will be processed. Integers may be passed in one argument per integer
-** or in several integers to an argument.
-**
-** The program will throw an error and terminate if:
-**
-** 1. An argument does not contain an integer.
-** 2. An integer is too large (greater than INT_MAX or less than INT_MIN).
-** 3. An integer is repeated.
-**
-** In case of an error the progam will print Error to stderr and terminate.
-**
-** A red-black binary tree is created out of the integers to check for
-** duplicates. This is just a voluntary exercise on my part to practise writing
-** and using binary tree functions. :)
-**
-** The function returns 1 if successful, because it will probably be further
-** split and rewritten to return 0 if unsuccessful for a single exit_failure
-** call instruction...
-*/
-
-int	generate_stacks(char **argv, t_checker *checker)
-{
-	size_t		numlen;
-	char		**args;
-	char		numbuf[12];
-	char		*num;
-	size_t		stack_size;
-
-	numbuf[11] = 0;
-	args = &argv[1];
-	stack_size = 0;
-	while (*args)
-	{
-		num = *args++;
-		while (*num)
+	if (!ft_strcmp(instruction, "sa"))
+		sa_move(checker);
+	else if (!ft_strcmp(instruction, "sb"))
 		{
-			ft_memset(numbuf, '0', 11);
-			num = next_num(checker, num, numbuf, &numlen);
-			while (&num[numlen] > num)
-				numbuf[11 - numlen--] = *num++;
-			// //DEBUG
-			// printf("TEST: %d\n", ft_atoi(numbuf));
-			// //DEBUG
-			//Duplicate number
-			if (ft_bintree_search(checker->bintree, ft_atoi(numbuf)))
-				exit_failure("Error", checker);
-			checker->bintree = ft_bintree_add(checker->bintree, ft_atoi(numbuf));
-			stack_size += sizeof(int*);
-			checker->stack_a = ft_realloc(checker->stack_a, stack_size, stack_size - sizeof(int*));
-			//size to pos ya sé que es feo :p
-			checker->stack_a[(stack_size - sizeof(int*)) / sizeof(int*)] = ft_calloc(1, sizeof(int));
-			*checker->stack_a[(stack_size - sizeof(int*)) / sizeof(int*)] = ft_atoi(numbuf);
+			if (!checker->stack_b[0] || !checker->stack_b[1])
+				return (0);
+			tmp = *checker->stack_b[1];
+			*checker->stack_b[1] = *checker->stack_b[0];
+			*checker->stack_b[0] = tmp;
 		}
-	checker->stack_b = ft_calloc(stack_size / sizeof(int*), sizeof(int*));
-
-	//DEBUG CODE
-	ft_bintree_print(checker->bintree, 0);
-	printf("Stack A:\n");
-	for (size_t i = 0; i < stack_size; i += 8)
+	
+	printf("SORTED STACK A:\n");
+	i =  0;
+	while (i < (checker->stack_size / 8))
 	{
-		printf("%d\n", *checker->stack_a[i/8]);
+		if (checker->stack_a[i])
+			printf("%d\n", *checker->stack_a[i]);
+		i++;
 	}
-	// for (size_t j = 0; j < stack_size; j += 8)
-	// {
-	// 	*checker->stack_b[j/8] = *checker->stack_a[j/8];
-	// }
-	// printf("Stack B:\n");
-	// for (size_t i = 0; i < stack_size; i += 8)
-	// {
-	// 	printf("%d\n", *checker->stack_b[i/8]);
-	// }
-	//DEBUG CODE
+	printf("\nSORTED STACK B:\n");
+	i = 0;
+	while (i < (checker->stack_size / 8))
+	{
+		if (checker->stack_b[i])
+			printf("%d\n", *checker->stack_b[i]);
+		i++;
 	}
 	return (1);
 }
@@ -274,20 +185,28 @@ int	main(int argc, char **argv)
 		buf = ft_del(buf);
 		size = read(STDIN_FILENO, buf, 4);
 	}
-	//debug code//
-	t_list *tmp = checker.lst;
-	while(tmp)
+
+	t_list	*instruction;
+	instruction = checker.lst;
+	while (instruction)
 	{
-		//printf("%s\n", tmp->content);
-		if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 0)
-			printf("BAD BUNNY, %s no existe\n", tmp->content);
-		else if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 1)
-			printf("GOOD BUNNY, %s existe\n", tmp->content);
-		else
-			printf("WTF BUNNY?\n");
-		tmp = tmp->next;
+		sort_stack(&checker, instruction->content);
+		instruction = instruction->next;
 	}
-	//debug code
+	// //debug code//
+	// t_list *tmp = checker.lst;
+	// while(tmp)
+	// {
+	// 	//printf("%s\n", tmp->content);
+	// 	if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 0)
+	// 		printf("BAD BUNNY, %s no existe\n", tmp->content);
+	// 	else if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 1)
+	// 		printf("GOOD BUNNY, %s existe\n", tmp->content);
+	// 	else
+	// 		printf("WTF BUNNY?\n");
+	// 	tmp = tmp->next;
+	// }
+	// //debug code
 
 
 	return (0);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: miki <miki@student.42.fr>                  +#+  +:+       +#+         #
+#    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/04/23 19:50:24 by miki             ###   ########.fr        #
+#    Updated: 2021/05/09 21:53:41 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = checker
 
 SRCDIR = ./src/checker
 
-SRC = $(SRCDIR)/main.c \
+SRC = $(SRCDIR)/main.c $(SRCDIR)/generate_stacks.c $(SRCDIR)/moves/s.c \
 
 LIBFT = ./src/libft/libft.a
 
