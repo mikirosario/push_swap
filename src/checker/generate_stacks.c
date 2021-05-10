@@ -3,23 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   generate_stacks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/08 20:36:10 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/09 21:30:21 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/10 17:40:47 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "checker.h"
 
-static void	debug_func(t_checker *checker, size_t stack_size)
+static void	debug_func(t_checker *checker)
 {
 	//DEBUG CODE
 	ft_bintree_print(checker->bintree, 0);
 	printf("UNSORTED STACK A:\n");
-	for (size_t i = 0; i < stack_size; i += 8)
+	for (t_list *tmp = checker->stack_a; tmp; tmp = tmp->next)
 	{
-		printf("%d\n", *checker->stack_a[i/8]);
+		if (tmp->content)
+			printf("%d\n", *(int *)tmp->content);
+	}
+	for (t_list *tmp = checker->stack_b; tmp; tmp = tmp->next)
+	{
+		if (tmp->content)
+			printf("%d\n", *(int *)tmp->content);
 	}
 	// for (size_t j = 0; j < stack_size; j += 8)
 	// {
@@ -41,7 +47,8 @@ static void	debug_func(t_checker *checker, size_t stack_size)
 
 int	generate_stack_b(t_checker *checker)
 {
-	checker->stack_b = (int**)ft_calloc(checker->stack_size, 1);
+	//checker->stack_b = (int**)ft_calloc(checker->stack_size, 1);
+	checker->stack_b = NULL;
 	// //DEBUG CODE
 	// size_t i = 0;
 	// while (i < checker->stack_size)
@@ -144,6 +151,7 @@ static char	*next_num(t_checker *checker, char *numstart, char *numbuf, size_t *
 
 char	*generate_stack_a(t_checker *checker, char *num)
 {
+	t_list		*new;
 	char		numbuf[12];
 	size_t		numlen;
 	
@@ -159,11 +167,17 @@ char	*generate_stack_a(t_checker *checker, char *num)
 	if (ft_bintree_search(checker->bintree, ft_atoi(numbuf)))
 		exit_failure("Error", checker);
 	checker->bintree = ft_bintree_add(checker->bintree, ft_atoi(numbuf));
-	checker->stack_size += sizeof(int*);
-	checker->stack_a = ft_realloc(checker->stack_a, checker->stack_size, checker->stack_size - sizeof(int*));
-	//size to pos ya sé que es feo :p
-	checker->stack_a[(checker->stack_size - sizeof(int*)) / sizeof(int*)] = ft_calloc(1, sizeof(int));
-	*checker->stack_a[(checker->stack_size - sizeof(int*)) / sizeof(int*)] = ft_atoi(numbuf);
+	new = ft_lstnew(ft_calloc(1, sizeof(int)));
+	*(int *)new->content = ft_atoi(numbuf);
+	if (!checker->stack_a)
+		checker->stack_a = new;
+	else
+		ft_lstadd_back(&checker->stack_a, new);
+	//checker->stack_size += sizeof(int*);
+	//checker->stack_a = ft_realloc(checker->stack_a, checker->stack_size, checker->stack_size - sizeof(int*));
+	// //size to pos ya sé que es feo :p
+	//checker->stack_a[(checker->stack_size - sizeof(int*)) / sizeof(int*)] = ft_calloc(1, sizeof(int));
+	// *checker->stack_a[(checker->stack_size - sizeof(int*)) / sizeof(int*)] = ft_atoi(numbuf);
 	return (num);
 }
 
@@ -197,7 +211,7 @@ int	generate_stacks(char **argv, t_checker *checker)
 	}
 	generate_stack_b(checker);
 	//DEBUG CODE
-	debug_func(checker, checker->stack_size);
+	debug_func(checker);
 	//DEBUG CODE
 
 	return (1);

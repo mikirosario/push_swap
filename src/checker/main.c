@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/09 21:55:51 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/10 20:34:06 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,61 @@
 
 //#include "removeme.h"
 
+
+static t_list	*find_preceding_member(t_list *lst, t_list *member)
+{
+	if (lst == member)
+		return (NULL);
+	while (lst->next != member)
+		lst = lst->next;
+	return (lst);
+}
+
+void	ft_lst_removeone(t_list **alst, t_list *remove)
+{
+	t_list	*subsequent_member;
+	t_list	*preceding_member;
+
+	subsequent_member = remove->next;
+	preceding_member = find_preceding_member(*alst, remove);
+	if (preceding_member == NULL)
+	{
+		ft_lstdelone(remove, free);
+		*alst = subsequent_member;
+	}
+	else
+	{
+		ft_lstdelone(remove, free);
+		preceding_member->next = subsequent_member;
+	}
+}
+
 void	freeme(t_checker *checker)
 {
-	size_t	i;
-
 	if (checker->stack_a)
-	{
-		i = 0;
-		while (i < checker->stack_size / sizeof(int *))
-		{
-			if (checker->stack_a[i])
-				checker->stack_a[i] = ft_del(checker->stack_a[i]);
-			i++;
-		}
-		checker->stack_a = ft_del(checker->stack_a);
-	}
-	if (checker->stack_b)
-	{
-		i = 0;
-		while (i < checker->stack_size / sizeof(int *))
-		{
-			if (checker->stack_b[i])
-				checker->stack_b[i] = ft_del(checker->stack_b[i]);
-			i++;
-		}
-		checker->stack_b = ft_del(checker->stack_b);
-	}
+		ft_lstclear(&checker->stack_a, free);
+	// if (checker->stack_a)
+	// {
+	// 	i = 0;
+	// 	while (i < checker->stack_size / sizeof(int *))
+	// 	{
+	// 		if (checker->stack_a[i])
+	// 			checker->stack_a[i] = ft_del(checker->stack_a[i]);
+	// 		i++;
+	// 	}
+	// 	checker->stack_a = ft_del(checker->stack_a);
+	// }
+	// if (checker->stack_b)
+	// {
+	// 	i = 0;
+	// 	while (i < checker->stack_size / sizeof(int *))
+	// 	{
+	// 		if (checker->stack_b[i])
+	// 			checker->stack_b[i] = ft_del(checker->stack_b[i]);
+	// 		i++;
+	// 	}
+	// 	checker->stack_b = ft_del(checker->stack_b);
+	// }
 	checker->bintree = ft_bintree_free(checker->bintree);
 	if (checker->bintree)
 		checker->bintree = ft_bintree_free(checker->bintree);
@@ -101,36 +130,36 @@ int	ft_str_match(char *match, char *str, char sep)
 
 int	sort_stack(t_checker *checker, char *instruction)
 {
-	size_t	i;
-	int		tmp;
-
 	if (!ft_strcmp(instruction, "sa"))
 		sa_move(checker);
 	else if (!ft_strcmp(instruction, "sb"))
-		{
-			if (!checker->stack_b[0] || !checker->stack_b[1])
-				return (0);
-			tmp = *checker->stack_b[1];
-			*checker->stack_b[1] = *checker->stack_b[0];
-			*checker->stack_b[0] = tmp;
-		}
+		sb_move(checker);
+	else if (!ft_strcmp(instruction, "ss"))
+		ss_move(checker);
+	else if (!ft_strcmp(instruction, "pa"))
+	 	pa_move(checker);
+	else if (!ft_strcmp(instruction, "pb"))
+	 	pb_move(checker);
+	else if (!ft_strcmp(instruction, "ra"))
+		ra_move(checker);
+	else if (!ft_strcmp(instruction, "rb"))
+		rb_move(checker);
+	else if (!ft_strcmp(instruction, "rr"))
+		rr_move(checker);
 	
 	printf("SORTED STACK A:\n");
-	i =  0;
-	while (i < (checker->stack_size / 8))
+	for (t_list *tmp = checker->stack_a; tmp; tmp = tmp->next)
 	{
-		if (checker->stack_a[i])
-			printf("%d\n", *checker->stack_a[i]);
-		i++;
+		if (tmp->content)
+			printf("%d\n", *(int *)tmp->content);
 	}
 	printf("\nSORTED STACK B:\n");
-	i = 0;
-	while (i < (checker->stack_size / 8))
+	for (t_list *tmp = checker->stack_b; tmp; tmp = tmp->next)
 	{
-		if (checker->stack_b[i])
-			printf("%d\n", *checker->stack_b[i]);
-		i++;
+		if (tmp->content)
+			printf("%d\n", *(int *)tmp->content);
 	}
+	printf("\n");
 	return (1);
 }
 
@@ -160,16 +189,19 @@ int	main(int argc, char **argv)
 
 //printf("DONE\n");
 	//WAIT FOR STDIN COMMANDS
-	ssize_t	size;
+	int		ret;
 	//char	buf[4];
 	char	*buf;
 	char	*content;
 	t_list	*new;
 
 	//ft_memset(buf, '0', 3);
-
-	while(ft_get_next_line(STDIN_FILENO, &buf) > 0)
+	ret = 1;
+	while(ret > 0)
 	{
+		ret = ft_get_next_line(STDIN_FILENO, &buf);
+		if (ret == -1)
+			exit_failure("GNL Error", &checker);
 		if (ft_str_match(buf, INSTRUCTIONS, ':') < 1)
 			exit_failure("Error", &checker);
 		content = ft_strdup(buf);
@@ -183,7 +215,7 @@ int	main(int argc, char **argv)
 		//if (checker.lst->next)
 		//	printf("%s\n", checker.lst->next->content);
 		buf = ft_del(buf);
-		size = read(STDIN_FILENO, buf, 4);
+		//size = read(STDIN_FILENO, buf, 4);
 	}
 
 	t_list	*instruction;
@@ -193,15 +225,16 @@ int	main(int argc, char **argv)
 		sort_stack(&checker, instruction->content);
 		instruction = instruction->next;
 	}
+	
 	// //debug code//
 	// t_list *tmp = checker.lst;
 	// while(tmp)
 	// {
-	// 	//printf("%s\n", tmp->content);
+	// 	printf("%s\n", (char *)tmp->content);
 	// 	if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 0)
-	// 		printf("BAD BUNNY, %s no existe\n", tmp->content);
+	// 		printf("BAD BUNNY, %s no existe\n", (char *)tmp->content);
 	// 	else if (ft_str_match(tmp->content, INSTRUCTIONS, ':') == 1)
-	// 		printf("GOOD BUNNY, %s existe\n", tmp->content);
+	// 		printf("GOOD BUNNY, %s existe\n", (char *)tmp->content);
 	// 	else
 	// 		printf("WTF BUNNY?\n");
 	// 	tmp = tmp->next;
