@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_stacks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/08 20:36:10 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/10 17:40:47 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/12 22:55:03 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,6 @@ static void	debug_func(t_checker *checker)
 		if (tmp->content)
 			printf("%d\n", *(int *)tmp->content);
 	}
-	// for (size_t j = 0; j < stack_size; j += 8)
-	// {
-	// 	*checker->stack_b[j/8] = *checker->stack_a[j/8];
-	// }
-	// printf("Stack B:\n");
-	// for (size_t i = 0; i < stack_size; i += 8)
-	// {
-	// 	printf("%d\n", *checker->stack_b[i/8]);
-	// }
 	//DEBUG CODE
 }
 
@@ -45,19 +36,9 @@ static void	debug_func(t_checker *checker)
 ** no element is present.
 */
 
-int	generate_stack_b(t_checker *checker)
+static void	generate_stack_b(t_checker *checker)
 {
-	//checker->stack_b = (int**)ft_calloc(checker->stack_size, 1);
 	checker->stack_b = NULL;
-	// //DEBUG CODE
-	// size_t i = 0;
-	// while (i < checker->stack_size)
-	// {
-	// 	checker->stack_b[i] = (int*)ft_calloc(1, sizeof(int));
-	// 	i++;
-	// }
-	// //DEBUG CODE
-	return (1);
 }
 
 /*
@@ -71,7 +52,7 @@ int	generate_stack_b(t_checker *checker)
 ** how many bytes are in an integer in the local implementation and all. :p
 */
 
-int	exceeded_max_int(char *num, char sign)
+static int	exceeded_max_int(char *num, char sign)
 {
 	char	*intmax;
 	int		result;
@@ -106,31 +87,26 @@ int	exceeded_max_int(char *num, char sign)
 ** 2. An integer is too large (greater than INT_MAX or less than INT_MIN).
 */
 
-static char	*next_num(t_checker *checker, char *numstart, char *numbuf, size_t *numlen)
+static char	*next_num(t_checker *checker, char *numstart, char *numbuf, \
+size_t *numlen)
 {
 	numstart = ft_skipspaces(numstart);
-	//Number may start with a single '-' or '+'. A space for the sign is reserved in the first byte of numbuf.
-	//If there is no sign, the first byte in numbuf defaults to '0' (in ASCII).
-	//If there is a sign, the number is assumed to begin after the sign.
 	if (*numstart == '-' || *numstart == '+')
 		numbuf[0] = *numstart++;
-	if (!ft_isdigit(*numstart)) //Argument is not an integer if number starts with char that is not a digit.
+	if (!ft_isdigit(*numstart))
 		exit_failure("Error", checker);
 	*numlen = 0;
-	//Salta ceros a la izquierda mientras *num == 0 y el carácter siguiente sea cualquier dígito
 	while (*numstart == '0' && ft_isdigit(*(numstart + 1)))
 		numstart++;
 	while (ft_isdigit(numstart[*numlen]))
 		(*numlen)++;
-	//Argument is not an integer if after all the digits we find char that is neither space nor nul
 	if (!ft_isspace(numstart[*numlen]) && numstart[*numlen])
 		exit_failure("Error", checker);
-	//Number too large
-	else if (*numlen > 10 || (*numlen == 10 && exceeded_max_int(numstart, numbuf[0])))
+	else if (*numlen > 10 || (*numlen == 10 \
+	 && exceeded_max_int(numstart, numbuf[0])))
 		exit_failure("Error", checker);
 	return (numstart);
 }
-
 
 /*
 ** This function will search for the next number in the argument string 'num',
@@ -149,21 +125,17 @@ static char	*next_num(t_checker *checker, char *numstart, char *numbuf, size_t *
 ** 1. An integer is repeated.
 */
 
-char	*generate_stack_a(t_checker *checker, char *num)
+static char	*generate_stack_a(t_checker *checker, char *num)
 {
 	t_list		*new;
 	char		numbuf[12];
 	size_t		numlen;
-	
+
 	numbuf[11] = 0;
 	ft_memset(numbuf, '0', 11);
 	num = next_num(checker, num, numbuf, &numlen);
 	while (&num[numlen] > num)
 		numbuf[11 - numlen--] = *num++;
-	// //DEBUG
-	// printf("TEST: %d\n", ft_atoi(numbuf));
-	// //DEBUG
-	//Duplicate number
 	if (ft_bintree_search(checker->bintree, ft_atoi(numbuf)))
 		exit_failure("Error", checker);
 	checker->bintree = ft_bintree_add(checker->bintree, ft_atoi(numbuf));
@@ -173,11 +145,6 @@ char	*generate_stack_a(t_checker *checker, char *num)
 		checker->stack_a = new;
 	else
 		ft_lstadd_back(&checker->stack_a, new);
-	//checker->stack_size += sizeof(int*);
-	//checker->stack_a = ft_realloc(checker->stack_a, checker->stack_size, checker->stack_size - sizeof(int*));
-	// //size to pos ya sé que es feo :p
-	//checker->stack_a[(checker->stack_size - sizeof(int*)) / sizeof(int*)] = ft_calloc(1, sizeof(int));
-	// *checker->stack_a[(checker->stack_size - sizeof(int*)) / sizeof(int*)] = ft_atoi(numbuf);
 	return (num);
 }
 
@@ -195,13 +162,9 @@ char	*generate_stack_a(t_checker *checker, char *num)
 
 int	generate_stacks(char **argv, t_checker *checker)
 {
-	//size_t		numlen;
 	char		**args;
-	//char		numbuf[12];
 	char		*num;
-	//size_t		stack_size;
 
-	//numbuf[11] = 0;
 	args = &argv[1];
 	while (*args)
 	{
@@ -210,6 +173,7 @@ int	generate_stacks(char **argv, t_checker *checker)
 			num = generate_stack_a(checker, num);
 	}
 	generate_stack_b(checker);
+
 	//DEBUG CODE
 	debug_func(checker);
 	//DEBUG CODE
