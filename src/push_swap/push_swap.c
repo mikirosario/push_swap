@@ -1,28 +1,63 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   generate_stacks.c                                  :+:      :+:    :+:   */
+/*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/08 20:36:10 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/14 21:51:48 by mrosario         ###   ########.fr       */
+/*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
+/*   Updated: 2021/05/14 22:25:12 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "checker.h"
+#include "push_swap.h"
 
-static void	debug_func(t_checker *checker)
+void	freeme(t_pswap *pswap)
+{
+	if (pswap->stack_a)
+		ft_lstclear(&pswap->stack_a, free);
+	if (pswap->stack_b)
+		ft_lstclear(&pswap->stack_b, free);
+	pswap->bintree = ft_bintree_free(pswap->bintree);
+	if (pswap->bintree)
+		pswap->bintree = ft_bintree_free(pswap->bintree);
+	// if (pswap->lst)
+	// 	ft_lstclear(&pswap->lst, free);
+}
+
+void	print_error(char *error_msg, char *ansi_color_code)
+{
+	write(STDERR_FILENO, ansi_color_code, ft_strlen(ansi_color_code));
+	ft_putendl_fd(error_msg, STDERR_FILENO);
+	write(STDERR_FILENO, RESET, 4);
+}
+
+void	exit_failure(char *error_msg, t_pswap *pswap)
+{
+	if (error_msg)
+		print_error(error_msg, RED);
+	freeme(pswap);
+	exit(EXIT_FAILURE);
+}
+
+void	exit_success(t_pswap *pswap)
+{
+	freeme(pswap);
+	exit(EXIT_SUCCESS);
+}
+
+
+static void	debug_func(t_pswap *pswap)
 {
 	//DEBUG CODE
-	// ft_bintree_print(checker->bintree, 0);
+	// ft_bintree_print(pswap->bintree, 0);
 	printf("UNSORTED STACK A:\n");
-	for (t_list *tmp = checker->stack_a; tmp; tmp = tmp->next)
+	for (t_list *tmp = pswap->stack_a; tmp; tmp = tmp->next)
 	{
 		if (tmp->content)
 			printf("%d\n", *(int *)tmp->content);
 	}
-	for (t_list *tmp = checker->stack_b; tmp; tmp = tmp->next)
+	for (t_list *tmp = pswap->stack_b; tmp; tmp = tmp->next)
 	{
 		if (tmp->content)
 			printf("%d\n", *(int *)tmp->content);
@@ -36,9 +71,9 @@ static void	debug_func(t_checker *checker)
 ** no element is present.
 */
 
-static void	generate_stack_b(t_checker *checker)
+static void	generate_stack_b(t_pswap *pswap)
 {
-	checker->stack_b = NULL;
+	pswap->stack_b = NULL;
 }
 
 /*
@@ -87,24 +122,24 @@ static int	exceeded_max_int(char *num, char sign)
 ** 2. An integer is too large (greater than INT_MAX or less than INT_MIN).
 */
 
-static char	*next_num(t_checker *checker, char *numstart, char *numbuf, \
+static char	*next_num(t_pswap *pswap, char *numstart, char *numbuf, \
 size_t *numlen)
 {
 	numstart = ft_skipspaces(numstart);
 	if (*numstart == '-' || *numstart == '+')
 		numbuf[0] = *numstart++;
 	if (!ft_isdigit(*numstart))
-		exit_failure("Error", checker);
+		exit_failure("Error", pswap);
 	*numlen = 0;
 	while (*numstart == '0' && ft_isdigit(*(numstart + 1)))
 		numstart++;
 	while (ft_isdigit(numstart[*numlen]))
 		(*numlen)++;
 	if (!ft_isspace(numstart[*numlen]) && numstart[*numlen])
-		exit_failure("Error", checker);
+		exit_failure("Error", pswap);
 	else if (*numlen > 10 || (*numlen == 10 \
 	 && exceeded_max_int(numstart, numbuf[0])))
-		exit_failure("Error", checker);
+		exit_failure("Error", pswap);
 	return (numstart);
 }
 
@@ -125,7 +160,7 @@ size_t *numlen)
 ** 1. An integer is repeated.
 */
 
-static char	*generate_stack_a(t_checker *checker, char *num)
+static char	*generate_stack_a(t_pswap *pswap, char *num)
 {
 	t_list		*new;
 	char		numbuf[12];
@@ -133,18 +168,18 @@ static char	*generate_stack_a(t_checker *checker, char *num)
 
 	numbuf[11] = 0;
 	ft_memset(numbuf, '0', 11);
-	num = next_num(checker, num, numbuf, &numlen);
+	num = next_num(pswap, num, numbuf, &numlen);
 	while (&num[numlen] > num)
 		numbuf[11 - numlen--] = *num++;
-	if (ft_bintree_search(checker->bintree, ft_atoi(numbuf)))
-		exit_failure("Error", checker);
-	checker->bintree = ft_bintree_add(checker->bintree, ft_atoi(numbuf));
+	if (ft_bintree_search(pswap->bintree, ft_atoi(numbuf)))
+		exit_failure("Error", pswap);
+	pswap->bintree = ft_bintree_add(pswap->bintree, ft_atoi(numbuf));
 	new = ft_lstnew(ft_calloc(1, sizeof(int)));
 	*(int *)new->content = ft_atoi(numbuf);
-	if (!checker->stack_a)
-		checker->stack_a = new;
+	if (!pswap->stack_a)
+		pswap->stack_a = new;
 	else
-		ft_lstadd_back(&checker->stack_a, new);
+		ft_lstadd_back(&pswap->stack_a, new);
 	return (num);
 }
 
@@ -160,7 +195,7 @@ static char	*generate_stack_a(t_checker *checker, char *num)
 ** call instruction...
 */
 
-int	generate_stacks(char **argv, t_checker *checker)
+int	generate_stacks(char **argv, t_pswap *pswap)
 {
 	char		**args;
 	char		*num;
@@ -170,13 +205,22 @@ int	generate_stacks(char **argv, t_checker *checker)
 	{
 		num = *args++;
 		while (*num)
-			num = generate_stack_a(checker, num);
+			num = generate_stack_a(pswap, num);
 	}
-	generate_stack_b(checker);
+	generate_stack_b(pswap);
 
 	//DEBUG CODE
-	debug_func(checker);
+	debug_func(pswap);
 	//DEBUG CODE
 
 	return (1);
+}
+
+int	main(int argc, char **argv)
+{
+	t_pswap	pswap;
+
+	(void)argc;
+	generate_stacks(argv, &pswap);
+	
 }

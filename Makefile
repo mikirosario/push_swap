@@ -6,29 +6,35 @@
 #    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/05/12 20:11:20 by mrosario         ###   ########.fr        #
+#    Updated: 2021/05/14 22:15:48 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = checker
+NAME = chkpsh
 
-SRCDIR = ./src/checker
+CHKNAME = checker
+PSHNAME = push_swap
 
-SRC =	$(SRCDIR)/main.c $(SRCDIR)/generate_stacks.c \
-		$(SRCDIR)/get_instructions.c $(SRCDIR)/exit.c $(SRCDIR)/sort.c \
-		$(SRCDIR)/moves/s.c $(SRCDIR)/moves/p.c $(SRCDIR)/moves/r.c \
-		$(SRCDIR)/moves/rr.c \
+CHKDIR = ./src/checker
+PSHDIR = ./src/push_swap
+
+CHK =	$(CHKDIR)/main.c $(CHKDIR)/generate_stacks.c \
+		$(CHKDIR)/get_instructions.c $(CHKDIR)/exit.c $(CHKDIR)/sort.c \
+		$(CHKDIR)/moves/s.c $(CHKDIR)/moves/p.c $(CHKDIR)/moves/r.c \
+		$(CHKDIR)/moves/rr.c \
+
+PSH =	$(PSHDIR)/push_swap.c
 
 LIBFT = ./src/libft/libft.a
 
-OBJ = $(SRC:.c=.o)
 
 CFLAG = -Wall -Werror -Wextra
 
 LIBS = -I ./includes -I ./src/libft/includes -L ./src/libft -lft -ltermcap
 
 $(NAME): $(LIBFT)
-	gcc $(CFLAG) $(SRC) -o $(NAME) $(LIBS) 
+	gcc $(CFLAG) $(CHK) -o $(CHKNAME) $(LIBS)
+	gcc $(CFLAG) $(PSH) -o $(PSHNAME) $(LIBS)
 
 $(LIBFT):
 	make -C ./src/libft
@@ -37,14 +43,16 @@ $(LIBFT):
 all: $(NAME)
 
 debug: $(LIBFT)
-	#gcc $(CFLAG) $(SRC) -g3 -fsanitize=address -o $(NAME) $(LIBS)
-	gcc $(CFLAG) $(SRC) -g -o $(NAME) $(LIBS)
+	#gcc $(CFLAG) $(CHK) -g3 -fsanitize=address -o $(NAME) $(LIBS)
+	gcc $(CFLAG) $(CHK) -g -o $(CHKNAME) $(LIBS)
+	gcc $(CFLAG) $(PSH) -g -o $(PSHNAME) $(LIBS)
 
 clean:
 	rm -f *.o
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(CHKNAME)
+	rm -f $(PSHNAME)
 	make fclean -C ./src/libft
 
 re: fclean all

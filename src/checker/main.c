@@ -6,11 +6,30 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 20:42:53 by miki              #+#    #+#             */
-/*   Updated: 2021/05/12 22:55:26 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/14 21:54:09 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "checker.h"
+
+char	stack_is_sorted(t_checker *checker)
+{
+	t_list	*tmp;
+
+	if (checker->stack_b)
+		return (0);
+	else
+	{
+		tmp = checker->stack_a;
+		while (tmp->next)
+		{
+			if (*(int *)tmp->content > *(int *)tmp->next->content)
+				return (0);
+			tmp = tmp->next;
+		}
+	}
+	return (1);
+}
 
 /*
 ** OK, so we get an unspecified number of arguments, each with numbers to be
@@ -61,5 +80,9 @@ int	main(int argc, char **argv)
 	// }
 	// //debug code
 
+	if (stack_is_sorted(&checker))
+		printf(GRN"OK\n"RESET);
+	else
+		printf(RED"KO\n"RESET);
 	exit_success(&checker);
 }
