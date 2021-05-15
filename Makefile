@@ -6,7 +6,7 @@
 #    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/05/14 22:15:48 by mrosario         ###   ########.fr        #
+#    Updated: 2021/05/15 20:51:13 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,10 +23,9 @@ CHK =	$(CHKDIR)/main.c $(CHKDIR)/generate_stacks.c \
 		$(CHKDIR)/moves/s.c $(CHKDIR)/moves/p.c $(CHKDIR)/moves/r.c \
 		$(CHKDIR)/moves/rr.c \
 
-PSH =	$(PSHDIR)/push_swap.c
+PSH =	$(PSHDIR)/push_swap.c $(PSHDIR)/generate_instructions.c \
 
 LIBFT = ./src/libft/libft.a
-
 
 CFLAG = -Wall -Werror -Wextra
 

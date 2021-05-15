@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/14 22:25:12 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/15 21:27:34 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ void	freeme(t_pswap *pswap)
 		ft_lstclear(&pswap->stack_a, free);
 	if (pswap->stack_b)
 		ft_lstclear(&pswap->stack_b, free);
+	if (pswap->mask_a)
+		pswap->mask_a = ft_del(pswap->mask_a);
+	if (!pswap->mask_b)
+		pswap->mask_b = ft_del(pswap->mask_b);
 	pswap->bintree = ft_bintree_free(pswap->bintree);
 	if (pswap->bintree)
 		pswap->bintree = ft_bintree_free(pswap->bintree);
@@ -221,6 +225,8 @@ int	main(int argc, char **argv)
 	t_pswap	pswap;
 
 	(void)argc;
+	ft_bzero(&pswap, sizeof(t_pswap));
 	generate_stacks(argv, &pswap);
-	
+	generate_instructions(&pswap);
+	exit_success(&pswap);
 }
