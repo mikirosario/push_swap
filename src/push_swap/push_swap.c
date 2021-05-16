@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/15 21:27:34 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/16 23:25:26 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	freeme(t_pswap *pswap)
 	pswap->bintree = ft_bintree_free(pswap->bintree);
 	if (pswap->bintree)
 		pswap->bintree = ft_bintree_free(pswap->bintree);
-	// if (pswap->lst)
-	// 	ft_lstclear(&pswap->lst, free);
+	if (pswap->lst)
+		ft_lstclear(&pswap->lst, free);
 }
 
 void	print_error(char *error_msg, char *ansi_color_code)
@@ -223,10 +223,21 @@ int	generate_stacks(char **argv, t_pswap *pswap)
 int	main(int argc, char **argv)
 {
 	t_pswap	pswap;
+	t_list	*instructions;
 
 	(void)argc;
 	ft_bzero(&pswap, sizeof(t_pswap));
 	generate_stacks(argv, &pswap);
 	generate_instructions(&pswap);
+	//HMMM, I think I will pass the position maps also to linked lists.
+	if (is_ordered(&pswap))
+	{
+		instructions = pswap.lst;
+		while (instructions)
+		{
+			ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
+			instructions = instructions->next;
+		}
+	}
 	exit_success(&pswap);
 }

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/15 21:26:49 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/16 23:35:01 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,23 +36,29 @@ typedef struct s_pswap
 // void		exit_success(t_pswap *pswap);
 int			generate_stacks(char **argv, t_pswap *pswap);
 void		generate_instructions(t_pswap *pswap);
+
+/*
+** SORT CONDITIONS
+*/
+
+char	is_ordered(t_pswap *pswap);
 // void		get_instructions(t_pswap *pswap);
 // void		sort(t_pswap *pswap);
 
-// /*
-// ** Movements
-// */
+/*
+** Movements
+*/
 
-// void		sa_move(t_pswap *pswap);
-// void		sb_move(t_pswap *pswap);
-// void		ss_move(t_pswap *pswap);
-// void		pa_move(t_pswap *pswap);
-// void		pb_move(t_pswap *pswap);
-// void		ra_move(t_pswap *pswap);
-// void		rb_move(t_pswap *pswap);
-// void		rr_move(t_pswap *pswap);
-// void		rra_move(t_pswap *pswap);
-// void		rrb_move(t_pswap *pswap);
-// void		rrr_move(t_pswap *pswap);
+void		sa_move(t_pswap *pswap);
+void		sb_move(t_pswap *pswap);
+void		ss_move(t_pswap *pswap);
+void		pa_move(t_pswap *pswap);
+void		pb_move(t_pswap *pswap);
+void		ra_move(t_pswap *pswap);
+void		rb_move(t_pswap *pswap);
+void		rr_move(t_pswap *pswap);
+void		rra_move(t_pswap *pswap);
+void		rrb_move(t_pswap *pswap);
+void		rrr_move(t_pswap *pswap);
 
 #endif

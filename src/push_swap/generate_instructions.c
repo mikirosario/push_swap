@@ -6,29 +6,38 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/15 21:39:00 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/16 23:48:20 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
 /*
-** Get position in stack_a of integer passed as num.
+** Get position in stack_a of integer passed as num. If the integer is not in
+** stack a, -1 is returned.
 */
 
 int	get_stack_a_pos(t_pswap *pswap, int num)
 {
-	t_list	*stack_a;
+	t_list	*stack;
 	int		i;
+	char	s;
 
 	i = 0;
-	stack_a = pswap->stack_a;
-	while (*(int *)stack_a->content != num)
+	s = 'a';
+	stack = pswap->stack_a;
+	while (s < 'c')
 	{
-		i++;
-		stack_a = stack_a->next;
+		while (stack)
+		{
+			if (*(int *)stack->content == num)
+				return (i);
+			i++;
+			stack = stack->next;
+		}
+		s++;
 	}
-	return (i);
+	return (-1);
 }
 
 /*
@@ -42,8 +51,11 @@ void	record_offset(t_pswap *pswap, int desired_pos, int num)
 {
 	int	actual_pos;
 
+	//IF IS IN STACK A; STACK A POS IN MASK A
 	actual_pos = get_stack_a_pos(pswap, num);
-	pswap->mask_a[actual_pos] = desired_pos - actual_pos;
+	//IF IS IN STACK B; STACK B POS IN MASK B
+	if (actual_pos >= 0)
+		pswap->mask_a[actual_pos] = desired_pos - actual_pos;
 }
 
 /*
@@ -121,15 +133,22 @@ void	generate_instructions(t_pswap *pswap)
 	t_list	*stack_a;
 
 	stack_a = pswap->stack_a;
-	if (is_sorted(pswap))
-		return ;
+	// if (is_sorted(pswap))
+	// 	return ;
 	while (stack_a)
 	{
 		stack_a = stack_a->next;
 		pswap->numbers++;
 	}
 	// printf("NUMBER COUNT: %zu\n", pswap->numbers);
+	// pb_move(pswap);
+	// pb_move(pswap);
+	// ra_move(pswap);
+	// pb_move(pswap);
+	// sb_move(pswap);
+	// ra_move(pswap);
 	generate_position_map(pswap);
+
 	// if (pswap->numbers == 2)
 	// 	ft_putendl_fd("sa", STDOUT_FILENO);
 	// else if (pswap->numbers == 3)
