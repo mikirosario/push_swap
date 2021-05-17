@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/16 23:35:01 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/17 20:32:21 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,40 @@
 # include <unistd.h>
 # include <stdio.h>
 # define INSTRUCTIONS "sa:sb:ss:pa:pb:ra:rb:rr:rra:rrb:rrr"
+# define ARRAY_BUF 1
+
+typedef struct	s_vector
+{
+	int		*start;
+	int		*index;
+	int		*end;
+	int		(*realloc)(struct s_vector *);
+	int		(*add)(struct s_vector *, int); //add value pointed to by void ptr to array, realloc if needed
+	int		(*rem)(struct s_vector *, int *); //remove array value pointed to by void ptr from array, do nothing if addr not part of array
+	int		(*del)(struct s_vector **); // point to arr_del, delete array
+	size_t	allocated_mem;
+	size_t	len;
+}				t_vector;
+
+typedef struct	s_mask
+{
+	int		*vector;
+	size_t	start_index;
+}				t_mask;
 
 typedef struct s_pswap
 {
+	t_mask		mask_a;
+	t_mask		mask_b;
 	t_bstnode	*bintree;
 	t_list		*stack_a;
 	t_list		*stack_b;
 	t_list		*lst;
-	int			*mask_a;
-	int			*mask_b;
+	//int			*mask_a;
+	//int			*mask_b;
 	size_t		numbers;
+	size_t		stack_a_numbers;
+	size_t		stack_b_numbers;
 	int			desired_pos;
 }				t_pswap;
 
@@ -36,6 +60,12 @@ typedef struct s_pswap
 // void		exit_success(t_pswap *pswap);
 int			generate_stacks(char **argv, t_pswap *pswap);
 void		generate_instructions(t_pswap *pswap);
+
+/*
+** Move to libft
+*/
+
+t_vector	*vector_new(void);
 
 /*
 ** SORT CONDITIONS

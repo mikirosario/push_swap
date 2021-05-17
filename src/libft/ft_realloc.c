@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/25 22:09:22 by miki              #+#    #+#             */
-/*   Updated: 2021/04/23 20:19:09 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/17 15:44:56 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 ** new memory block of the size defined by new_size, freeing the old memory
 ** block.
 **
-** If a null pointer is passed, or if new_size is 0, or if new_size is less than
-** old_size, a null pointer will be returned and the old memory will not be
-** freed.
+** If a null pointer is passed and old_size is greater than 0, or if new_size is
+** 0, or if new_size is less than old_size, a null pointer will be returned and
+** the old memory will not be freed.
 **
 ** If the memory allocation fails, a null pointer will be returned and the old
 ** memory will not be freed.

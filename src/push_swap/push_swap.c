@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/16 23:25:26 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/17 20:32:12 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ void	freeme(t_pswap *pswap)
 		ft_lstclear(&pswap->stack_a, free);
 	if (pswap->stack_b)
 		ft_lstclear(&pswap->stack_b, free);
-	if (pswap->mask_a)
-		pswap->mask_a = ft_del(pswap->mask_a);
-	if (!pswap->mask_b)
-		pswap->mask_b = ft_del(pswap->mask_b);
+	if (pswap->mask_a.vector)
+		pswap->mask_a.vector = ft_del(pswap->mask_a.vector);
+	if (!pswap->mask_b.vector)
+		pswap->mask_b.vector = ft_del(pswap->mask_b.vector);
 	pswap->bintree = ft_bintree_free(pswap->bintree);
 	if (pswap->bintree)
 		pswap->bintree = ft_bintree_free(pswap->bintree);
@@ -239,5 +239,17 @@ int	main(int argc, char **argv)
 			instructions = instructions->next;
 		}
 	}
+
+	//DEBUG CODE
+	t_vector *myvector = vector_new();
+	myvector->add(myvector, 42);
+	myvector->add(myvector, 60);
+	myvector->add(myvector, 78);
+	myvector->rem(myvector, &myvector->start[3]);
+	size_t i = 0;
+	while (i < myvector->len)
+		printf("VECTOR TEST:%d\n", myvector->start[i++]);
+	myvector->del(&myvector);
+	//DEBUG CODE
 	exit_success(&pswap);
 }

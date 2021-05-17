@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_conditions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 22:05:11 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/16 23:00:54 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/17 20:52:52 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,59 +18,63 @@
 ** in stack_b are in their desired position if their position in mask_b is zero.
 **
 ** If numbers are split between stack_a and stack_b, numbers are considered
-** ordered if all numbers in stack_b are in position zero and the difference
-** between the actual position of each number in stack_a is equal to the number
-** of numbers in stack_b. This is because when ordered stack_b numbers are
-** passed to stack_a they will not lose their position, while stack_a numbers
-** will be displaced in the positive direction by numbers_in_stack_b times. So,
-** in that case all that must be done to order the numbers is to pass all
-** remaining numbers in stack_b to stack_b (pa * numbers_in_stack_b).
+** ordered if all numbers in stack_a and stack_b are in their 'zero position',
+** that is, that they don't have to be moved up or down the stacks to be
+** ordered. The 'zero positions' take into account the First-In-Last-Out nature
+** of the stacks, so positions in stack_a are considered 'displaced' by
+** numbers_in_stack_b places in the negative direction (downwards).
+**
+** So, if this function returns true, then all that must be done to order the
+** numbers is to pass all remaining numbers in stack_b (if any) to stack_a. Thus
+** we request pa_move * numbers_in_stack_b.
 **
 ** If all numbers are in stack_a then numbers_in_stack_b == 0, so all numbers in
-** stack_a must be at their zero position. If all numbers are in stack_b then
-** numbers_in_stack_a == 0, so no comparison is made between stack_a positions
-** and the number of numbers in stack_b, rather, all stack_b numbers must simply
+** stack_a must be at their zero position to be considered ordered. If all
+** numbers are in stack_b then numbers_in_stack_a == 0, all stack_b numbers must
 ** be in their zero position to be considered ordered. Then they are all passed
 ** back to stack_a.
+**
+** Therefore, this function will determine whether numbers are ordered
+** regardless of how they are distributed across the stacks. So this is a
+** distribution-independent ordering check.
 */
 
 char	is_ordered(t_pswap *pswap)
 {
 	t_list	*tmp;
-	size_t	numbers_in_stack_b;
-	size_t	numbers_in_stack_a;
+	//size_t	numbers_in_stack_b;
+	//size_t	numbers_in_stack_a;
 	size_t	i;
 
 	//NUMBERS IN STACK_B
-	tmp = pswap->stack_b;
-	numbers_in_stack_b = 0;
-	while (tmp)
-	{
-		numbers_in_stack_b++;
-		tmp = tmp->next;
-	}
-	//ALL MASK_B POSITION NUMBERS ARE ZERO
-	i = 0;
-	while (i < numbers_in_stack_b)
-		if (pswap->mask_b[i++])
+	// tmp = pswap->stack_b;
+	// numbers_in_stack_b = 0;
+	// while (tmp)
+	// {
+	// 	numbers_in_stack_b++;
+	// 	tmp = tmp->next;
+	// }
+	//ALL MASK_B POSITION NUMBERS ARE AT ZERO POSITION
+	i = pswap->mask_b.start_index;
+	while (i < pswap->numbers)
+		if (pswap->mask_b.vector[i++])
 			return (0);
 	//NUMBERS IN STACK_A
-	tmp = pswap->stack_a;
-	numbers_in_stack_a = 0;
-	while (tmp)
-	{
-		numbers_in_stack_a++;
-		tmp = tmp->next;
-	}
-	//ALL MASK_A POSITION NUMBERS ARE EQUAL TO NUMBER OF NUMBERS IN STACK_B
-	//IF THERE ARE NO NUMBERS IN STACK_B, THIS WILL BE ZERO; SO ALL STACK_A NUMBERS MUST BE AT THEIR ZERO POSITION
-	i = 0;
-	while (i < numbers_in_stack_a)
-		if (pswap->mask_a[i++] != (int)numbers_in_stack_b)
+	// tmp = pswap->stack_a;
+	// numbers_in_stack_a = 0;
+	// while (tmp)
+	// {
+	// 	numbers_in_stack_a++;
+	// 	tmp = tmp->next;
+	// }
+	//ALL MASK_A POSITION NUMBERS ARE AT ZERO POSITION
+	i = pswap->mask_a.start_index;
+	while (i < pswap->numbers)
+		if (pswap->mask_a.vector[i++])
 			return (0);
 	//ADD PA * NUMBERS_IN_STACK_B MOVEMENTS
 	i = 0;
-	while (i++ < numbers_in_stack_b)
+	while (i++ < pswap->stack_b_numbers)
 	{
 		tmp = ft_lstnew(ft_strdup("pa"));
 		if (!pswap->lst)
