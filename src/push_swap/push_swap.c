@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/17 20:32:12 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/20 17:09:14 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,36 +220,56 @@ int	generate_stacks(char **argv, t_pswap *pswap)
 	return (1);
 }
 
+void	count_numbers(t_pswap *pswap)
+{
+	t_list	*stack_a;
+
+	stack_a = pswap->stack_a;
+	//find out how many numbers there are
+	while (stack_a)
+	{
+		stack_a = stack_a->next;
+		pswap->numbers++;
+	}
+	//initialize stack_a_numbers to total numbers
+	pswap->stack_a_numbers = pswap->numbers;
+}
+
+void	print_instructions(t_pswap *pswap)
+{
+	t_list	*instructions;
+
+	instructions = pswap->lst;
+	while (instructions)
+	{
+		ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
+		instructions = instructions->next;
+	}
+}
+
+void	init(t_pswap *pswap)
+{
+	pswap->mask_a.vector = ft_calloc(pswap->numbers, sizeof(int));
+	pswap->mask_b.vector = ft_calloc(pswap->numbers, sizeof(int));
+	pswap->mask_a.start_index = pswap->stack_b_numbers;
+	pswap->mask_b.start_index = pswap->stack_a_numbers;
+}
+
 int	main(int argc, char **argv)
 {
 	t_pswap	pswap;
-	t_list	*instructions;
 
 	(void)argc;
 	ft_bzero(&pswap, sizeof(t_pswap));
 	generate_stacks(argv, &pswap);
-	generate_instructions(&pswap);
-	//HMMM, I think I will pass the position maps also to linked lists.
-	if (is_ordered(&pswap))
+	count_numbers(&pswap);
+	// if (is_sorted(pswap))
+	// 	return ;
+	//find how many numbers there are
+	init(&pswap);
+	while (generate_instructions(&pswap))
 	{
-		instructions = pswap.lst;
-		while (instructions)
-		{
-			ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
-			instructions = instructions->next;
-		}
 	}
-
-	//DEBUG CODE
-	t_vector *myvector = vector_new();
-	myvector->add(myvector, 42);
-	myvector->add(myvector, 60);
-	myvector->add(myvector, 78);
-	myvector->rem(myvector, &myvector->start[3]);
-	size_t i = 0;
-	while (i < myvector->len)
-		printf("VECTOR TEST:%d\n", myvector->start[i++]);
-	myvector->del(&myvector);
-	//DEBUG CODE
+	print_instructions(&pswap);
 	exit_success(&pswap);
 }

@@ -6,11 +6,42 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/17 20:30:40 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/20 17:32:25 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+/*
+** This function adds a move to the instruction list that will be output by the
+** program. If consecutive sa/sb, ra/rb or rra/rrb moves are requested, they
+** will be condensed into a single ss, rr and rrr, respectively.
+*/
+
+void	add_move_to_list(t_pswap *pswap, char *move)
+{
+	t_list	*tmp;
+	t_list	*last;
+
+	last = ft_lstlast(pswap->lst);
+	if (last && ((!ft_strcmp(move, "sa") && !ft_strcmp(last->content, "sb"))
+	|| (!ft_strcmp(move, "sb") && !ft_strcmp(last->content, "sa"))))
+		*(char *)((last->content + 1)) = 's';
+	else if (last && ((!ft_strcmp(move, "ra") && !ft_strcmp(last->content, "rb"))
+	|| (!ft_strcmp(move, "rb") && !ft_strcmp(last->content, "ra"))))
+		*(char *)((last->content + 1)) = 'r';
+	else if (last && ((!ft_strcmp(move, "rra") && !ft_strcmp(last->content, "rrb"))
+	|| (!ft_strcmp(move, "rrb") && !ft_strcmp(last->content, "rra"))))
+		*(char *)((last->content + 2)) = 'r';
+	else
+	{
+		tmp = ft_lstnew(ft_strdup(move));
+		if (!pswap->lst)
+			pswap->lst = tmp;
+		else
+			ft_lstadd_back(&pswap->lst, tmp);
+	}
+}
 
 /*
 ** Get position in stack_b of integer passed as num. If the integer is not in
@@ -106,16 +137,10 @@ void	generate_position_map(t_pswap *pswap)
 	size_t	i;
 	int		*ptr;
 
-	if (!pswap->mask_a.vector)
-		pswap->mask_a.vector = ft_calloc(pswap->numbers, sizeof(int));
-	if (!pswap->mask_b.vector)
-		pswap->mask_b.vector = ft_calloc(pswap->numbers, sizeof(int));
 	//Numbers pushed onto stack_b will not count for mask a. So if we have 1 number on stack_b
 	//then mask_a will begin at position 1 rather than zero. Likewise, numbers in stack_a will
 	//will not count for mask b, so if we have 5 numbers in stack_a, then mask_b will begin at
 	//position five. Use the indices to get only the relevant parts of the position mask vectors.
-	pswap->mask_a.start_index = pswap->stack_b_numbers;
-	pswap->mask_b.start_index = pswap->stack_a_numbers;
 	pswap->desired_pos = 0;
 	in_order_traversal(pswap, pswap->bintree);
 	i = pswap->numbers - 1;
@@ -157,27 +182,29 @@ char	is_sorted(t_pswap *pswap)
 	return (1);
 }
 
-void	generate_instructions(t_pswap *pswap)
+int	generate_instructions(t_pswap *pswap)
 {
-	t_list	*stack_a;
-
-	stack_a = pswap->stack_a;
-	// if (is_sorted(pswap))
-	// 	return ;
-	while (stack_a)
-	{
-		stack_a = stack_a->next;
-		pswap->numbers++;
-	}
-	pswap->stack_a_numbers = pswap->numbers;
 	// printf("NUMBER COUNT: %zu\n", pswap->numbers);
-	pb_move(pswap);
-	pb_move(pswap);
-	ra_move(pswap);
-	pb_move(pswap);
-	sb_move(pswap);
-	ra_move(pswap);
+	// pb_move(pswap);
+	// pb_move(pswap);
+	// ra_move(pswap);
+	// pb_move(pswap);
+	// sb_move(pswap);
+	// ra_move(pswap);
 	generate_position_map(pswap);
+	if (is_ordered(pswap))
+		return (0);
+	if (pswap->numbers <= 3)
+		three_numbers(pswap);
+	// if (equal_offsets(pswap))
+	// {
+	// 	tmp = ft_lstnew(ft_strdup("ra"));
+	// 	if (!pswap->lst)
+	// 		pswap->lst = tmp;
+	// 	else
+	// 		ft_lstadd_back(&pswap->lst, tmp);
+	// }
+	return (1);
 
 	// if (pswap->numbers == 2)
 	// 	ft_putendl_fd("sa", STDOUT_FILENO);

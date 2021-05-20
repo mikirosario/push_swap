@@ -6,7 +6,7 @@
 #    By: miki <miki@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/05/17 18:03:39 by miki             ###   ########.fr        #
+#    Updated: 2021/05/20 16:16:44 by miki             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ CHK =	$(CHKDIR)/main.c $(CHKDIR)/generate_stacks.c \
 		$(CHKDIR)/moves/rr.c \
 
 PSH =	$(PSHDIR)/push_swap.c $(PSHDIR)/generate_instructions.c \
-		$(PSHDIR)/sort_conditions.c $(PSHDIR)/vector.c \
+		$(PSHDIR)/sort_conditions.c $(PSHDIR)/vector.c $(PSHDIR)/analyse.c \
+		$(PSHDIR)/three_numbers.c \
 		$(PSHDIR)/moves/s.c $(PSHDIR)/moves/p.c $(PSHDIR)/moves/r.c \
 		$(PSHDIR)/moves/rr.c \
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   r.c                                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 18:49:50 by miki              #+#    #+#             */
-/*   Updated: 2021/05/16 23:16:38 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/20 17:15:05 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	ra_move(t_pswap *pswap)
 	second_member = pswap->stack_a->next;
 	pswap->stack_a = second_member;
 	ft_lstadd_back(&pswap->stack_a, first_member);
+	add_move_to_list(pswap, "ra");
 }
 
 /*
@@ -45,10 +46,12 @@ void	rb_move(t_pswap *pswap)
 	second_member = pswap->stack_b->next;
 	pswap->stack_b = second_member;
 	ft_lstadd_back(&pswap->stack_b, first_member);
+	add_move_to_list(pswap, "rb");
 }
 
 void	rr_move(t_pswap *pswap)
 {
 	ra_move(pswap);
 	rb_move(pswap);
+	add_move_to_list(pswap, "rr");
 }

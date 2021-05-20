@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rr.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/12 17:56:17 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/16 23:16:43 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/20 17:13:11 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	rra_move(t_pswap *pswap)
 	last_member = ft_lstlast(pswap->stack_a);
 	(find_preceding_member(pswap->stack_a, last_member))->next = NULL;
 	ft_lstadd_front(&pswap->stack_a, last_member);
+	add_move_to_list(pswap, "rra");
 }
 
 /*
@@ -57,10 +58,12 @@ void	rrb_move(t_pswap *pswap)
 	last_member = ft_lstlast(pswap->stack_b);
 	(find_preceding_member(pswap->stack_b, last_member))->next = NULL;
 	ft_lstadd_front(&pswap->stack_b, last_member);
+	add_move_to_list(pswap, "rrb");
 }
 
 void	rrr_move(t_pswap *pswap)
 {
 	rra_move(pswap);
 	rrb_move(pswap);
+	add_move_to_list(pswap, "rrr");
 }
