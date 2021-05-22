@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 22:05:11 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/17 20:52:52 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/21 19:33:45 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 
 char	is_ordered(t_pswap *pswap)
 {
-	t_list	*tmp;
+	//t_list	*tmp;
 	//size_t	numbers_in_stack_b;
 	//size_t	numbers_in_stack_a;
 	size_t	i;
@@ -75,12 +75,6 @@ char	is_ordered(t_pswap *pswap)
 	//ADD PA * NUMBERS_IN_STACK_B MOVEMENTS
 	i = 0;
 	while (i++ < pswap->stack_b_numbers)
-	{
-		tmp = ft_lstnew(ft_strdup("pa"));
-		if (!pswap->lst)
-			pswap->lst = tmp;
-		else
-			ft_lstadd_back(&pswap->lst, tmp);
-	}
+		pa_move(pswap);
 return (1);
 }

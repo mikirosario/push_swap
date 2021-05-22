@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/20 16:42:32 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/21 20:36:58 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,15 @@ typedef struct s_pswap
 // void		exit_success(t_pswap *pswap);
 int			generate_stacks(char **argv, t_pswap *pswap);
 int			generate_instructions(t_pswap *pswap);
+void		exit_failure(char *error_msg, t_pswap *pswap);
+void		exit_success(t_pswap *pswap);
+
+int	are_contiguous(t_pswap *pswap, int smaller, int larger);
+int	is_sorted(t_list *stack);
+int should_swap_stack_a(t_pswap *pswap);
+int	should_rotate_stack_a(t_pswap *pswap);
+void	rotate_stack(t_pswap *pswap, t_list *stack);
+//int	first_pair_ordered(t_list *stack);
 
 /*
 ** Move to libft
@@ -87,6 +96,7 @@ t_vector	*vector_new(void);
 
 char	is_ordered(t_pswap *pswap);
 void	three_numbers(t_pswap *pswap);
+void	five_numbers(t_pswap *pswap);
 int		equal_offsets(t_pswap *pswap);
 int		push_down(t_pswap *pswap);
 // void		get_instructions(t_pswap *pswap);

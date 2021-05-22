@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 17:11:38 by miki              #+#    #+#             */
-/*   Updated: 2021/05/17 18:57:08 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/21 19:36:29 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ void	pa_move(t_pswap *pswap)
 	pswap->stack_b = bring_to_front;
 	pswap->stack_a_numbers++;
 	pswap->stack_b_numbers--;
+	pswap->mask_a.start_index = pswap->stack_b_numbers;
+	pswap->mask_b.start_index = pswap->stack_a_numbers;
+	add_move_to_list(pswap, "pa");
 }
 
 /*
@@ -46,4 +49,7 @@ void	pb_move(t_pswap *pswap)
 	pswap->stack_a = bring_to_front;
 	pswap->stack_b_numbers++;
 	pswap->stack_a_numbers--;
+	pswap->mask_a.start_index = pswap->stack_b_numbers;
+	pswap->mask_b.start_index = pswap->stack_a_numbers;
+	add_move_to_list(pswap, "pb");
 }

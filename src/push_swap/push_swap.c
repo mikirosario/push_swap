@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/20 19:31:46 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/21 19:24:56 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,14 +267,25 @@ int	main(int argc, char **argv)
 	// 	return ;
 	//find how many numbers there are
 	init(&pswap);
-	while (generate_instructions(&pswap))
+	if (pswap.numbers > 1)
 	{
+		while (generate_instructions(&pswap))
+		{
+		}
+		print_instructions(&pswap);
 	}
-	print_instructions(&pswap);
 	//debug code
 	printf("SORTED STACK A\n");
 	for (t_list *lst = pswap.stack_a; lst; lst = lst->next)
 		printf("%d\n", *(int *)lst->content);
+	printf("SORTED STACK B\n");
+	for (t_list *lst = pswap.stack_b; lst; lst = lst->next)
+		printf("%d\n", *(int *)lst->content);
+	// if (are_contiguous(&pswap, 2, 0))
+	// 	printf("CONTIGUOUS\n");
+	// else
+	// 	printf("NON-CONTIGUOUS\n");
+	
 	//debug code
 	exit_success(&pswap);
 }

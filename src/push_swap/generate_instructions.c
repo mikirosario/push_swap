@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/20 17:32:25 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/21 22:22:47 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,21 +166,173 @@ void	generate_position_map(t_pswap *pswap)
 // 	t_list	*stack_a;
 // }
 
-char	is_sorted(t_pswap *pswap)
+int	is_sorted(t_list *stack)
 {
-	t_list	*stack_a;
-
-	if (pswap->stack_b)
-		return (0);
-	stack_a = pswap->stack_a;
-	while (stack_a->next)
+	if (stack == NULL || stack->next == NULL)
+		return (1);
+	while (stack->next)
 	{
-		if (*(int *)stack_a->content > *(int *)stack_a->next->content)
+		if (*(int *)stack->content > *(int *)stack->next->content)
 			return (0);
-		stack_a = stack_a->next;
+		stack = stack->next;
 	}
 	return (1);
 }
+
+/*
+** Determines whether the first two values of stack_a should definitely be
+** swapped.
+**
+** The first two values of stack_a should definitely be swapped if the first
+** value is greater than the second value (they are unordered) and they are
+** contiguous in the series (in a series "0 2 5", 2 and 5 are contiguous, 0 and
+** 5 are not).
+**
+** If the above conditions are met, 1 is returned. Otherwise, 0 is returned. If
+** there are less than two numbers in the stack, 0 is returned.
+*/
+
+int should_swap_stack_a(t_pswap *pswap)
+{
+	int	first;
+	int	second;
+
+	if (pswap->stack_a_numbers > 1)
+	{
+		first = *(int *)pswap->stack_a->content;
+		second = *(int *)pswap->stack_a->next->content;
+		if (first > second && are_contiguous(pswap, second, first))
+			return (1);
+	}
+	return (0);
+}
+
+/*
+** Determines whether the first two values of stack_b should definitely be
+** swapped.
+**
+** The first two values of stack_b should definitely be swapped if the first
+** value is less than the second value (they are unordered) and they are
+** contiguous in the series (in a series "0 2 5", 2 and 5 are contiguous, 0 and
+** 5 are not).
+**
+** If the above conditions are met, 1 is returned. Otherwise, 0 is returned. If
+** there are less than two numbers in the stack, 0 is returned.
+*/
+
+int should_swap_stack_b(t_pswap *pswap)
+{
+	int	first;
+	int	second;
+
+	if (pswap->stack_b_numbers > 1)
+	{
+		first = *(int *)pswap->stack_b->content;
+		second = *(int *)pswap->stack_b->next->content;
+		if (first < second && are_contiguous(pswap, first, second))
+			return (1);
+	}
+	return (0);
+}
+
+// void	rotate_stack_a(t_pswap *pswap)
+// {
+// 	long int		top_value;
+// 	long int		bottom_value;
+// 	size_t	i;
+
+// 	generate_position_map(pswap);
+// 	i = pswap->mask_a.start_index;
+// 	top_value = pswap->mask_a.vector[i];
+// 	bottom_value = pswap->mask_a.vector[pswap->numbers - 1];
+
+// 	if (top_value < 0)
+// 		top_value *= -1;
+// 	if (bottom_value < 0)
+// 		bottom_value *= -1;
+// 		//bottom needs to move more than top
+// 	if (top_value < bottom_value)
+// 		rra_move(pswap);
+// 		//top needs to move more than bottom, or same as bottom
+// 	else
+// 		ra_move(pswap);
+// }
+
+void	rotate_stack(t_pswap *pswap, t_list *stack)
+{
+	long int		top_value;
+	long int		bottom_value;
+	t_mask			*mask;
+	size_t	i;
+
+	generate_position_map(pswap);
+	if (stack == NULL)
+		return ;
+	if (stack == pswap->stack_a)
+		mask = &pswap->mask_a;
+	else
+		mask = &pswap->mask_b;
+	i = mask->start_index;
+	top_value = mask->vector[i];
+	bottom_value = mask->vector[pswap->numbers - 1];
+	if (top_value < 0)
+		top_value *= -1;
+	if (bottom_value < 0)
+		bottom_value *= -1;
+		//bottom needs to move more than top
+	if (top_value < bottom_value)
+		rra_move(pswap);
+		//top needs to move more than bottom, or same as bottom
+	else
+		ra_move(pswap);
+}
+
+int	should_rotate_stack_a(t_pswap *pswap)
+{
+	int	first;
+	int last;
+	
+	if (pswap->stack_a_numbers > 2)
+	{
+		first = *(int *)pswap->stack_a->content;
+		last = *(int *)(ft_lstlast(pswap->stack_a))->content;
+		if (first > last && are_contiguous(pswap, last, first))
+			return (1);
+	}
+	return (0);
+}
+
+int	should_rotate_stack_b(t_pswap *pswap)
+{
+	int	first;
+	int last;
+	
+	if (pswap->stack_b_numbers > 2)
+	{
+		first = *(int *)pswap->stack_b->content;
+		last = *(int *)(ft_lstlast(pswap->stack_b))->content;
+		if (first < last && are_contiguous(pswap, first, last))
+			return (1);
+	}
+	return (0);
+}
+
+/*
+** First stack_a and stack_b are checked to see if their first two values should
+** definitely be swapped to order them. If a swap is needed in both stacks it is
+** automatically replaced by 'ss_move' in the instructions output to the user.
+**
+** Then a position map is generated for both stacks indicating offset between
+** the position of a number in the stack and its desired position.
+**
+** Then the function uses the position map to ask if the numbers are already
+** ordered. Numbers may be ordered even if they are split between stacks, as
+** long as they will be properly ordered after all numbers return from stack b.
+** The function is_ordered automatically returns all numbers from stack_b to
+** stack_a if the numbers in the series are ordered.
+**
+** Otherwise, if there are three numbers, the three number solver is used.
+*/
 
 int	generate_instructions(t_pswap *pswap)
 {
@@ -191,11 +343,46 @@ int	generate_instructions(t_pswap *pswap)
 	// pb_move(pswap);
 	// sb_move(pswap);
 	// ra_move(pswap);
+	//always swap *contiguous* numbers in first two positions of stack_a if the
+
+	// // first is greater than the second, and of stack_b if the first is less
+	// // than the second.
+	// if (should_swap_stack_a(pswap))
+	// 	sa_move(pswap);
+	// if (should_swap_stack_b(pswap))
+	// 	sb_move(pswap);
+	// //always rotate if first and last numbers are contiguous and first is greater
+	// //than last in stack_a or less than last in stack_b.
+	// if (should_rotate_stack_a(pswap))
+	// 	rotate_stack(pswap, pswap->stack_a);
+	// if (should_rotate_stack_b(pswap))
+	// 	rotate_stack(pswap, pswap->stack_b);
+
+	// if (pswap->stack_a_numbers > 1 &&
+	// *(int *)pswap->stack_a->content > *(int *)pswap->stack_a->next->content
+	//  && are_contiguous(pswap, *(int *)pswap->stack_a->content,
+	// *(int *)pswap->stack_a->next->content))
+	// 	sa_move(pswap);
+	// if (pswap->stack_b_numbers > 1 &&
+	// *(int *)pswap->stack_b->content < *(int *)pswap->stack_b->next->content
+	//  && are_contiguous(pswap, *(int *)pswap->stack_b->content,
+	// *(int *)pswap->stack_b->next->content))
+	// 	sb_move(pswap);
 	generate_position_map(pswap);
 	if (is_ordered(pswap))
 		return (0);
 	if (pswap->numbers <= 3)
 		three_numbers(pswap);
+	else if (pswap->numbers <= 5)
+		five_numbers(pswap);
+	//debug code
+	static int x = 1;
+	printf("UNSORTED STACK A %d\n", x);
+	for (t_list *lst = pswap->stack_a; lst; lst = lst->next)
+		printf("%d\n", *(int *)lst->content);
+	printf("MASK A %d\n", x++);
+	for (size_t i = pswap->mask_a.start_index; i < pswap->numbers; i++)
+		printf("%d\n", pswap->mask_a.vector[i]);
 	// if (equal_offsets(pswap))
 	// {
 	// 	tmp = ft_lstnew(ft_strdup("ra"));
