@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   three_numbers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 15:55:51 by miki              #+#    #+#             */
-/*   Updated: 2021/05/21 18:43:30 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/22 22:49:02 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ static int	sa_case(t_pswap	*pswap)
 
 void	three_numbers(t_pswap *pswap)
 {
+	generate_position_map(pswap);
 	if (sa_case(pswap))
 		sa_move(pswap);
 	else if (ra_case(pswap))

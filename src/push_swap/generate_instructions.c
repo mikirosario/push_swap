@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_instructions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/21 22:22:47 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/22 22:43:15 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -375,14 +375,15 @@ int	generate_instructions(t_pswap *pswap)
 		three_numbers(pswap);
 	else if (pswap->numbers <= 5)
 		five_numbers(pswap);
-	//debug code
-	static int x = 1;
-	printf("UNSORTED STACK A %d\n", x);
-	for (t_list *lst = pswap->stack_a; lst; lst = lst->next)
-		printf("%d\n", *(int *)lst->content);
-	printf("MASK A %d\n", x++);
-	for (size_t i = pswap->mask_a.start_index; i < pswap->numbers; i++)
-		printf("%d\n", pswap->mask_a.vector[i]);
+	// //debug code
+	// static int x = 1;
+	// printf("UNSORTED STACK A %d\n", x);
+	// for (t_list *lst = pswap->stack_a; lst; lst = lst->next)
+	// 	printf("%d\n", *(int *)lst->content);
+	// printf("MASK A %d\n", x++);
+	// for (size_t i = pswap->mask_a.start_index; i < pswap->numbers; i++)
+	// 	printf("%d\n", pswap->mask_a.vector[i]);
+	// //debug code
 	// if (equal_offsets(pswap))
 	// {
 	// 	tmp = ft_lstnew(ft_strdup("ra"));

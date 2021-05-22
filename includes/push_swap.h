@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/21 20:36:58 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/22 22:21:36 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,24 @@ typedef struct	s_mask
 	size_t	start_index;
 }				t_mask;
 
-typedef struct	s_analysis
+typedef struct	s_relevant
 {
-	int		first_pos;
-	int		second_pos;
-	int		first_stack_a_pos;
-	int		second_stack_a_pos;
-	int		penultimate_pos;
-	int		last_pos;
-	int		penultimate_stack_a_pos;
-	int		last_stack_a_pos;
-}				t_analysis;
+	int	a_first;
+	int	a_second;
+	int	a_penult;
+	int	a_last;
+	int	b_first;
+	int	b_second;
+	int	b_penult;
+	int b_last;
+}				t_relevant;
 
 
 typedef struct s_pswap
 {
 	t_mask		mask_a;
 	t_mask		mask_b;
-	t_analysis	analysis;
+	t_relevant	num;
 	t_bstnode	*bintree;
 	t_list		*stack_a;
 	t_list		*stack_b;
@@ -74,6 +74,7 @@ typedef struct s_pswap
 // void		exit_success(t_pswap *pswap);
 int			generate_stacks(char **argv, t_pswap *pswap);
 int			generate_instructions(t_pswap *pswap);
+void		generate_position_map(t_pswap *pswap);
 void		exit_failure(char *error_msg, t_pswap *pswap);
 void		exit_success(t_pswap *pswap);
 
