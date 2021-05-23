@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/22 22:43:15 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/23 22:18:33 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	add_move_to_list(t_pswap *pswap, char *move)
 			pswap->lst = tmp;
 		else
 			ft_lstadd_back(&pswap->lst, tmp);
+		pswap->move_counter++;
 	}
 }
 
@@ -137,28 +138,45 @@ void	generate_position_map(t_pswap *pswap)
 	size_t	i;
 	int		*ptr;
 
+
 	//Numbers pushed onto stack_b will not count for mask a. So if we have 1 number on stack_b
 	//then mask_a will begin at position 1 rather than zero. Likewise, numbers in stack_a will
 	//will not count for mask b, so if we have 5 numbers in stack_a, then mask_b will begin at
 	//position five. Use the indices to get only the relevant parts of the position mask vectors.
 	pswap->desired_pos = 0;
 	in_order_traversal(pswap, pswap->bintree);
-	i = pswap->numbers - 1;
+	i = pswap->numbers;
 	ptr = pswap->mask_b.vector;
-	while (i)
+	while (i--)
 	{
-		*ptr++ = pswap->mask_a.vector[i--];
+		*ptr++ = pswap->mask_a.vector[i];
 	}
+	//debug code
+	static int tonti = 0;
+	print_instructions(pswap);
+	printf("ITERATION: %d\n", tonti++);
 	printf("STACK A POS MAP:\n");
-	for(size_t x = pswap->stack_b_numbers; x < pswap->numbers; x++)
+	for(size_t x = pswap->mask_a.start_index; x < pswap->mask_a.end_index; x++)
 	{
 		printf("%d\n", pswap->mask_a.vector[x]);
 	}
 	printf("STACK B POS MAP:\n");
-	for(size_t x = pswap->stack_a_numbers; x < pswap->numbers; x++)
+	for(size_t x = pswap->mask_b.start_index; x < pswap->mask_b.end_index; x++)
 	{
 		printf("%d\n", pswap->mask_b.vector[x]);
 	}
+	// printf("STACK A POS MAP:\n");
+	// for(size_t x = 0; x < pswap->numbers; x++)
+	// {
+	// 	printf("%d\n", pswap->mask_a.vector[x]);
+	// }
+	// printf("STACK B POS MAP:\n");
+	// for(size_t x = 0; x < pswap->numbers; x++)
+	// {
+	// 	printf("%d\n", pswap->mask_b.vector[x]);
+	// }
+	//debug code
+
 }
 
 // void	three_case(t_pswap *pswap)
@@ -258,34 +276,34 @@ int should_swap_stack_b(t_pswap *pswap)
 // 		ra_move(pswap);
 // }
 
-void	rotate_stack(t_pswap *pswap, t_list *stack)
-{
-	long int		top_value;
-	long int		bottom_value;
-	t_mask			*mask;
-	size_t	i;
+// void	rotate_stack(t_pswap *pswap, t_list *stack)
+// {
+// 	long int		top_value;
+// 	long int		bottom_value;
+// 	t_mask			*mask;
+// 	size_t	i;
 
-	generate_position_map(pswap);
-	if (stack == NULL)
-		return ;
-	if (stack == pswap->stack_a)
-		mask = &pswap->mask_a;
-	else
-		mask = &pswap->mask_b;
-	i = mask->start_index;
-	top_value = mask->vector[i];
-	bottom_value = mask->vector[pswap->numbers - 1];
-	if (top_value < 0)
-		top_value *= -1;
-	if (bottom_value < 0)
-		bottom_value *= -1;
-		//bottom needs to move more than top
-	if (top_value < bottom_value)
-		rra_move(pswap);
-		//top needs to move more than bottom, or same as bottom
-	else
-		ra_move(pswap);
-}
+// 	generate_position_map(pswap);
+// 	if (stack == NULL)
+// 		return ;
+// 	if (stack == pswap->stack_a)
+// 		mask = &pswap->mask_a;
+// 	else
+// 		mask = &pswap->mask_b;
+// 	i = mask->start_index;
+// 	top_value = mask->vector[i];
+// 	bottom_value = mask->vector[pswap->numbers - 1];
+// 	if (top_value < 0)
+// 		top_value *= -1;
+// 	if (bottom_value < 0)
+// 		bottom_value *= -1;
+// 		//bottom needs to move more than top
+// 	if (top_value < bottom_value)
+// 		rra_move(pswap);
+// 		//top needs to move more than bottom, or same as bottom
+// 	else
+// 		ra_move(pswap);
+// }
 
 int	should_rotate_stack_a(t_pswap *pswap)
 {
@@ -371,7 +389,7 @@ int	generate_instructions(t_pswap *pswap)
 	generate_position_map(pswap);
 	if (is_ordered(pswap))
 		return (0);
-	if (pswap->numbers <= 3)
+	if (pswap->stack_a_numbers <= 3)
 		three_numbers(pswap);
 	else if (pswap->numbers <= 5)
 		five_numbers(pswap);

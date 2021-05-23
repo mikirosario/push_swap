@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/22 22:21:36 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/23 23:50:46 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct	s_mask
 {
 	int		*vector;
 	size_t	start_index;
+	size_t	end_index;
 }				t_mask;
 
 typedef struct	s_relevant
@@ -46,10 +47,16 @@ typedef struct	s_relevant
 	int	a_second;
 	int	a_penult;
 	int	a_last;
+	int	a_smallest;
+	int	a_largest;
 	int	b_first;
 	int	b_second;
 	int	b_penult;
 	int b_last;
+	int	b_smallest;
+	int	b_largest;
+	int	smallest;
+	int	largest;
 }				t_relevant;
 
 
@@ -67,6 +74,7 @@ typedef struct s_pswap
 	size_t		numbers;
 	size_t		stack_a_numbers;
 	size_t		stack_b_numbers;
+	size_t		move_counter;
 	int			desired_pos;
 }				t_pswap;
 
@@ -78,11 +86,14 @@ void		generate_position_map(t_pswap *pswap);
 void		exit_failure(char *error_msg, t_pswap *pswap);
 void		exit_success(t_pswap *pswap);
 
+void	print_instructions(t_pswap *pswap);
+
+void	get_relevant_numbers(t_pswap *pswap);
 int	are_contiguous(t_pswap *pswap, int smaller, int larger);
 int	is_sorted(t_list *stack);
 int should_swap_stack_a(t_pswap *pswap);
 int	should_rotate_stack_a(t_pswap *pswap);
-void	rotate_stack(t_pswap *pswap, t_list *stack);
+//void	rotate_stack(t_pswap *pswap, t_list *stack);
 //int	first_pair_ordered(t_list *stack);
 
 /*

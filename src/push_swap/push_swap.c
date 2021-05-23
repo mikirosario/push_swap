@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/21 19:24:56 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/23 23:42:01 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,14 +245,79 @@ void	print_instructions(t_pswap *pswap)
 		ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
 		instructions = instructions->next;
 	}
+	//debug code
+	printf("Number of Movements: %zu\n", pswap->move_counter);
+	printf("SORTED STACK A\n");
+	for (t_list *lst = pswap->stack_a; lst; lst = lst->next)
+		printf("%d\n", *(int *)lst->content);
+	printf("SORTED STACK B\n");
+	for (t_list *lst = pswap->stack_b; lst; lst = lst->next)
+		printf("%d\n", *(int *)lst->content);
+	//debug code
 }
 
 void	init(t_pswap *pswap)
 {
+	t_bstnode	*bintree;
+
 	pswap->mask_a.vector = ft_calloc(pswap->numbers, sizeof(int));
 	pswap->mask_b.vector = ft_calloc(pswap->numbers, sizeof(int));
-	pswap->mask_a.start_index = pswap->stack_b_numbers;
-	pswap->mask_b.start_index = pswap->stack_a_numbers;
+	pswap->mask_a.start_index = 0;
+	pswap->mask_a.end_index = pswap->numbers;
+	pswap->mask_b.start_index = pswap->numbers;
+	pswap->mask_b.end_index = pswap->numbers;
+
+	bintree = pswap->bintree;
+	while (bintree->left)
+		bintree = bintree->left;
+	pswap->num.smallest = (int)bintree->data;
+	bintree = pswap->bintree;
+	while(bintree->right)
+		bintree = bintree->right;
+	pswap->num.largest = (int)bintree->data;
+}
+
+void	get_relevant_numbers(t_pswap *pswap)
+{
+	t_list		*penult_a;
+	t_list 		*penult_b;
+	t_list		*a_extremes;
+
+	penult_a = pswap->stack_a;
+	penult_b = pswap->stack_b;
+	a_extremes = pswap->stack_a;
+	if (pswap->stack_a)
+	{
+		while (a_extremes)
+		{
+			if (pswap->num.a_smallest < *(int *)a_extremes->content)
+				pswap->num.a_smallest = *(int *)a_extremes->content;
+			if (pswap->num.a_largest > *(int *)a_extremes->content)
+				pswap->num.a_largest = *(int *)a_extremes->content;
+			a_extremes = a_extremes->next;
+		}
+		while (penult_a->next && penult_a->next->next)
+			penult_a = penult_a->next;
+		pswap->num.a_first = *(int *)pswap->stack_a->content;
+		if (pswap->stack_a->next)
+			pswap->num.a_second = *(int *)pswap->stack_a->next->content;
+		else
+			pswap->num.a_second = pswap->num.a_first;
+		pswap->num.a_penult = *(int *)penult_a->content;
+		pswap->num.a_last = *(int *)(ft_lstlast(pswap->stack_a))->content;
+	}
+	if (pswap->stack_b)
+	{
+		while (penult_b->next && penult_b->next->next)
+			penult_b = penult_b->next;
+		pswap->num.b_first = *(int *)pswap->stack_b->content;
+		if (pswap->stack_b->next)
+			pswap->num.b_second = *(int *)pswap->stack_b->next->content;
+		else
+			pswap->num.b_second = pswap->num.b_first;
+		pswap->num.b_penult = *(int *)penult_b->content;
+		pswap->num.b_last = *(int *)(ft_lstlast(pswap->stack_b))->content;
+	}
 }
 
 int	main(int argc, char **argv)
@@ -274,13 +339,6 @@ int	main(int argc, char **argv)
 		}
 		print_instructions(&pswap);
 	}
-	//debug code
-	printf("SORTED STACK A\n");
-	for (t_list *lst = pswap.stack_a; lst; lst = lst->next)
-		printf("%d\n", *(int *)lst->content);
-	printf("SORTED STACK B\n");
-	for (t_list *lst = pswap.stack_b; lst; lst = lst->next)
-		printf("%d\n", *(int *)lst->content);
 	// if (are_contiguous(&pswap, 2, 0))
 	// 	printf("CONTIGUOUS\n");
 	// else
