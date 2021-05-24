@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/23 23:50:46 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/24 07:23:25 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,25 +76,26 @@ typedef struct s_pswap
 	size_t		stack_b_numbers;
 	size_t		move_counter;
 	int			desired_pos;
+	size_t		tonti; //debug code
 }				t_pswap;
 
-// void		exit_failure(char *error_msg, t_pswap *pswap);
-// void		exit_success(t_pswap *pswap);
-int			generate_stacks(char **argv, t_pswap *pswap);
-int			generate_instructions(t_pswap *pswap);
-void		generate_position_map(t_pswap *pswap);
+
+/*
+** CLEANUP
+*/
+
 void		exit_failure(char *error_msg, t_pswap *pswap);
 void		exit_success(t_pswap *pswap);
 
-void	print_instructions(t_pswap *pswap);
+/*
+** TOOLBOX
+*/
 
-void	get_relevant_numbers(t_pswap *pswap);
-int	are_contiguous(t_pswap *pswap, int smaller, int larger);
-int	is_sorted(t_list *stack);
-int should_swap_stack_a(t_pswap *pswap);
-int	should_rotate_stack_a(t_pswap *pswap);
-//void	rotate_stack(t_pswap *pswap, t_list *stack);
-//int	first_pair_ordered(t_list *stack);
+int			generate_stacks(char **argv, t_pswap *pswap);
+int			generate_instructions(t_pswap *pswap);
+void		generate_position_map(t_pswap *pswap);
+void		get_relevant_numbers(t_pswap *pswap);
+void		print_instructions(t_pswap *pswap);
 
 /*
 ** Move to libft
@@ -107,12 +108,10 @@ t_vector	*vector_new(void);
 */
 
 char	is_ordered(t_pswap *pswap);
+int		are_contiguous(t_pswap *pswap, int smaller, int larger);
+int		stack_a_is_sequenced(t_pswap *pswap);
 void	three_numbers(t_pswap *pswap);
-void	five_numbers(t_pswap *pswap);
-int		equal_offsets(t_pswap *pswap);
-int		push_down(t_pswap *pswap);
-// void		get_instructions(t_pswap *pswap);
-// void		sort(t_pswap *pswap);
+void	six_numbers(t_pswap *pswap);
 
 /*
 ** Movements
@@ -129,6 +128,7 @@ void		rr_move(t_pswap *pswap);
 void		rra_move(t_pswap *pswap);
 void		rrb_move(t_pswap *pswap);
 void		rrr_move(t_pswap *pswap);
+void 		sort_rotate_stack_a(t_pswap *pswap);
 void		add_move_to_list(t_pswap *pswap, char *move);
 
 #endif
