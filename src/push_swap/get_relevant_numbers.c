@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_relevant_numbers.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 04:43:06 by miki              #+#    #+#             */
-/*   Updated: 2021/05/24 05:38:46 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/25 23:27:42 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ void	get_extremes(t_pswap *pswap, t_list *stack)
 
 	if (stack == pswap->stack_a)
 	{
-		smallest = &pswap->num.a_smallest;
-		largest = &pswap->num.a_largest;
+		smallest = &pswap->num_a.smallest;
+		largest = &pswap->num_a.largest;
 	}
 	else
 	{
-		smallest = &pswap->num.b_smallest;
-		largest = &pswap->num.b_largest;
+		smallest = &pswap->num_b.smallest;
+		largest = &pswap->num_b.largest;
 	}
 	extremes = stack;
 	while (extremes)
@@ -36,26 +36,26 @@ void	get_extremes(t_pswap *pswap, t_list *stack)
 		if (*largest < *(int *)extremes->content)
 			*largest = *(int *)extremes->content;
 		extremes = extremes->next;
-	}		
+	}
 }
 
 void	get_relevant_stack_b_numbers(t_pswap *pswap)
 {
-	t_list 		*penult_b;
+	t_list		*penult_b;
 
 	penult_b = pswap->stack_b;
-	pswap->num.b_smallest = INT_MAX;
-	pswap->num.b_largest = INT_MIN;
+	pswap->num_b.smallest = INT_MAX;
+	pswap->num_b.largest = INT_MIN;
 	get_extremes(pswap, pswap->stack_b);
 	while (penult_b->next && penult_b->next->next)
 		penult_b = penult_b->next;
-	pswap->num.b_first = *(int *)pswap->stack_b->content;
+	pswap->num_b.first = *(int *)pswap->stack_b->content;
 	if (pswap->stack_b->next)
-		pswap->num.b_second = *(int *)pswap->stack_b->next->content;
+		pswap->num_b.second = *(int *)pswap->stack_b->next->content;
 	else
-		pswap->num.b_second = pswap->num.b_first;
-	pswap->num.b_penult = *(int *)penult_b->content;
-	pswap->num.b_last = *(int *)(ft_lstlast(pswap->stack_b))->content;	
+		pswap->num_b.second = pswap->num_b.first;
+	pswap->num_b.penult = *(int *)penult_b->content;
+	pswap->num_b.last = *(int *)(ft_lstlast(pswap->stack_b))->content;
 }
 
 void	get_relevant_stack_a_numbers(t_pswap *pswap)
@@ -63,18 +63,18 @@ void	get_relevant_stack_a_numbers(t_pswap *pswap)
 	t_list		*penult_a;
 
 	penult_a = pswap->stack_a;
-	pswap->num.a_smallest = INT_MAX;
-	pswap->num.a_largest = INT_MIN;
+	pswap->num_a.smallest = INT_MAX;
+	pswap->num_a.largest = INT_MIN;
 	get_extremes(pswap, pswap->stack_a);
 	while (penult_a->next && penult_a->next->next)
 		penult_a = penult_a->next;
-	pswap->num.a_first = *(int *)pswap->stack_a->content;
+	pswap->num_a.first = *(int *)pswap->stack_a->content;
 	if (pswap->stack_a->next)
-		pswap->num.a_second = *(int *)pswap->stack_a->next->content;
+		pswap->num_a.second = *(int *)pswap->stack_a->next->content;
 	else
-		pswap->num.a_second = pswap->num.a_first;
-	pswap->num.a_penult = *(int *)penult_a->content;
-	pswap->num.a_last = *(int *)(ft_lstlast(pswap->stack_a))->content;
+		pswap->num_a.second = pswap->num_a.first;
+	pswap->num_a.penult = *(int *)penult_a->content;
+	pswap->num_a.last = *(int *)(ft_lstlast(pswap->stack_a))->content;
 }
 
 /*
@@ -93,7 +93,7 @@ void	get_relevant_stack_a_numbers(t_pswap *pswap)
 
 void	get_relevant_numbers(t_pswap *pswap)
 {
-	
+
 	if (pswap->stack_a)
 		get_relevant_stack_a_numbers(pswap);
 	if (pswap->stack_b)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/24 05:54:39 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/25 23:29:27 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,11 @@ void	init(t_pswap *pswap)
 	bintree = pswap->bintree;
 	while (bintree->left)
 		bintree = bintree->left;
-	pswap->num.smallest = (int)bintree->data;
+	pswap->smallest = (int)bintree->data;
 	bintree = pswap->bintree;
 	while(bintree->right)
 		bintree = bintree->right;
-	pswap->num.largest = (int)bintree->data;
+	pswap->largest = (int)bintree->data;
 }
 
 /*

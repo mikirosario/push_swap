@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_conditions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 22:05:11 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/24 06:53:40 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/25 23:39:17 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ return (1);
 ** not exist we also return 0. If the whole stack is traversed then we return 1.
 */
 
-int	stack_a_is_sequenced(t_pswap *pswap)
+int	stack_a_is_sequenced(t_pswap *pswap, t_list *stack)
 {
 	t_list	*stack_a;
 
@@ -169,10 +169,29 @@ int	stack_a_is_sequenced(t_pswap *pswap)
 	while (stack_a->next)
 	{
 		if ((*(int *)stack_a->content > *(int *)stack_a->next->content)
-		 && !(*(int *)stack_a->content == pswap->num.a_largest &&
-		*(int *)stack_a->next->content == pswap->num.a_smallest))
+		 && !(*(int *)stack_a->content == pswap->num_a.largest &&
+		*(int *)stack_a->next->content == pswap->num_a.smallest))
 			return (0);
 		stack_a = stack_a->next;
+	}
+	return (1);
+}
+
+int	stack_b_is_sequenced(t_pswap *pswap)
+{
+	t_list	*stack_b;
+
+	get_relevant_numbers(pswap);
+	stack_b = pswap->stack_b;
+	if (stack_b == NULL)
+		return (0);
+	while (stack_b->next)
+	{
+		if ((*(int *)stack_b->content > *(int *)stack_b->next->content)
+		 && !(*(int *)stack_b->content == pswap->num_b.largest &&
+		*(int *)stack_b->next->content == pswap->num_b.smallest))
+			return (0);
+		stack_b = stack_b->next;
 	}
 	return (1);
 }

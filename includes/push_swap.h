@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/24 07:23:25 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/25 23:28:33 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,30 +41,45 @@ typedef struct	s_mask
 	size_t	end_index;
 }				t_mask;
 
-typedef struct	s_relevant
+// typedef struct	s_relevant
+// {
+// 	int		a_first;
+// 	int		a_second;
+// 	int		a_penult;
+// 	int		a_last;
+// 	int		a_smallest;
+// 	int		a_largest;
+// 	int		b_first;
+// 	int		b_second;
+// 	int		b_penult;
+// 	int 	b_last;
+// 	int		b_smallest;
+// 	int		b_largest;
+// 	int		smallest;
+// 	int		largest;
+// 	char	stack_a_sequenced : 1;
+// 	char	stack_b_sequenced : 1;
+// }				t_relevant;
+
+typedef struct	s_stack
 {
-	int	a_first;
-	int	a_second;
-	int	a_penult;
-	int	a_last;
-	int	a_smallest;
-	int	a_largest;
-	int	b_first;
-	int	b_second;
-	int	b_penult;
-	int b_last;
-	int	b_smallest;
-	int	b_largest;
-	int	smallest;
-	int	largest;
-}				t_relevant;
+	int		first;
+	int		second;
+	int		penult;
+	int		last;
+	int		smallest;
+	int		largest;
+	char	sequenced;
+}				t_stack;
 
 
 typedef struct s_pswap
 {
 	t_mask		mask_a;
 	t_mask		mask_b;
-	t_relevant	num;
+	t_stack		num_a;
+	//t_relevant	num;
+	t_stack		num_b;
 	t_bstnode	*bintree;
 	t_list		*stack_a;
 	t_list		*stack_b;
@@ -75,6 +90,8 @@ typedef struct s_pswap
 	size_t		stack_a_numbers;
 	size_t		stack_b_numbers;
 	size_t		move_counter;
+	int			smallest;
+	int			largest;
 	int			desired_pos;
 	size_t		tonti; //debug code
 }				t_pswap;
@@ -110,6 +127,7 @@ t_vector	*vector_new(void);
 char	is_ordered(t_pswap *pswap);
 int		are_contiguous(t_pswap *pswap, int smaller, int larger);
 int		stack_a_is_sequenced(t_pswap *pswap);
+int		stack_b_is_sequenced(t_pswap *pswap);
 void	three_numbers(t_pswap *pswap);
 void	six_numbers(t_pswap *pswap);
 
@@ -128,7 +146,7 @@ void		rr_move(t_pswap *pswap);
 void		rra_move(t_pswap *pswap);
 void		rrb_move(t_pswap *pswap);
 void		rrr_move(t_pswap *pswap);
-void 		sort_rotate_stack_a(t_pswap *pswap);
+void		sort_rotate_stack_a(t_pswap *pswap);
 void		add_move_to_list(t_pswap *pswap, char *move);
 
 #endif

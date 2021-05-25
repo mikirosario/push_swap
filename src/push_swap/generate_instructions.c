@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_instructions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/24 07:18:16 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/25 23:25:38 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ void	add_move_to_list(t_pswap *pswap, char *move)
 	t_list	*last;
 
 	last = ft_lstlast(pswap->lst);
-	if (last && ((!ft_strcmp(move, "sa") && !ft_strcmp(last->content, "sb"))
+	if (last && ((!ft_strcmp(move, "sa") && !ft_strcmp(last->content, "sb")) \
 	 || (!ft_strcmp(move, "sb") && !ft_strcmp(last->content, "sa"))))
 		*(char *)((last->content + 1)) = 's';
-	else if (last && ((!ft_strcmp(move, "ra")
-	 && !ft_strcmp(last->content, "rb"))
+	else if (last && ((!ft_strcmp(move, "ra") \
+	 && !ft_strcmp(last->content, "rb")) \
 	 || (!ft_strcmp(move, "rb") && !ft_strcmp(last->content, "ra"))))
 		*(char *)((last->content + 1)) = 'r';
-	else if (last && ((!ft_strcmp(move, "rra")
-	 && !ft_strcmp(last->content, "rrb"))
+	else if (last && ((!ft_strcmp(move, "rra") \
+	 && !ft_strcmp(last->content, "rrb")) \
 	 || (!ft_strcmp(move, "rrb") && !ft_strcmp(last->content, "rra"))))
 		*(char *)((last->content + 2)) = 'r';
 	else
@@ -68,7 +68,7 @@ void	add_move_to_list(t_pswap *pswap, char *move)
 ** right function.
 */
 
-void sort_rotate_stack_a(t_pswap *pswap)
+void	sort_rotate_stack_a(t_pswap *pswap)
 {
 	void		(*rotate)(t_pswap *);
 	long int	median;
@@ -123,9 +123,8 @@ int	generate_instructions(t_pswap *pswap)
 		six_numbers(pswap);
 	else
 		exit_failure("NO PUEDORRRL", pswap);
-
 	//debug code
 	pswap->tonti++; //keeps track of iterations for debugging purposes
 	//debug code
-	return (1);		
+	return (1);
 }

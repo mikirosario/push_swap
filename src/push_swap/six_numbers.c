@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   six_numbers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/21 11:18:16 by miki              #+#    #+#             */
-/*   Updated: 2021/05/24 07:00:12 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/25 23:35:00 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,40 +16,42 @@
 
 int	push_to_stack_a(t_pswap *pswap)
 {
-	t_relevant *n;
+	t_stack	*a;
+	t_stack *b;
 
 	get_relevant_numbers(pswap);
-	n = &pswap->num;
-	if (n->a_first > n->b_first && are_contiguous(pswap, n->b_first, n->a_first))
+	a = &pswap->num_a;
+	b = &pswap->num_b;
+	if (a->first > b->first && are_contiguous(pswap, b->first, a->first))
 		pa_move(pswap);
-	else if (n->a_first < n->b_first && are_contiguous(pswap, n->a_first, n->b_first))
+	else if (a->first < b->first && are_contiguous(pswap, a->first, b->first))
 	{
 		ra_move(pswap);
 		pa_move(pswap);
 	}
-	else if (n->a_first < n->b_last && are_contiguous(pswap, n->a_first, n->b_last))
+	else if (a->first < b->last && are_contiguous(pswap, a->first, b->last))
 	{
 		rr_move(pswap);
 		pa_move(pswap);
 	}
-	else if (n->a_last > n->b_first && are_contiguous(pswap, n->b_first, n->a_last))
+	else if (a->last > b->first && are_contiguous(pswap, b->first, a->last))
 	{
 		rra_move(pswap);
 		pa_move(pswap);
 	}
-	else if (pswap->stack_b->next && n->a_last < n->b_second && are_contiguous(pswap, n->b_second, n->a_last))
+	else if (pswap->stack_b->next && a->last < b->second && are_contiguous(pswap, b->second, a->last))
 	{
 		sb_move(pswap);
 		pa_move(pswap);
 		ra_move(pswap);
 	}
-	else if (n->a_penult < n->b_first && are_contiguous(pswap, n->a_penult, n->b_first))
+	else if (a->penult < b->first && are_contiguous(pswap, a->penult, b->first))
 	{
 		rra_move(pswap);
 		pa_move(pswap);
 		ra_move(pswap);
 	}
-	else if (pswap->stack_b->next && n->a_penult < n->b_last && are_contiguous(pswap, n->a_penult, n->b_last))
+	else if (pswap->stack_b->next && a->penult < b->last && are_contiguous(pswap, a->penult, b->last))
 	{
 		rrr_move(pswap);
 		pa_move(pswap);
