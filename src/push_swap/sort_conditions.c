@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_conditions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 22:05:11 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/25 23:39:17 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/27 13:36:21 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,18 +125,18 @@ char	is_ordered(t_pswap *pswap)
 
 	generate_position_map(pswap);
 	//ALL MASK_B POSITION NUMBERS ARE AT ZERO POSITION
-	i = pswap->mask_b.start_index;
+	i = pswap->stack_b.mask.start_index;
 	while (i < pswap->numbers)
-		if (pswap->mask_b.vector[i++])
+		if (pswap->stack_b.mask.vector[i++])
 			return (0);
 	//ALL MASK_A POSITION NUMBERS ARE AT ZERO POSITION
-	i = pswap->mask_a.start_index;
+	i = pswap->stack_a.mask.start_index;
 	while (i < pswap->numbers)
-		if (pswap->mask_a.vector[i++])
+		if (pswap->stack_a.mask.vector[i++])
 			return (0);
 	//ADD PA * NUMBERS_IN_STACK_B MOVEMENTS
 	i = 0;
-	while (i++ < pswap->stack_b_numbers)
+	while (i++ < pswap->stack_b.numbers)
 		pa_move(pswap);
 return (1);
 }
@@ -158,40 +158,21 @@ return (1);
 ** not exist we also return 0. If the whole stack is traversed then we return 1.
 */
 
-int	stack_a_is_sequenced(t_pswap *pswap, t_list *stack)
+int	stack_is_sequenced(t_pswap *pswap, t_stack *stack)
 {
-	t_list	*stack_a;
+	t_list	*stk;
 
 	get_relevant_numbers(pswap);
-	stack_a = pswap->stack_a;
-	if (stack_a == NULL)
+	stk = stack->stack;
+	if (stk == NULL)
 		return (0);
-	while (stack_a->next)
+	while (stk->next)
 	{
-		if ((*(int *)stack_a->content > *(int *)stack_a->next->content)
-		 && !(*(int *)stack_a->content == pswap->num_a.largest &&
-		*(int *)stack_a->next->content == pswap->num_a.smallest))
+		if ((*(int *)stk->content > *(int *)stk->next->content)
+		 && !(*(int *)stk->content == stack->largest &&
+		*(int *)stk->next->content == stack->smallest))
 			return (0);
-		stack_a = stack_a->next;
-	}
-	return (1);
-}
-
-int	stack_b_is_sequenced(t_pswap *pswap)
-{
-	t_list	*stack_b;
-
-	get_relevant_numbers(pswap);
-	stack_b = pswap->stack_b;
-	if (stack_b == NULL)
-		return (0);
-	while (stack_b->next)
-	{
-		if ((*(int *)stack_b->content > *(int *)stack_b->next->content)
-		 && !(*(int *)stack_b->content == pswap->num_b.largest &&
-		*(int *)stack_b->next->content == pswap->num_b.smallest))
-			return (0);
-		stack_b = stack_b->next;
+		stk = stk->next;
 	}
 	return (1);
 }

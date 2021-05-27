@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/25 23:28:33 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/27 13:34:26 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ typedef struct	s_mask
 
 typedef struct	s_stack
 {
+	t_mask	mask;
+	t_list	*stack;
+	size_t	numbers;
 	int		first;
 	int		second;
 	int		penult;
@@ -75,20 +78,11 @@ typedef struct	s_stack
 
 typedef struct s_pswap
 {
-	t_mask		mask_a;
-	t_mask		mask_b;
-	t_stack		num_a;
-	//t_relevant	num;
-	t_stack		num_b;
+	t_stack		stack_a;
+	t_stack		stack_b;
 	t_bstnode	*bintree;
-	t_list		*stack_a;
-	t_list		*stack_b;
-	t_list		*lst;
-	//int			*mask_a;
-	//int			*mask_b;
+	t_list		*instruction;
 	size_t		numbers;
-	size_t		stack_a_numbers;
-	size_t		stack_b_numbers;
 	size_t		move_counter;
 	int			smallest;
 	int			largest;
@@ -126,8 +120,8 @@ t_vector	*vector_new(void);
 
 char	is_ordered(t_pswap *pswap);
 int		are_contiguous(t_pswap *pswap, int smaller, int larger);
-int		stack_a_is_sequenced(t_pswap *pswap);
-int		stack_b_is_sequenced(t_pswap *pswap);
+int		stack_is_sequenced(t_pswap *pswap, t_stack *stack);
+//int		stack_b_is_sequenced(t_pswap *pswap);
 void	three_numbers(t_pswap *pswap);
 void	six_numbers(t_pswap *pswap);
 

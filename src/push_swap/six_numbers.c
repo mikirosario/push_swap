@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   six_numbers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/21 11:18:16 by miki              #+#    #+#             */
-/*   Updated: 2021/05/25 23:35:00 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/27 13:34:32 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	push_to_stack_a(t_pswap *pswap)
 	t_stack *b;
 
 	get_relevant_numbers(pswap);
-	a = &pswap->num_a;
-	b = &pswap->num_b;
+	a = &pswap->stack_a;
+	b = &pswap->stack_b;
 	if (a->first > b->first && are_contiguous(pswap, b->first, a->first))
 		pa_move(pswap);
 	else if (a->first < b->first && are_contiguous(pswap, a->first, b->first))
@@ -39,7 +39,7 @@ int	push_to_stack_a(t_pswap *pswap)
 		rra_move(pswap);
 		pa_move(pswap);
 	}
-	else if (pswap->stack_b->next && a->last < b->second && are_contiguous(pswap, b->second, a->last))
+	else if (pswap->stack_b.stack->next && a->last < b->second && are_contiguous(pswap, b->second, a->last))
 	{
 		sb_move(pswap);
 		pa_move(pswap);
@@ -51,7 +51,7 @@ int	push_to_stack_a(t_pswap *pswap)
 		pa_move(pswap);
 		ra_move(pswap);
 	}
-	else if (pswap->stack_b->next && a->penult < b->last && are_contiguous(pswap, a->penult, b->last))
+	else if (pswap->stack_b.stack->next && a->penult < b->last && are_contiguous(pswap, a->penult, b->last))
 	{
 		rrr_move(pswap);
 		pa_move(pswap);
@@ -82,11 +82,11 @@ void	six_numbers(t_pswap *pswap)
 		i = pswap->numbers - 3;
 		while (i--)
 			pb_move(pswap);
-		while (!stack_a_is_sequenced(pswap))
+		while (!stack_is_sequenced(pswap, &pswap->stack_a))
 			three_numbers(pswap);
 		stayout = 1;
 	}
-	else if (pswap->stack_b_numbers > 0)
+	else if (pswap->stack_b.numbers > 0)
 	{
 		if (!push_to_stack_a(pswap))
 			ra_move(pswap);

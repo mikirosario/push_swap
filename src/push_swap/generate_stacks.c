@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 05:42:59 by miki              #+#    #+#             */
-/*   Updated: 2021/05/24 05:43:31 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/27 12:37:00 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ static void	debug_func(t_pswap *pswap)
 	//DEBUG CODE
 	// ft_bintree_print(pswap->bintree, 0);
 	printf("UNSORTED STACK A:\n");
-	for (t_list *tmp = pswap->stack_a; tmp; tmp = tmp->next)
+	for (t_list *tmp = pswap->stack_a.stack; tmp; tmp = tmp->next)
 	{
 		if (tmp->content)
 			printf("%d\n", *(int *)tmp->content);
 	}
-	for (t_list *tmp = pswap->stack_b; tmp; tmp = tmp->next)
+	for (t_list *tmp = pswap->stack_b.stack; tmp; tmp = tmp->next)
 	{
 		if (tmp->content)
 			printf("%d\n", *(int *)tmp->content);
@@ -130,10 +130,10 @@ static char	*generate_stack_a(t_pswap *pswap, char *num)
 	pswap->bintree = ft_bintree_add(pswap->bintree, ft_atoi(numbuf));
 	new = ft_lstnew(ft_calloc(1, sizeof(int)));
 	*(int *)new->content = ft_atoi(numbuf);
-	if (!pswap->stack_a)
-		pswap->stack_a = new;
+	if (!pswap->stack_a.stack)
+		pswap->stack_a.stack = new;
 	else
-		ft_lstadd_back(&pswap->stack_a, new);
+		ft_lstadd_back(&pswap->stack_a.stack, new);
 	return (num);
 }
 
@@ -161,7 +161,7 @@ int	generate_stacks(char **argv, t_pswap *pswap)
 		while (*num)
 			num = generate_stack_a(pswap, num);
 	}
-	pswap->stack_b = NULL;
+	pswap->stack_b.stack = NULL;
 
 	//DEBUG CODE
 	debug_func(pswap);

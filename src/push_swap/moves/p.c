@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   p.c                                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 17:11:38 by miki              #+#    #+#             */
-/*   Updated: 2021/05/23 22:18:03 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/27 12:55:59 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ void	pa_move(t_pswap *pswap)
 {
 	t_list	*bring_to_front;
 
-	if (!pswap->stack_b)
+	if (!pswap->stack_b.stack)
 		return ;
-	bring_to_front = pswap->stack_b->next;
-	ft_lstadd_front(&pswap->stack_a, pswap->stack_b);
-	pswap->stack_b = bring_to_front;
-	pswap->stack_a_numbers++;
-	pswap->stack_b_numbers--;
-	pswap->mask_a.start_index--;
-	pswap->mask_b.start_index++;
+	bring_to_front = pswap->stack_b.stack->next;
+	ft_lstadd_front(&pswap->stack_a.stack, pswap->stack_b.stack);
+	pswap->stack_b.stack = bring_to_front;
+	pswap->stack_a.numbers++;
+	pswap->stack_b.numbers--;
+	pswap->stack_a.mask.start_index--;
+	pswap->stack_b.mask.start_index++;
 	add_move_to_list(pswap, "pa");
 }
 
@@ -42,14 +42,14 @@ void	pb_move(t_pswap *pswap)
 {
 	t_list	*bring_to_front;
 
-	if (!pswap->stack_a)
+	if (!pswap->stack_a.stack)
 		return ;
-	bring_to_front = pswap->stack_a->next;
-	ft_lstadd_front(&pswap->stack_b, pswap->stack_a);
-	pswap->stack_a = bring_to_front;
-	pswap->stack_b_numbers++;
-	pswap->stack_a_numbers--;
-	pswap->mask_a.start_index++;
-	pswap->mask_b.start_index--;
+	bring_to_front = pswap->stack_a.stack->next;
+	ft_lstadd_front(&pswap->stack_b.stack, pswap->stack_a.stack);
+	pswap->stack_a.stack = bring_to_front;
+	pswap->stack_b.numbers++;
+	pswap->stack_a.numbers--;
+	pswap->stack_a.mask.start_index++;
+	pswap->stack_b.mask.start_index--;
 	add_move_to_list(pswap, "pb");
 }

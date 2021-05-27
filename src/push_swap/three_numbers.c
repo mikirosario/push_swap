@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   three_numbers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 15:55:51 by miki              #+#    #+#             */
-/*   Updated: 2021/05/25 23:33:06 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/27 12:43:54 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 // 	stack_a = &pswap->num;
 // 	get_relevant_numbers(pswap);
-// 	if (stack_a->second == stack_a->largest && stack_a->last == stack_a->smallest)
+// 	if (stack_a.stack->second == stack_a.stack->largest && stack_a.stack->last == stack_a.stack->smallest)
 // 		return (1);
 // 	return (0);
 // }
@@ -29,8 +29,8 @@
 
 // 	stack_a = &pswap->num;
 // 	get_relevant_numbers(pswap);
-// 	if (stack_a->first == stack_a->largest
-// 	 && (stack_a->second == stack_a->smallest || stack_a->last == stack_a->smallest))
+// 	if (stack_a.stack->first == stack_a.stack->largest
+// 	 && (stack_a.stack->second == stack_a.stack->smallest || stack_a.stack->last == stack_a.stack->smallest))
 // 		return (1);
 // 	return (0);
 // }
@@ -41,8 +41,8 @@
 
 // 	stack_a = &pswap->num;
 // 	get_relevant_numbers(pswap);
-// 	if ((stack_a->first == stack_a->smallest && stack_a->second == stack_a->largest)
-// 	 || (stack_a->last == stack_a->largest && stack_a->second == stack_a->smallest))
+// 	if ((stack_a.stack->first == stack_a.stack->smallest && stack_a.stack->second == stack_a.stack->largest)
+// 	 || (stack_a.stack->last == stack_a.stack->largest && stack_a.stack->second == stack_a.stack->smallest))
 // 		return (1);
 // 	return (0);
 // }
@@ -59,7 +59,7 @@ void	three_numbers(t_pswap *pswap)
 {
 	t_stack	*stack_a;
 
-	stack_a = &pswap->num_a;
+	stack_a = &pswap->stack_a;
 	get_relevant_numbers(pswap);
 	if ((stack_a->first == stack_a->smallest && stack_a->second == stack_a->largest)
 	 || (stack_a->last == stack_a->largest && stack_a->second == stack_a->smallest)
@@ -73,5 +73,5 @@ generate_position_map(pswap);
 	// else
 	// 	rra_move(pswap);
 	//debug code
-	//printf("STACK A SMALLEST: %d STACK A LARGEST: %d\n", pswap->num_a.smallest, pswap->num_a.largest);
+	//printf("STACK A SMALLEST: %d STACK A LARGEST: %d\n", pswap->stack_a.smallest, pswap->stack_a.largest);
 }

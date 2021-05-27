@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_instructions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/25 23:25:38 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/27 13:35:19 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	add_move_to_list(t_pswap *pswap, char *move)
 	t_list	*tmp;
 	t_list	*last;
 
-	last = ft_lstlast(pswap->lst);
+	last = ft_lstlast(pswap->instruction);
 	if (last && ((!ft_strcmp(move, "sa") && !ft_strcmp(last->content, "sb")) \
 	 || (!ft_strcmp(move, "sb") && !ft_strcmp(last->content, "sa"))))
 		*(char *)((last->content + 1)) = 's';
@@ -38,10 +38,10 @@ void	add_move_to_list(t_pswap *pswap, char *move)
 	else
 	{
 		tmp = ft_lstnew(ft_strdup(move));
-		if (!pswap->lst)
-			pswap->lst = tmp;
+		if (!pswap->instruction)
+			pswap->instruction = tmp;
 		else
-			ft_lstadd_back(&pswap->lst, tmp);
+			ft_lstadd_back(&pswap->instruction, tmp);
 		pswap->move_counter++;
 	}
 }
@@ -76,15 +76,15 @@ void	sort_rotate_stack_a(t_pswap *pswap)
 
 	median = pswap->numbers / 2;
 	generate_position_map(pswap);
-	if (pswap->mask_a.vector[0] > median)
+	if (pswap->stack_a.mask.vector[0] > median)
 	{
 		rotate = ra_move;
-		i = pswap->numbers - pswap->mask_a.vector[0];
+		i = pswap->numbers - pswap->stack_a.mask.vector[0];
 	}
 	else
 	{
 		rotate = rra_move;
-		i = pswap->mask_a.vector[0];
+		i = pswap->stack_a.mask.vector[0];
 	}
 	while (i--)
 		rotate(pswap);
@@ -115,7 +115,7 @@ int	generate_instructions(t_pswap *pswap)
 {
 	if (is_ordered(pswap))
 		return (0);
-	if (pswap->stack_b == NULL && stack_a_is_sequenced(pswap))
+	if (pswap->stack_b.stack == NULL && stack_is_sequenced(pswap, &pswap->stack_a))
 		sort_rotate_stack_a(pswap);
 	else if (pswap->numbers <= 3)
 		three_numbers(pswap);

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 03:58:49 by miki              #+#    #+#             */
-/*   Updated: 2021/05/24 04:40:06 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/27 12:55:59 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ int	get_stack_b_pos(t_pswap *pswap, int num)
 	int		i;
 
 	i = 0;
-	stack = pswap->stack_b;
+	stack = pswap->stack_b.stack;
 	while (stack)
 	{
 		if (*(int *)stack->content == num)
 		//0 == numbers - 1
-			return (pswap->stack_b_numbers - (i + 1));
+			return (pswap->stack_b.numbers - (i + 1));
 		i++;
 		stack = stack->next;
 	}
@@ -51,11 +51,11 @@ int	get_stack_a_pos(t_pswap *pswap, int num)
 	int		i;
 
 	i = 0;
-	stack = pswap->stack_a;
+	stack = pswap->stack_a.stack;
 	while (stack)
 	{
 		if (*(int *)stack->content == num)
-			return (i + pswap->stack_b_numbers);
+			return (i + pswap->stack_b.numbers);
 		i++;
 		stack = stack->next;
 	}
@@ -78,7 +78,7 @@ void	record_offset(t_pswap *pswap, int desired_pos, int num)
 	//IF IS IN STACK B; STACK B POS IN MASK B
 	if (actual_pos < 0)
 		actual_pos = get_stack_b_pos(pswap, num);
-	pswap->mask_a.vector[actual_pos] = desired_pos - actual_pos;
+	pswap->stack_a.mask.vector[actual_pos] = desired_pos - actual_pos;
 }
 
 /*
@@ -181,24 +181,24 @@ void	generate_position_map(t_pswap *pswap)
 	pswap->desired_pos = 0;
 	in_order_traversal(pswap, pswap->bintree);
 	i = pswap->numbers;
-	ptr = pswap->mask_b.vector;
+	ptr = pswap->stack_b.mask.vector;
 	while (i--)
 	{
-		*ptr++ = pswap->mask_a.vector[i];
+		*ptr++ = pswap->stack_a.mask.vector[i];
 	}
 	
 	//debug code
 	print_instructions(pswap);
 	printf("ITERATION: %zu\n", pswap->tonti);
 	printf("STACK A POS MAP:\n");
-	for(size_t x = pswap->mask_a.start_index; x < pswap->mask_a.end_index; x++)
+	for(size_t x = pswap->stack_a.mask.start_index; x < pswap->stack_a.mask.end_index; x++)
 	{
-		printf("%d\n", pswap->mask_a.vector[x]);
+		printf("%d\n", pswap->stack_a.mask.vector[x]);
 	}
 	printf("STACK B POS MAP:\n");
-	for(size_t x = pswap->mask_b.start_index; x < pswap->mask_b.end_index; x++)
+	for(size_t x = pswap->stack_b.mask.start_index; x < pswap->stack_b.mask.end_index; x++)
 	{
-		printf("%d\n", pswap->mask_b.vector[x]);
+		printf("%d\n", pswap->stack_b.mask.vector[x]);
 	}
 	//debug code
 

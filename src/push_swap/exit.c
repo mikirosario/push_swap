@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 05:41:21 by miki              #+#    #+#             */
-/*   Updated: 2021/05/24 05:41:44 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/27 12:55:59 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 void	freeme(t_pswap *pswap)
 {
-	if (pswap->stack_a)
-		ft_lstclear(&pswap->stack_a, free);
-	if (pswap->stack_b)
-		ft_lstclear(&pswap->stack_b, free);
-	if (pswap->mask_a.vector)
-		pswap->mask_a.vector = ft_del(pswap->mask_a.vector);
-	if (!pswap->mask_b.vector)
-		pswap->mask_b.vector = ft_del(pswap->mask_b.vector);
+	if (pswap->stack_a.stack)
+		ft_lstclear(&pswap->stack_a.stack, free);
+	if (pswap->stack_b.stack)
+		ft_lstclear(&pswap->stack_b.stack, free);
+	if (pswap->stack_a.mask.vector)
+		pswap->stack_a.mask.vector = ft_del(pswap->stack_a.mask.vector);
+	if (!pswap->stack_b.mask.vector)
+		pswap->stack_b.mask.vector = ft_del(pswap->stack_b.mask.vector);
 	pswap->bintree = ft_bintree_free(pswap->bintree);
 	if (pswap->bintree)
 		pswap->bintree = ft_bintree_free(pswap->bintree);
-	if (pswap->lst)
-		ft_lstclear(&pswap->lst, free);
+	if (pswap->instruction)
+		ft_lstclear(&pswap->instruction, free);
 }
 
 void	print_error(char *error_msg, char *ansi_color_code)

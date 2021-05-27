@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/25 23:29:27 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/27 12:55:59 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ void	count_numbers(t_pswap *pswap)
 {
 	t_list	*stack_a;
 
-	stack_a = pswap->stack_a;
+	stack_a = pswap->stack_a.stack;
 	while (stack_a)
 	{
 		stack_a = stack_a->next;
 		pswap->numbers++;
 	}
-	pswap->stack_a_numbers = pswap->numbers;
+	pswap->stack_a.numbers = pswap->numbers;
 }
 
 /*
@@ -42,7 +42,7 @@ void	print_instructions(t_pswap *pswap)
 	printf("ITERATION: %zu\n", pswap->tonti);
 	//debug code
 
-	instructions = pswap->lst;
+	instructions = pswap->instruction;
 	while (instructions)
 	{
 		ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
@@ -52,10 +52,10 @@ void	print_instructions(t_pswap *pswap)
 	//debug code
 	printf("Number of Movements: %zu\n", pswap->move_counter);
 	printf("STACK A\n");
-	for (t_list *lst = pswap->stack_a; lst; lst = lst->next)
+	for (t_list *lst = pswap->stack_a.stack; lst; lst = lst->next)
 		printf("%d\n", *(int *)lst->content);
 	printf("STACK B\n");
-	for (t_list *lst = pswap->stack_b; lst; lst = lst->next)
+	for (t_list *lst = pswap->stack_b.stack; lst; lst = lst->next)
 		printf("%d\n", *(int *)lst->content);
 	//debug code
 }
@@ -69,12 +69,12 @@ void	init(t_pswap *pswap)
 {
 	t_bstnode	*bintree;
 
-	pswap->mask_a.vector = ft_calloc(pswap->numbers, sizeof(int));
-	pswap->mask_b.vector = ft_calloc(pswap->numbers, sizeof(int));
-	pswap->mask_a.start_index = 0;
-	pswap->mask_a.end_index = pswap->numbers;
-	pswap->mask_b.start_index = pswap->numbers;
-	pswap->mask_b.end_index = pswap->numbers;
+	pswap->stack_a.mask.vector = ft_calloc(pswap->numbers, sizeof(int));
+	pswap->stack_b.mask.vector = ft_calloc(pswap->numbers, sizeof(int));
+	pswap->stack_a.mask.start_index = 0;
+	pswap->stack_a.mask.end_index = pswap->numbers;
+	pswap->stack_b.mask.start_index = pswap->numbers;
+	pswap->stack_b.mask.end_index = pswap->numbers;
 	bintree = pswap->bintree;
 	while (bintree->left)
 		bintree = bintree->left;
