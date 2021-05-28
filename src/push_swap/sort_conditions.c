@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 22:05:11 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/27 13:36:21 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/28 04:15:10 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ int	are_contiguous(t_pswap *pswap, int smaller, int larger)
 char	is_ordered(t_pswap *pswap)
 {
 	size_t	i;
+	size_t	stack_b_numbers;
 
 	generate_position_map(pswap);
 	//ALL MASK_B POSITION NUMBERS ARE AT ZERO POSITION
@@ -136,41 +137,52 @@ char	is_ordered(t_pswap *pswap)
 			return (0);
 	//ADD PA * NUMBERS_IN_STACK_B MOVEMENTS
 	i = 0;
-	while (i++ < pswap->stack_b.numbers)
+	stack_b_numbers = pswap->stack_b.numbers;
+	while (i++ < stack_b_numbers)
 		pa_move(pswap);
 return (1);
 }
 
 /*
 ** This function will determine whether or not a given series of numbers in
-** stack_a is sequenced, though not necessarily ordered. That is, counting from
-** zero downward and looping around to the top at the end of the stack, all
-** numbers are in sequential ascending order.
+** the stack passed as stack is sequenced, though not necessarily ordered. That
+** is, counting from the smallest number (stack->smallest) downward and looping
+** around to the top at the end of the stack, all numbers are in sequential
+** ascending order.
 **
 ** If true, then the sort_rotate function can be used to finalize the sorting.
 **
 ** Two of the relevant numbers we generate are the smallest and largest integers
-** in stack_a. Except for the transition from the largest to the smallest, we
+** in the stack. Except for the transition from the largest to the smallest, we
 ** require the stack to go in ascending order. If we hit any neighbouring
 ** numbers in which a number is greater than the subsequent number, we ask if it
 ** is true that the number is the largest in the stack and the subsequent number
-** is the smallest in the stack. If it is NOT true, we return 0. If stack_a does
-** not exist we also return 0. If the whole stack is traversed then we return 1.
+** is the smallest in the stack. If it is NOT true, we return 0. If the whole
+** stack is traversed then we return 1 to indicate that it is sequenced. If the
+** stack being queried does not exist them we also return 1. 
 */
 
 int	stack_is_sequenced(t_pswap *pswap, t_stack *stack)
 {
 	t_list	*stk;
+	size_t	i;
+	int		anterior;
+	int		posterior;
 
 	get_relevant_numbers(pswap);
 	stk = stack->stack;
+	i = stack->numbers;
 	if (stk == NULL)
-		return (0);
-	while (stk->next)
+		return (1);
+	while (i--)
 	{
-		if ((*(int *)stk->content > *(int *)stk->next->content)
-		 && !(*(int *)stk->content == stack->largest &&
-		*(int *)stk->next->content == stack->smallest))
+		anterior = *(int *)stk->content;
+		if (stk->next == NULL)
+			posterior = *(int *)stack->stack->content;
+		else
+			posterior = *(int *)stk->next->content;
+		if (anterior > posterior
+		 && !(anterior == stack->largest && posterior == stack->smallest))
 			return (0);
 		stk = stk->next;
 	}

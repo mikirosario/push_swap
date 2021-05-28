@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/27 13:34:26 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/28 03:30:49 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,15 @@ typedef struct	s_mask
 	size_t	end_index;
 }				t_mask;
 
+typedef struct	s_sequence
+{
+	size_t	r_moves;
+	size_t	rr_moves;
+	size_t	r_carry_moves;
+	size_t	rr_carry_moves;
+}				t_sequence;
+
+
 // typedef struct	s_relevant
 // {
 // 	int		a_first;
@@ -72,7 +81,7 @@ typedef struct	s_stack
 	int		last;
 	int		smallest;
 	int		largest;
-	char	sequenced;
+	// char	sequenced;
 }				t_stack;
 
 
@@ -105,6 +114,7 @@ void		exit_success(t_pswap *pswap);
 int			generate_stacks(char **argv, t_pswap *pswap);
 int			generate_instructions(t_pswap *pswap);
 void		generate_position_map(t_pswap *pswap);
+void		sequence_stacks(t_pswap *pswap);
 void		get_relevant_numbers(t_pswap *pswap);
 void		print_instructions(t_pswap *pswap);
 
@@ -141,6 +151,7 @@ void		rra_move(t_pswap *pswap);
 void		rrb_move(t_pswap *pswap);
 void		rrr_move(t_pswap *pswap);
 void		sort_rotate_stack_a(t_pswap *pswap);
+void		sequence_stacks(t_pswap *pswap);;
 void		add_move_to_list(t_pswap *pswap, char *move);
 
 #endif

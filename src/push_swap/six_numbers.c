@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/21 11:18:16 by miki              #+#    #+#             */
-/*   Updated: 2021/05/27 13:34:32 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/27 15:08:57 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,19 @@ int	push_to_stack_a(t_pswap *pswap)
 	b = &pswap->stack_b;
 	if (a->first > b->first && are_contiguous(pswap, b->first, a->first))
 		pa_move(pswap);
+	else if (a->first > b->second && are_contiguous(pswap, b->second, a->first))
+	{
+		sb_move(pswap);
+		pa_move(pswap);
+	}
 	else if (a->first < b->first && are_contiguous(pswap, a->first, b->first))
 	{
 		ra_move(pswap);
+		pa_move(pswap);
+	}
+	else if (a->first > b->last && are_contiguous(pswap, b->last, a->first))
+	{
+		rrb_move(pswap);
 		pa_move(pswap);
 	}
 	else if (a->first < b->last && are_contiguous(pswap, a->first, b->last))
