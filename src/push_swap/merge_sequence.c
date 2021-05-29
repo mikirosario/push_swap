@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   merge_sequence.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/29 08:58:35 by miki              #+#    #+#             */
-/*   Updated: 2021/05/29 16:19:14 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 21:14:27 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int find_in_stack(t_stack *stack, t_sequence *sequence, int num)
 void	get_contiguous_numbers(t_pswap *pswap, t_contiguous *cont, int num)
 {
 	size_t	i;
-	
+
 	cont->middle = num;
 	i = 0;
 	while (i < pswap->numbers && (pswap->array_tree[i])->data != (long int)num)
@@ -176,7 +176,7 @@ t_fastest_rotation		get_divergent_moves(t_sequence *stack_a, t_sequence *stack_b
 	t_fastest_rotation	proposal;
 	char				stack_a_preference;
 	char				stack_b_preference;
-	
+
 	ft_bzero(&proposal, sizeof(t_fastest_rotation));
 	if (stack_a->r_moves < stack_a->rr_moves)
 		stack_a_preference = '<';
@@ -185,7 +185,7 @@ t_fastest_rotation		get_divergent_moves(t_sequence *stack_a, t_sequence *stack_b
 	if (stack_b->r_moves < stack_b->rr_moves)
 		stack_b_preference = '<';
 	else
-		stack_a_preference = '>';
+		stack_b_preference = '>';
 	if (stack_a_preference == stack_b_preference)
 		return (incumbent);
 	if (stack_a_preference == '<')
@@ -223,19 +223,19 @@ t_fastest_rotation		get_divergent_moves(t_sequence *stack_a, t_sequence *stack_b
 **
 
 */
-t_fastest_rotation	find_fastest_rotate_solution(t_merge_sequence *seq)
+t_fastest_rotation	find_fastest_rotate_solution(t_sequence *stack_a, t_sequence *stack_b)
 {
 	t_fastest_rotation	fastest;
 	t_fastest_rotation	proposal;
 
 //rotate moves
-	fastest = get_rotate_moves(seq->stack_a.r_moves, seq->stack_b.r_moves);
+	fastest = get_rotate_moves(stack_a->r_moves, stack_b->r_moves);
 //reverse rotate moves
-	proposal = get_reverse_rotate_moves(seq->stack_a.rr_moves, seq->stack_b.rr_moves);
+	proposal = get_reverse_rotate_moves(stack_a->rr_moves, stack_b->rr_moves);
 	if (proposal.total_moves < fastest.total_moves)
 		fastest = proposal;
 //divergent rotate moves
-	proposal = get_divergent_moves(&seq->stack_a, &seq->stack_b, fastest);
+	proposal = get_divergent_moves(stack_a, stack_b, fastest);
 	if (proposal.total_moves < fastest.total_moves)
 		fastest = proposal;
 	return (fastest);
@@ -274,7 +274,7 @@ t_fastest_rotation	find_fastest_rotate_solution(t_merge_sequence *seq)
 ** means rotating one or both stacks until the pair are at the top and doing
 ** pa_move. If we can't find a value in stack_b, we know it must be in stack_a,
 ** and since merge_sort is triggered after sequence_stacks, we also know it must
-** already be sequenced. So we ignore it. 
+** already be sequenced. So we ignore it.
 **
 ** Here is where things get tricky. Depending on where the two values are in
 ** both stacks relative to each other, it may be more convenient for either of
@@ -339,7 +339,7 @@ void	merge_sequence(t_pswap *pswap)
 	t_merge_sequence	sequence;
 	t_fastest_rotation	fastest;
 	t_fastest_rotation	proposal;
-	
+
 	stack_a = pswap->stack_a.stack;
 	ft_bzero (&sequence, sizeof(t_merge_sequence));
 	ft_memset(&fastest, INT_MAX, sizeof(t_fastest_rotation));
@@ -350,7 +350,7 @@ void	merge_sequence(t_pswap *pswap)
 		if (find_in_stack(&pswap->stack_b, &sequence.stack_b, contiguous.bottom))
 		{
 			sequence.stack_a.rr_moves = pswap->stack_a.numbers - sequence.stack_a.r_moves;
-			proposal = find_fastest_rotate_solution(&sequence);
+			proposal = find_fastest_rotate_solution(&sequence.stack_a, &sequence.stack_b);
 			if (fastest.total_moves > proposal.total_moves)
 				fastest = proposal;
 		}
@@ -358,19 +358,39 @@ void	merge_sequence(t_pswap *pswap)
 		if (find_in_stack(&pswap->stack_b, &sequence.stack_b, contiguous.top))
 		{
 			sequence.stack_a.rr_moves = pswap->stack_a.numbers - sequence.stack_a.r_moves;
-			proposal = find_fastest_rotate_solution(&sequence);
+			proposal = find_fastest_rotate_solution(&sequence.stack_a, &sequence.stack_b);
 			if (fastest.total_moves > proposal.total_moves)
 				fastest = proposal;
 		}
 		stack_a = stack_a->next;
 		sequence.stack_a.r_moves++;
 	}
-	//debug code
-	printf("---------MARRIAGE PROPOSAL---------\n");
-	for (size_t i = 0; i < 6; i++)
+
+	void (*move[6])(t_pswap *);
+	size_t	i;
+
+	move[0] = rr_move;
+	move[1] = rrr_move;
+	move[2] = ra_move;
+	move[3] = rb_move;
+	move[4] = rra_move;
+	move[5] = rrb_move;
+	i = 0;
+
+	while (i < 6)
 	{
-		printf("%zu\n", ((size_t *)(&fastest))[i]);
+		while (((size_t *)(&fastest))[i]--)
+			move[i](pswap);
+		i++;
 	}
-	printf("%zu\n", fastest.total_moves);
-	//debug code
+	pa_move(pswap);
+
+	// //debug code
+	// printf("---------MARRIAGE PROPOSAL---------\n");
+	// for (size_t i = 0; i < 6; i++)
+	// {
+	// 	printf("%zu\n", ((size_t *)(&fastest))[i]);
+	// }
+	// printf("%zu\n", fastest.total_moves);
+	// //debug code
 }

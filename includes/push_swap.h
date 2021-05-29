@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/29 16:07:36 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 21:16:22 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,13 @@ typedef struct	s_sequence
 	size_t	rr_carry_moves;
 }				t_sequence;
 
+typedef struct	s_contiguous
+{
+	int	top;
+	int	middle;
+	int bottom;
+}				t_contiguous;
+
 typedef	struct	s_fastest_rotation
 {
 	size_t	rr_move;
@@ -60,20 +67,20 @@ typedef	struct	s_fastest_rotation
 	size_t	total_moves;
 }				t_fastest_rotation;
 
+typedef	struct	s_swap_pairs
+{
+	t_contiguous	a_pair;
+	t_contiguous	b_pair;
+	t_sequence		a_moves;
+	t_sequence		b_moves;
+}				t_swap_pairs;
+
 
 typedef	struct	s_merge_sequence
 {
 	t_sequence			stack_a;
 	t_sequence			stack_b;
 }				t_merge_sequence;
-
-
-typedef struct	s_contiguous
-{
-	int	top;
-	int	middle;
-	int bottom;
-}				t_contiguous;
 
 // typedef struct	s_relevant
 // {
@@ -166,19 +173,20 @@ void	six_numbers(t_pswap *pswap);
 ** Movements
 */
 
-void		sa_move(t_pswap *pswap);
-void		sb_move(t_pswap *pswap);
-void		ss_move(t_pswap *pswap);
-void		pa_move(t_pswap *pswap);
-void		pb_move(t_pswap *pswap);
-void		ra_move(t_pswap *pswap);
-void		rb_move(t_pswap *pswap);
-void		rr_move(t_pswap *pswap);
-void		rra_move(t_pswap *pswap);
-void		rrb_move(t_pswap *pswap);
-void		rrr_move(t_pswap *pswap);
-void		sort_rotate_stack_a(t_pswap *pswap);
-void		sequence_stacks(t_pswap *pswap);;
-void		add_move_to_list(t_pswap *pswap, char *move);
+void				sa_move(t_pswap *pswap);
+void				sb_move(t_pswap *pswap);
+void				ss_move(t_pswap *pswap);
+void				pa_move(t_pswap *pswap);
+void				pb_move(t_pswap *pswap);
+void				ra_move(t_pswap *pswap);
+void				rb_move(t_pswap *pswap);
+void				rr_move(t_pswap *pswap);
+void				rra_move(t_pswap *pswap);
+void				rrb_move(t_pswap *pswap);
+void				rrr_move(t_pswap *pswap);
+void				sort_rotate_stack_a(t_pswap *pswap);
+void				sequence_stacks(t_pswap *pswap);
+t_fastest_rotation	find_fastest_rotate_solution(t_sequence *stack_a, t_sequence *stack_b);
+void				add_move_to_list(t_pswap *pswap, char *move);
 
 #endif

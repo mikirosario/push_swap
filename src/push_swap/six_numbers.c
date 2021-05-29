@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   six_numbers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/21 11:18:16 by miki              #+#    #+#             */
-/*   Updated: 2021/05/27 15:08:57 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 19:21:24 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,10 @@ void	six_numbers(t_pswap *pswap)
 	size_t		i;
 	static char		stayout = 0;
 
-	print_instructions(pswap);
+	// //debug code
+	// print_instructions(pswap);
+	// //debug code
+
 	if (!stayout)
 	{
 		i = pswap->numbers - 3;

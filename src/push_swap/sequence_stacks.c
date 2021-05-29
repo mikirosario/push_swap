@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sequence_stacks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/29 16:05:42 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 22:44:11 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	find_next_unsequenced_pair(t_stack *stack, t_sequence *sequence)
 			break ;
 		stk = stk->next;
 		i++;
-	}		
+	}
 	sequence->r_moves = i;
 	sequence->rr_moves = stack->numbers - i;
 }
@@ -175,68 +175,158 @@ void	get_carry_moves(t_sequence *stack_a, t_sequence *stack_b)
 ** the joint moves will be ignored and we will skip to the individual moves
 ** straight away. If both stacks already have a pair in the top position, we jump
 ** right to ss_move.
-**
 */
+
+/*
+** This function finds the next unsequenced pair in the stack. An unsequenced
+** is any pair of numbers when the top number is larger than the bottom number,
+** except for the transition between stack->largest and stack->smallest, in
+** which case the pair is unsequenced if the smallest is above the largest. So
+** this has a special condition.
+**
+** I use the t_contiguous struct like in merge_sequence, though I won't use its
+** middle integer here, just top and bottom. If the pair is unsequenced, the
+** function returns 1. If it is already sequenced, the function returns 0.
+**
+** Once we find an unsequenced pair we enter
+*/
+static int unsequenced_pair(t_pswap *pswap, t_stack *stack, t_list *top, t_contiguous *pair)
+{
+	get_relevant_numbers(pswap);
+	pair->top = *(int *)top->content;
+	if (top->next == NULL)
+		pair->bottom = stack->first;
+	else
+		pair->bottom = *(int *)top->next->content;
+	//if (anterior > posterior && !(anterior == stack->largest && posterior == stack->smallest))
+	if (pair->top > pair->bottom && !(pair->top == stack->largest && pair->bottom == stack->smallest))
+		return (1);
+	return 0;
+}
 
 void	double_sequence(t_pswap *pswap)
 {
-	t_sequence	stack_a;
-	t_sequence	stack_b;
-	size_t		r_carry_moves;
-	size_t		rr_carry_moves;
+	t_list				*stack_a;
+	t_list				*stack_b;
+	t_fastest_rotation	fastest;
+	t_fastest_rotation	proposal;
+	t_swap_pairs		swap_pairs;
 
-	get_relevant_numbers(pswap);
-	find_next_unsequenced_pair(&pswap->stack_a, &stack_a);
-	find_next_unsequenced_pair(&pswap->stack_b, &stack_b);
-	get_carry_moves(&stack_a, &stack_b);
-	if (!stack_b.r_carry_moves)
-		r_carry_moves = stack_a.r_carry_moves;
-	else
-		r_carry_moves = stack_b.r_carry_moves;
-	if (!stack_b.rr_carry_moves)
-		rr_carry_moves = stack_a.rr_carry_moves;
-	else
-		rr_carry_moves = stack_b.rr_carry_moves;
-	if (r_carry_moves <= rr_carry_moves)
+	ft_bzero(&swap_pairs, sizeof(t_swap_pairs));
+	ft_memset(&fastest, INT_MAX, sizeof(t_fastest_rotation));
+	stack_a = pswap->stack_a.stack;
+	while (stack_a)
 	{
-		while (stack_a.r_moves && stack_b.r_moves)
+		if (unsequenced_pair(pswap, &pswap->stack_a, stack_a, &swap_pairs.a_pair))
 		{
-			rr_move(pswap);
-			stack_a.r_moves--;
-			stack_b.r_moves--;
+			ft_bzero(&swap_pairs.b_moves, sizeof(t_sequence));
+			stack_b = pswap->stack_b.stack;
+			while (stack_b)
+			{
+				if (unsequenced_pair(pswap, &pswap->stack_b, stack_b, &swap_pairs.b_pair))
+				{
+					swap_pairs.a_moves.rr_moves = pswap->stack_a.numbers - swap_pairs.a_moves.r_moves;
+					swap_pairs.b_moves.rr_moves = pswap->stack_b.numbers - swap_pairs.b_moves.r_moves;
+					proposal = find_fastest_rotate_solution(&swap_pairs.a_moves, &swap_pairs.b_moves);
+					if (fastest.total_moves > proposal.total_moves)
+						fastest = proposal;
+				}
+				stack_b = stack_b->next;
+				swap_pairs.b_moves.r_moves++;
+			}
 		}
-		if (stack_a.r_moves)
-			while (stack_a.r_moves--)
-				ra_move(pswap);
-		if (stack_b.r_moves)
-			while (stack_b.r_moves--)
-				rb_move(pswap);
+		stack_a = stack_a->next;
+		swap_pairs.a_moves.r_moves++;
 	}
-	else
+
+	void (*move[6])(t_pswap *);
+	size_t	i;
+
+	move[0] = rr_move;
+	move[1] = rrr_move;
+	move[2] = ra_move;
+	move[3] = rb_move;
+	move[4] = rra_move;
+	move[5] = rrb_move;
+	i = 0;
+	while (i < 6)
 	{
-		while (stack_a.rr_moves && stack_b.rr_moves)
-		{
-			rrr_move(pswap);
-			stack_a.rr_moves--;
-			stack_b.rr_moves--;
-		}
-		if (stack_a.rr_moves)
-			while(stack_a.rr_moves--)
-				rra_move(pswap);
-		if (stack_b.rr_moves)
-			while(stack_b.rr_moves--)
-				rrb_move(pswap);
+		while (((size_t *)(&fastest))[i]--)
+			move[i](pswap);
+		i++;
 	}
 	ss_move(pswap);
-	
-	
-	//if one or both pairs are equidistant from the top in both directions,
-	//it doesn't matter which direction we choose. Go with the other's preferred
-	//direction. If there is no preferred direction, go with r_move.
 
 
-
+	// 	//debug code
+	// printf("---------MARRIAGE PROPOSAL---------\n");
+	// for (size_t i = 0; i < 6; i++)
+	// {
+	// 	printf("%zu\n", ((size_t *)(&fastest))[i]);
+	// }
+	// printf("%zu\n", fastest.total_moves);
+	// //debug code
 }
+
+// void	double_sequence(t_pswap *pswap)
+// {
+// 	t_sequence	stack_a;
+// 	t_sequence	stack_b;
+// 	size_t		r_carry_moves;
+// 	size_t		rr_carry_moves;
+
+// 	get_relevant_numbers(pswap);
+// 	find_next_unsequenced_pair(&pswap->stack_a, &stack_a);
+// 	find_next_unsequenced_pair(&pswap->stack_b, &stack_b);
+// 	get_carry_moves(&stack_a, &stack_b);
+// 	if (!stack_b.r_carry_moves)
+// 		r_carry_moves = stack_a.r_carry_moves;
+// 	else
+// 		r_carry_moves = stack_b.r_carry_moves;
+// 	if (!stack_b.rr_carry_moves)
+// 		rr_carry_moves = stack_a.rr_carry_moves;
+// 	else
+// 		rr_carry_moves = stack_b.rr_carry_moves;
+// 	if (r_carry_moves <= rr_carry_moves)
+// 	{
+// 		while (stack_a.r_moves && stack_b.r_moves)
+// 		{
+// 			rr_move(pswap);
+// 			stack_a.r_moves--;
+// 			stack_b.r_moves--;
+// 		}
+// 		if (stack_a.r_moves)
+// 			while (stack_a.r_moves--)
+// 				ra_move(pswap);
+// 		if (stack_b.r_moves)
+// 			while (stack_b.r_moves--)
+// 				rb_move(pswap);
+// 	}
+// 	else
+// 	{
+// 		while (stack_a.rr_moves && stack_b.rr_moves)
+// 		{
+// 			rrr_move(pswap);
+// 			stack_a.rr_moves--;
+// 			stack_b.rr_moves--;
+// 		}
+// 		if (stack_a.rr_moves)
+// 			while(stack_a.rr_moves--)
+// 				rra_move(pswap);
+// 		if (stack_b.rr_moves)
+// 			while(stack_b.rr_moves--)
+// 				rrb_move(pswap);
+// 	}
+// 	ss_move(pswap);
+
+
+// 	//if one or both pairs are equidistant from the top in both directions,
+// 	//it doesn't matter which direction we choose. Go with the other's preferred
+// 	//direction. If there is no preferred direction, go with r_move.
+
+
+
+// }
 
 void	sequence_stack_a(t_pswap *pswap)
 {
@@ -318,7 +408,10 @@ void	sequence_stacks(t_pswap *pswap)
 	size_t		i;
 	static char		stayout = 0;
 
-	print_instructions(pswap);
+	// //debug code
+	// print_instructions(pswap);
+	// //debug code
+
 	//push to stack b
 	if (!stayout)
 	{
@@ -336,18 +429,20 @@ void	sequence_stacks(t_pswap *pswap)
 	if (seq_flag == 3)
 	{
 		merge_sequence(pswap);
-		exit_failure("STACKS SEQUENCED SUCCESSFULLY", pswap);
+		//exit_failure("STACKS SEQUENCED SUCCESSFULLY", pswap);
 		return ;
 	}
 	if (seq_flag == 0)
 		double_sequence(pswap);
 	else if (seq_flag == 1)
 		sequence_stack_b(pswap);
-	else if (seq_flag == 2)
+	else if (seq_flag == 2 || !seq_flag)
 		sequence_stack_a(pswap);
-	printf("SEQUENCING\n");
-	print_instructions(pswap);
+
+
 	// //debug code
+	// printf("SEQUENCING\n");
+	// print_instructions(pswap);
 	// 	printf("SEQ FLAG %d\n", seq_flag);
 	// 	if (seq_flag == 0)
 	// 		printf("Neither stack sequenced\n");

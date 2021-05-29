@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_position_map.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 03:58:49 by miki              #+#    #+#             */
-/*   Updated: 2021/05/29 11:30:02 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 18:49:36 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,20 +186,20 @@ void	generate_position_map(t_pswap *pswap)
 	{
 		*ptr++ = pswap->stack_a.mask.vector[i];
 	}
-	
-	//debug code
-	print_instructions(pswap);
-	printf("ITERATION: %zu\n", pswap->tonti);
-	printf("STACK A POS MAP:\n");
-	for(size_t x = pswap->stack_a.mask.start_index; x < pswap->stack_a.mask.end_index; x++)
-	{
-		printf("%d\n", pswap->stack_a.mask.vector[x]);
-	}
-	printf("STACK B POS MAP:\n");
-	for(size_t x = pswap->stack_b.mask.start_index; x < pswap->stack_b.mask.end_index; x++)
-	{
-		printf("%d\n", pswap->stack_b.mask.vector[x]);
-	}
-	//debug code
+
+	// //debug code
+	// print_instructions(pswap);
+	// printf("ITERATION: %zu\n", pswap->tonti);
+	// printf("STACK A POS MAP:\n");
+	// for(size_t x = pswap->stack_a.mask.start_index; x < pswap->stack_a.mask.end_index; x++)
+	// {
+	// 	printf("%d\n", pswap->stack_a.mask.vector[x]);
+	// }
+	// printf("STACK B POS MAP:\n");
+	// for(size_t x = pswap->stack_b.mask.start_index; x < pswap->stack_b.mask.end_index; x++)
+	// {
+	// 	printf("%d\n", pswap->stack_b.mask.vector[x]);
+	// }
+	// //debug code
 
 }
