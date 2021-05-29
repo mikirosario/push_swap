@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/27 12:55:59 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 11:48:07 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,41 @@ void	init(t_pswap *pswap)
 	pswap->largest = (int)bintree->data;
 }
 
+static void	in_order_traversal(t_pswap *pswap, t_bstnode *root)
+{
+	if (root != NULL)
+	{
+		in_order_traversal(pswap, root->left);
+		//printf("NUM: %d POS: %d\n", (int)root->data, pswap->desired_pos++);
+		pswap->array_tree[pswap->desired_pos++] = root;
+		in_order_traversal(pswap, root->right);
+	}
+}
+
+/*
+** Sometimes you just REALLY want to make that binary tree you were using into
+** an array. Amirite? For those times, in this program, there is this function.
+** Best of both worlds, I always say. Or maybe I've just had enough of misuing
+** binary trees in expensive calculations for the sake of practice. xD
+**
+** So I'm going to create an array of bst_node pointers. Let's  get cracking!
+*/
+
+void	array_my_tree(t_pswap *pswap)
+{
+	pswap->array_tree = ft_calloc(pswap->numbers, sizeof(t_bstnode *));
+	pswap->desired_pos = 0;
+	in_order_traversal(pswap, pswap->bintree);
+
+	// //DEBUG COD
+	// printf("\n<<<<<<<ARRAY TREE>>>>>>>\n");
+	// for (size_t i = 0; i < pswap->numbers; i++)
+	// {
+	// 	printf("%d\n", (int)(pswap->array_tree[i])->data);
+	// }
+	// //debug c
+}
+
 /*
 ** First we declare the pswap struct and zero it.
 **
@@ -113,6 +148,7 @@ int	main(int argc, char **argv)
 	ft_bzero(&pswap, sizeof(t_pswap));
 	generate_stacks(argv, &pswap);
 	count_numbers(&pswap);
+	array_my_tree(&pswap);
 	if (pswap.numbers > 1)
 	{
 		init(&pswap);

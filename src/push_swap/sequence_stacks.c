@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/28 04:34:33 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 16:05:42 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,11 +214,11 @@ void	double_sequence(t_pswap *pswap)
 	}
 	else
 	{
-		while (stack_a.rr_moves & stack_b.rr_moves)
+		while (stack_a.rr_moves && stack_b.rr_moves)
 		{
 			rrr_move(pswap);
-			stack_a.r_moves--;
-			stack_b.r_moves--;
+			stack_a.rr_moves--;
+			stack_b.rr_moves--;
 		}
 		if (stack_a.rr_moves)
 			while(stack_a.rr_moves--)
@@ -335,6 +335,7 @@ void	sequence_stacks(t_pswap *pswap)
 
 	if (seq_flag == 3)
 	{
+		merge_sequence(pswap);
 		exit_failure("STACKS SEQUENCED SUCCESSFULLY", pswap);
 		return ;
 	}

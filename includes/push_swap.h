@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/28 03:30:49 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 16:07:36 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,31 @@ typedef struct	s_sequence
 	size_t	rr_carry_moves;
 }				t_sequence;
 
+typedef	struct	s_fastest_rotation
+{
+	size_t	rr_move;
+	size_t	rrr_move;
+	size_t	ra_move;
+	size_t	rb_move;
+	size_t	rra_move;
+	size_t	rrb_move;
+	size_t	total_moves;
+}				t_fastest_rotation;
+
+
+typedef	struct	s_merge_sequence
+{
+	t_sequence			stack_a;
+	t_sequence			stack_b;
+}				t_merge_sequence;
+
+
+typedef struct	s_contiguous
+{
+	int	top;
+	int	middle;
+	int bottom;
+}				t_contiguous;
 
 // typedef struct	s_relevant
 // {
@@ -90,6 +115,7 @@ typedef struct s_pswap
 	t_stack		stack_a;
 	t_stack		stack_b;
 	t_bstnode	*bintree;
+	t_bstnode	**array_tree;
 	t_list		*instruction;
 	size_t		numbers;
 	size_t		move_counter;
@@ -115,6 +141,7 @@ int			generate_stacks(char **argv, t_pswap *pswap);
 int			generate_instructions(t_pswap *pswap);
 void		generate_position_map(t_pswap *pswap);
 void		sequence_stacks(t_pswap *pswap);
+void		merge_sequence(t_pswap *pswap);
 void		get_relevant_numbers(t_pswap *pswap);
 void		print_instructions(t_pswap *pswap);
 

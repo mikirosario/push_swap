@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 05:41:21 by miki              #+#    #+#             */
-/*   Updated: 2021/05/27 12:55:59 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 11:34:19 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	freeme(t_pswap *pswap)
 	pswap->bintree = ft_bintree_free(pswap->bintree);
 	if (pswap->bintree)
 		pswap->bintree = ft_bintree_free(pswap->bintree);
+	if (pswap->array_tree)
+		pswap->array_tree = ft_del(pswap->array_tree);
 	if (pswap->instruction)
 		ft_lstclear(&pswap->instruction, free);
 }

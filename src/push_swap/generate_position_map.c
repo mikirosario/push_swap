@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 03:58:49 by miki              #+#    #+#             */
-/*   Updated: 2021/05/27 12:55:59 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/29 11:30:02 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	record_offset(t_pswap *pswap, int desired_pos, int num)
 ** record_offset to record the offset.
 */
 
-void	in_order_traversal(t_pswap *pswap, t_bstnode *root)
+static void	in_order_traversal(t_pswap *pswap, t_bstnode *root)
 {
 	if (root != NULL)
 	{
