@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/31 11:29:45 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/31 11:43:50 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -568,8 +568,10 @@ void	sequence_stacks(t_pswap *pswap)
 	// if (stack_is_sequenced(pswap, &pswap->stack_b))
 	// 	printf("MUMUª\n");¡
 	//////NO PUEDDER SESEEEERRRR!!!"OIHUFHOPÑIDFIOH"
-	if (pswap->stack_a.numbers > pswap->numbers / 5 && (seq_flag == 2 || seq_flag == 0))
-		pb_move(pswap);
+	if (pswap->numbers < 500 && (seq_flag == 2 || seq_flag == 0))
+			push_unsequenced(pswap);
+	else if (pswap->numbers >= 500 && (pswap->stack_a.numbers > pswap->numbers / 5 && (seq_flag == 2 || seq_flag == 0)))
+	 	pb_move(pswap); //pfffffffffffffffffffffffffffffffff!!!!!
 	//mejor bajos
 	//else if (seq_flag == 3 || seq_flag == 1)
 	//mejor altos
