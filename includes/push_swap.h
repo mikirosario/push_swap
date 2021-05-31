@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/29 21:16:22 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/31 10:48:27 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,11 @@ int			generate_stacks(char **argv, t_pswap *pswap);
 int			generate_instructions(t_pswap *pswap);
 void		generate_position_map(t_pswap *pswap);
 void		sequence_stacks(t_pswap *pswap);
+
+//guerra de las estrellas
 void		merge_sequence(t_pswap *pswap);
+void		merge_sequence_b(t_pswap *pswap);
+
 void		get_relevant_numbers(t_pswap *pswap);
 void		print_instructions(t_pswap *pswap);
 
@@ -165,6 +169,7 @@ t_vector	*vector_new(void);
 char	is_ordered(t_pswap *pswap);
 int		are_contiguous(t_pswap *pswap, int smaller, int larger);
 int		stack_is_sequenced(t_pswap *pswap, t_stack *stack);
+int	stack_b_is_sequenced(t_pswap *pswap, t_stack *stack);
 //int		stack_b_is_sequenced(t_pswap *pswap);
 void	three_numbers(t_pswap *pswap);
 void	six_numbers(t_pswap *pswap);
@@ -186,7 +191,7 @@ void				rrb_move(t_pswap *pswap);
 void				rrr_move(t_pswap *pswap);
 void				sort_rotate_stack_a(t_pswap *pswap);
 void				sequence_stacks(t_pswap *pswap);
-t_fastest_rotation	find_fastest_rotate_solution(t_sequence *stack_a, t_sequence *stack_b);
+t_fastest_rotation	find_fastest_double_rotate_solution(t_sequence *stack_a, t_sequence *stack_b);
 void				add_move_to_list(t_pswap *pswap, char *move);
 
 #endif

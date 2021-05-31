@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/12 17:56:17 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/27 12:51:20 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/31 01:50:39 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,5 +66,4 @@ void	rrr_move(t_pswap *pswap)
 {
 	rra_move(pswap);
 	rrb_move(pswap);
-	add_move_to_list(pswap, "rrr");
 }

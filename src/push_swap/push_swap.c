@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/29 22:04:00 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/31 10:23:16 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ void	print_instructions(t_pswap *pswap)
 {
 	t_list	*instructions;
 
-	//debug code
-	printf("ITERATION: %zu\n", pswap->tonti);
-	//debug code
+	// //debug code
+	// printf("ITERATION: %zu\n", pswap->tonti);
+	// //debug code
 
 	instructions = pswap->instruction;
 	while (instructions)
@@ -48,16 +48,19 @@ void	print_instructions(t_pswap *pswap)
 		ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
 		instructions = instructions->next;
 	}
-
-	//debug code
+	//debug
 	printf("Number of Movements: %zu\n", pswap->move_counter);
-	printf("STACK A\n");
-	for (t_list *lst = pswap->stack_a.stack; lst; lst = lst->next)
-		printf("%d\n", *(int *)lst->content);
-	printf("STACK B\n");
-	for (t_list *lst = pswap->stack_b.stack; lst; lst = lst->next)
-		printf("%d\n", *(int *)lst->content);
-	//debug code
+	//debug
+
+	// //debug code
+	// printf("STACK A\n");
+	// for (t_list *lst = pswap->stack_a.stack; lst; lst = lst->next)
+	// 	printf("%d\n", *(int *)lst->content);
+	// printf("STACK B\n");
+	// for (t_list *lst = pswap->stack_b.stack; lst; lst = lst->next)
+	// 	printf("%d\n", *(int *)lst->content);
+	// printf("Number of Movements: %zu\n", pswap->move_counter);
+	// //debug code
 }
 
 /*

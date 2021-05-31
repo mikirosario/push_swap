@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sequence_stacks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/29 22:44:11 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/31 11:29:45 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ void	double_sequence(t_pswap *pswap)
 				{
 					swap_pairs.a_moves.rr_moves = pswap->stack_a.numbers - swap_pairs.a_moves.r_moves;
 					swap_pairs.b_moves.rr_moves = pswap->stack_b.numbers - swap_pairs.b_moves.r_moves;
-					proposal = find_fastest_rotate_solution(&swap_pairs.a_moves, &swap_pairs.b_moves);
+					proposal = find_fastest_double_rotate_solution(&swap_pairs.a_moves, &swap_pairs.b_moves);
 					if (fastest.total_moves > proposal.total_moves)
 						fastest = proposal;
 				}
@@ -330,20 +330,57 @@ void	double_sequence(t_pswap *pswap)
 
 void	sequence_stack_a(t_pswap *pswap)
 {
-	t_sequence	stack_a;
+	t_contiguous		pair;
+	t_sequence			moves;
+	t_fastest_rotation	proposal;
+	t_fastest_rotation	fastest;
+	t_list				*stack_a;
+
+	ft_memset(&fastest, INT_MAX, sizeof(t_fastest_rotation));
+	ft_bzero(&moves, sizeof(t_sequence));
+	ft_bzero(&proposal, sizeof(t_fastest_rotation));
+	//vvv--necesario?
+	ft_bzero(&pair, sizeof(t_contiguous));
+	//^^^--necesario?
+	stack_a = pswap->stack_a.stack;
 	get_relevant_numbers(pswap);
-	find_next_unsequenced_pair(&pswap->stack_a, &stack_a);
-	if (stack_a.r_moves <= stack_a.rr_moves)
+	while (stack_a)
 	{
-		while (stack_a.r_moves--)
+		if (unsequenced_pair(pswap, &pswap->stack_a, stack_a, &pair))
+		{
+			moves.rr_moves = pswap->stack_a.numbers - moves.r_moves;
+			if (moves.r_moves < moves.rr_moves)	
+				proposal.ra_move = moves.r_moves;
+			else
+				proposal.rra_move = moves.rr_moves;
+			proposal.total_moves = proposal.ra_move + proposal.rra_move;
+			if (fastest.total_moves > proposal.total_moves)
+				fastest = proposal;
+		}
+		stack_a = stack_a->next;
+		moves.r_moves++;
+	}
+	if (fastest.ra_move)
+		while(fastest.ra_move--)
 			ra_move(pswap);
-	}
-	else
-	{
-		while(stack_a.rr_moves--)
+	else if (fastest.rra_move)
+		while (fastest.rra_move--)
 			rra_move(pswap);
-	}
 	sa_move(pswap);
+
+
+	// find_next_unsequenced_pair(&pswap->stack_a, &stack_a);
+	// if (stack_a.r_moves <= stack_a.rr_moves)
+	// {
+	// 	while (stack_a.r_moves--)
+	// 		ra_move(pswap);
+	// }
+	// else
+	// {
+	// 	while(stack_a.rr_moves--)
+	// 		rra_move(pswap);
+	// }
+	// sa_move(pswap);
 }
 
 void	sequence_stack_b(t_pswap *pswap)
@@ -362,6 +399,104 @@ void	sequence_stack_b(t_pswap *pswap)
 			rrb_move(pswap);
 	}
 	sb_move(pswap);
+}
+
+
+
+/*
+**
+*/
+
+void	push_sequence(t_pswap *pswap)
+{
+	t_list			*stack_a;
+	t_fastest_rotation	fastest;
+	t_fastest_rotation	proposal;
+	t_contiguous	a_pair;
+	t_sequence		a_moves;
+
+	stack_a = pswap->stack_a.stack;
+
+	ft_bzero(&a_moves, sizeof(t_sequence));
+	ft_bzero(&a_pair, sizeof(t_contiguous));
+	ft_memset(&fastest, INT_MAX, sizeof(t_fastest_rotation));
+	while (stack_a)
+	{
+		get_relevant_numbers(pswap);
+		if (*(int *)stack_a->content == pswap->stack_a.smallest)
+		{
+			ft_bzero(&proposal, sizeof(t_fastest_rotation));
+			a_moves.rr_moves = pswap->stack_a.numbers - a_moves.r_moves;
+			if (a_moves.r_moves < a_moves.rr_moves)	
+				proposal.ra_move = a_moves.r_moves;
+			else
+				proposal.rra_move = a_moves.rr_moves;
+			proposal.total_moves = proposal.ra_move + proposal.rra_move;
+			if (fastest.total_moves > proposal.total_moves)
+				fastest = proposal;
+		}
+		stack_a = stack_a->next;
+		a_moves.r_moves++;
+	}
+	if (fastest.ra_move)
+	{
+		while (fastest.ra_move--)
+			ra_move(pswap);
+	}
+	else if (fastest.rra_move)
+		while (fastest.rra_move--)
+			rra_move(pswap);
+	pb_move(pswap);
+}
+
+/*
+** To improve efficiency, this function will push only unsequenced top numbers
+** in stack_a to stack_b, leaving stack_a sequenced after the pushes.
+**
+** We analyse all unsequenced pairs in the stack and find the shortest route to
+** an unsequenced pair, then bring that pair's top number to the top of the
+** stack and push it.
+*/
+
+void	push_unsequenced(t_pswap *pswap)
+{
+	t_list			*stack_a;
+	t_fastest_rotation	fastest;
+	t_fastest_rotation	proposal;
+	t_contiguous	a_pair;
+	t_sequence		a_moves;
+
+	stack_a = pswap->stack_a.stack;
+
+	ft_bzero(&a_moves, sizeof(t_sequence));
+	ft_bzero(&a_pair, sizeof(t_contiguous));
+	ft_memset(&fastest, INT_MAX, sizeof(t_fastest_rotation));
+	while (stack_a)
+	{
+		if (unsequenced_pair(pswap, &pswap->stack_a, stack_a, &a_pair))
+		{
+			ft_bzero(&proposal, sizeof(t_fastest_rotation));
+			a_moves.rr_moves = pswap->stack_a.numbers - a_moves.r_moves;
+			if (a_moves.r_moves < a_moves.rr_moves)	
+				proposal.ra_move = a_moves.r_moves;
+			else
+				proposal.rra_move = a_moves.rr_moves;
+			proposal.total_moves = proposal.ra_move + proposal.rra_move;
+			if (fastest.total_moves > proposal.total_moves)
+				fastest = proposal;
+		}
+		stack_a = stack_a->next;
+		a_moves.r_moves++;
+	}
+	if (fastest.ra_move)
+	{
+		while (fastest.ra_move--)
+			ra_move(pswap);
+	}
+	else if (fastest.rra_move)
+		while (fastest.rra_move--)
+			rra_move(pswap);
+	pb_move(pswap);
 }
 
 /*
@@ -405,39 +540,52 @@ void	sequence_stacks(t_pswap *pswap)
 {
 	char	seq_flag;
 
-	size_t		i;
-	static char		stayout = 0;
+	// size_t		i;
+	// static char		stayout = 0;
 
 	// //debug code
 	// print_instructions(pswap);
 	// //debug code
 
-	//push to stack b
-	if (!stayout)
-	{
-		i = pswap->numbers - (pswap->numbers / 2);
-		while (i--)
-			pb_move(pswap);
-		// while (!stack_is_sequenced(pswap, &pswap->stack_a))
-		// 	three_numbers(pswap);
-		stayout = 1;
-	}
+	// //push to stack b
+	// if (!stayout)
+	// {
+	// 	i = pswap->numbers - (pswap->numbers / 2);
+	// 	while (i--)
+	// 		pb_move(pswap);
+	// 	// while (!stack_is_sequenced(pswap, &pswap->stack_a))
+	// 	// 	three_numbers(pswap);
+	// 	stayout = 1;
+	// }
 
 	seq_flag = (char)(stack_is_sequenced(pswap, &pswap->stack_a) \
-	 | (stack_is_sequenced(pswap, &pswap->stack_b) << 1));
-
-	if (seq_flag == 3)
+	 | (stack_b_is_sequenced(pswap, &pswap->stack_b) << 1));
+	// if (seq_flag == 0)
+	// 	double_sequence(pswap);
+	// else if (seq_flag == 1)
+	// 	sequence_stack_b(pswap);
+	get_relevant_numbers(pswap);
+	// if (stack_is_sequenced(pswap, &pswap->stack_b))
+	// 	printf("MUMUª\n");¡
+	//////NO PUEDDER SESEEEERRRR!!!"OIHUFHOPÑIDFIOH"
+	if (pswap->stack_a.numbers > pswap->numbers / 5 && (seq_flag == 2 || seq_flag == 0))
+		pb_move(pswap);
+	//mejor bajos
+	//else if (seq_flag == 3 || seq_flag == 1)
+	//mejor altos
+	else
 	{
-		merge_sequence(pswap);
-		//exit_failure("STACKS SEQUENCED SUCCESSFULLY", pswap);
+		// //debug code
+		// print_instructions(pswap);
+		// //debug code
+		//debug code
+		while (pswap->stack_b.stack)
+			merge_sequence(pswap);
+		
+		// exit_failure("STACKS SEQUENCED SUCCESSFULLY", pswap);
+		// //debug code
 		return ;
 	}
-	if (seq_flag == 0)
-		double_sequence(pswap);
-	else if (seq_flag == 1)
-		sequence_stack_b(pswap);
-	else if (seq_flag == 2 || !seq_flag)
-		sequence_stack_a(pswap);
 
 
 	// //debug code

@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 15:55:51 by miki              #+#    #+#             */
-/*   Updated: 2021/05/27 12:43:54 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/30 21:13:28 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,6 @@ generate_position_map(pswap);
 	// 	ra_move(pswap);
 	// else
 	// 	rra_move(pswap);
-	//debug code
+	// //debug code
 	//printf("STACK A SMALLEST: %d STACK A LARGEST: %d\n", pswap->stack_a.smallest, pswap->stack_a.largest);
 }

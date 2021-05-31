@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 22:05:11 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/28 04:15:10 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/31 10:48:16 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,34 @@ return (1);
 ** stack is traversed then we return 1 to indicate that it is sequenced. If the
 ** stack being queried does not exist them we also return 1. 
 */
+
+
+int	stack_b_is_sequenced(t_pswap *pswap, t_stack *stack)
+{
+	t_list	*stk;
+	size_t	i;
+	int		anterior;
+	int		posterior;
+
+	get_relevant_numbers(pswap);
+	stk = stack->stack;
+	i = stack->numbers;
+	if (stk == NULL)
+		return (1);
+	while (i--)
+	{
+		anterior = *(int *)stk->content;
+		if (stk->next == NULL)
+			posterior = *(int *)stack->stack->content;
+		else
+			posterior = *(int *)stk->next->content;
+		if (anterior < posterior
+		 && !(anterior == stack->smallest && posterior == stack->largest))
+			return (0);
+		stk = stk->next;
+	}
+	return (1);
+}
 
 int	stack_is_sequenced(t_pswap *pswap, t_stack *stack)
 {

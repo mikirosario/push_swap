@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/09 21:49:13 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/27 12:37:00 by miki             ###   ########.fr       */
+/*   Updated: 2021/05/31 01:50:46 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,4 @@ void	ss_move(t_pswap *pswap)
 {
 	sa_move(pswap);
 	sb_move(pswap);
-	add_move_to_list(pswap, "ss");
 }

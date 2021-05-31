@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_instructions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/29 19:30:42 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/05/31 04:21:54 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,8 @@ int	generate_instructions(t_pswap *pswap)
 		six_numbers(pswap);
 	else
 		sequence_stacks(pswap);
-	//debug code
-	pswap->tonti++; //keeps track of iterations for debugging purposes
-	//debug code
+	// //debug code
+	// pswap->tonti++; //keeps track of iterations for debugging purposes
+	// //debug code
 	return (1);
 }
