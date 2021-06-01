@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 05:41:21 by miki              #+#    #+#             */
-/*   Updated: 2021/05/29 11:34:19 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/01 20:14:51 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	freeme(t_pswap *pswap)
 		pswap->bintree = ft_bintree_free(pswap->bintree);
 	if (pswap->array_tree)
 		pswap->array_tree = ft_del(pswap->array_tree);
+	if (pswap->lazy.range)
+		pswap->lazy.range = ft_del(pswap->lazy.range);
 	if (pswap->instruction)
 		ft_lstclear(&pswap->instruction, free);
 }

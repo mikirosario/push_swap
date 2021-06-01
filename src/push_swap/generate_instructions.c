@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_instructions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/31 04:21:54 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/01 23:50:22 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void	sort_rotate_stack_a(t_pswap *pswap)
 
 int	generate_instructions(t_pswap *pswap)
 {
+	pswap->lazy.range_size = 20;
 	if (is_ordered(pswap))
 		return (0);
 	if (pswap->stack_b.stack == NULL && stack_is_sequenced(pswap, &pswap->stack_a))

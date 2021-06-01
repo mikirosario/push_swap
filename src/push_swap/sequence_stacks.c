@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   sequence_stacks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/31 11:51:09 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/01 19:02:39 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+/*
+**
+*/
+
+int	get_median_num(t_pswap *pswap)
+{
+	int	median_position;
+
+	median_position = pswap->stack_a.numbers / 2;
+	return ((int)(pswap->array_tree[median_position - 1])->data);
+}
 
 /*
 ** An unsequenced number pair is any descending pair of numbers except the
@@ -349,7 +361,7 @@ void	sequence_stack_a(t_pswap *pswap)
 		if (unsequenced_pair(pswap, &pswap->stack_a, stack_a, &pair))
 		{
 			moves.rr_moves = pswap->stack_a.numbers - moves.r_moves;
-			if (moves.r_moves < moves.rr_moves)	
+			if (moves.r_moves < moves.rr_moves)
 				proposal.ra_move = moves.r_moves;
 			else
 				proposal.rra_move = moves.rr_moves;
@@ -427,7 +439,7 @@ void	push_sequence(t_pswap *pswap)
 		{
 			ft_bzero(&proposal, sizeof(t_fastest_rotation));
 			a_moves.rr_moves = pswap->stack_a.numbers - a_moves.r_moves;
-			if (a_moves.r_moves < a_moves.rr_moves)	
+			if (a_moves.r_moves < a_moves.rr_moves)
 				proposal.ra_move = a_moves.r_moves;
 			else
 				proposal.rra_move = a_moves.rr_moves;
@@ -477,7 +489,7 @@ void	push_unsequenced(t_pswap *pswap)
 		{
 			ft_bzero(&proposal, sizeof(t_fastest_rotation));
 			a_moves.rr_moves = pswap->stack_a.numbers - a_moves.r_moves;
-			if (a_moves.r_moves < a_moves.rr_moves)	
+			if (a_moves.r_moves < a_moves.rr_moves)
 				proposal.ra_move = a_moves.r_moves;
 			else
 				proposal.rra_move = a_moves.rr_moves;
@@ -497,6 +509,9 @@ void	push_unsequenced(t_pswap *pswap)
 		while (fastest.rra_move--)
 			rra_move(pswap);
 	pb_move(pswap);
+	// get_relevant_numbers(pswap);
+	// if (pswap->stack_b.first < pswap->stack_b.last)
+	// 	rb_move(pswap);
 }
 
 /*
@@ -536,6 +551,30 @@ void	push_unsequenced(t_pswap *pswap)
 ** Stack_A...
 */
 
+void	push_lowers(t_pswap *pswap)
+{
+	t_list			*stack_a;
+	size_t			x = 0;
+	int				median = get_median_num(pswap);
+	char			odd;
+
+	while (!stack_is_sequenced(pswap, &pswap->stack_a))
+	{
+		stack_a = pswap->stack_a.stack;
+		odd = (pswap->numbers % 2);
+
+		while (stack_a)
+		{
+			if (*(int *)stack_a->content < median)
+				pb_move(pswap);
+			else
+				ra_move(pswap);
+			stack_a = stack_a->next;
+			x++;
+		}
+	}
+}
+
 void	sequence_stacks(t_pswap *pswap)
 {
 	char	seq_flag;
@@ -574,6 +613,7 @@ void	sequence_stacks(t_pswap *pswap)
 	else if (pswap->numbers >= 500 && (pswap->stack_a.numbers > pswap->numbers / 5 && (seq_flag == 2 || seq_flag == 0)))
 		while (pswap->stack_a.numbers > pswap->numbers / 5 && !(stack_is_sequenced(pswap, &pswap->stack_a)))
 	 		pb_move(pswap); //pfffffffffffffffffffffffffffffffff!!!!!
+
 	//mejor bajos
 	//else if (seq_flag == 3 || seq_flag == 1)
 	//mejor altos
@@ -585,7 +625,7 @@ void	sequence_stacks(t_pswap *pswap)
 		//debug code
 		while (pswap->stack_b.stack)
 			merge_sequence(pswap);
-		
+
 		// exit_failure("STACKS SEQUENCED SUCCESSFULLY", pswap);
 		// //debug code
 		return ;
