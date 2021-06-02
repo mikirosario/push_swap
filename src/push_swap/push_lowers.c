@@ -62,13 +62,13 @@ void	push_lowers(t_pswap *pswap)
 
 	get_range(pswap);
 	stack_a = pswap->stack_a.stack;
-	if (has_num(pswap->pivot.range, pswap->pivot.range_size, *(int *)stack_a->content))
+	if (*(int *)stack_a->content != pswap->largest && has_num(pswap->pivot.range, pswap->pivot.range_size, *(int *)stack_a->content))
 		pb_move(pswap);
 	else
 		ra_move(pswap);
 	get_relevant_numbers(pswap);
 	if (pswap->stack_b.numbers == 2)
-		pswap->pivot.pivot_b = pswap->stack_b.first;
+		pswap->pivot.pivot_b = pswap->pivot.range[pswap->pivot.range_size - 1];
 	if (pswap->stack_b.first < pswap->pivot.pivot_b)
 		rb_move(pswap);
 }
