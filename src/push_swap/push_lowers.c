@@ -59,16 +59,23 @@ void	get_range(t_pswap *pswap)
 void	push_lowers(t_pswap *pswap)
 {
 	t_list			*stack_a;
+	size_t			i;
 
 	get_range(pswap);
+
+	i = pswap->pivot.range_size;
 	stack_a = pswap->stack_a.stack;
-	if (*(int *)stack_a->content != pswap->largest && has_num(pswap->pivot.range, pswap->pivot.range_size, *(int *)stack_a->content))
-		pb_move(pswap);
-	else
-		ra_move(pswap);
-	get_relevant_numbers(pswap);
-	if (pswap->stack_b.numbers == 2)
-		pswap->pivot.pivot_b = pswap->pivot.range[pswap->pivot.range_size - 1];
-	if (pswap->stack_b.first < pswap->pivot.pivot_b)
-		rb_move(pswap);
+	while (i--)
+	{
+		if (*(int *)stack_a->content != pswap->largest && has_num(pswap->pivot.range, pswap->pivot.range_size, *(int *)stack_a->content))
+			pb_move(pswap);
+		else
+			ra_move(pswap);
+		get_relevant_numbers(pswap);
+		if (pswap->stack_b.numbers == 2)
+			pswap->pivot.pivot_b = pswap->pivot.range[(pswap->pivot.range_size - 1) / 2];
+		if (pswap->stack_b.first < pswap->pivot.pivot_b)
+			rb_move(pswap);
+		stack_a = pswap->stack_a.stack;
+	}
 }

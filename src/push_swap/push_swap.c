@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/02 10:34:21 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/02 18:23:10 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,11 @@ void	array_my_tree(t_pswap *pswap)
 	// //debug c
 }
 
+// void	clone_stack(t_pswap *pswap)
+// {
+// 	t_list
+// }
+
 /*
 ** First we declare the pswap struct and zero it.
 **
@@ -150,6 +155,7 @@ int	main(int argc, char **argv)
 	(void)argc;
 	ft_bzero(&pswap, sizeof(t_pswap));
 	generate_stacks(argv, &pswap);
+	//clone_stack(&pswap);
 	count_numbers(&pswap);
 	array_my_tree(&pswap);
 	if (pswap.numbers > 1)

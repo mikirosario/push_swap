@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_instructions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/02 10:23:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/02 19:34:38 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int	generate_instructions(t_pswap *pswap)
 	else
 		sequence_stacks(pswap);
 
-	
+
 	// //debug code
 	// pswap->tonti++; //keeps track of iterations for debugging purposes
 	// //debug code

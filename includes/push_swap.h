@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/02 10:32:31 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/02 17:19:18 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ typedef struct	s_pivot
 typedef struct s_pswap
 {
 	t_pivot		pivot;
+	t_list		*stack_a_clone;
 	t_stack		stack_a;
 	t_stack		stack_b;
 	t_bstnode	*bintree;
