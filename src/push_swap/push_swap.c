@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/01 23:33:21 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/02 10:34:21 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ void	print_instructions(t_pswap *pswap)
 		ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
 		instructions = instructions->next;
 	}
-	//debug
-	printf("Number of Movements: %zu\n", pswap->move_counter);
-	//debug
+	// //debug
+	// printf("Number of Movements: %zu\n", pswap->move_counter);
+	// //debug
 
 	// //debug code
 	// printf("STACK A\n");

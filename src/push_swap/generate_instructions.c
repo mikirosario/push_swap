@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   generate_instructions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/01 23:50:22 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/02 10:23:43 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	sort_rotate_stack_a(t_pswap *pswap)
 
 int	generate_instructions(t_pswap *pswap)
 {
-	pswap->lazy.range_size = 20;
+	pswap->pivot.range_size = 20;
 	if (is_ordered(pswap))
 		return (0);
 	if (pswap->stack_b.stack == NULL && stack_is_sequenced(pswap, &pswap->stack_a))
@@ -124,6 +124,8 @@ int	generate_instructions(t_pswap *pswap)
 		six_numbers(pswap);
 	else
 		sequence_stacks(pswap);
+
+	
 	// //debug code
 	// pswap->tonti++; //keeps track of iterations for debugging purposes
 	// //debug code

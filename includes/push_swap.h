@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/01 23:48:48 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/02 10:32:31 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,16 +116,17 @@ typedef struct	s_stack
 	// char	sequenced;
 }				t_stack;
 
-typedef struct	s_lazysort
+typedef struct	s_pivot
 {
 	int		*range;
 	size_t	range_size;
 	size_t	best_range_size;
-}				t_lazysort;
+	int		pivot_b;
+}				t_pivot;
 
 typedef struct s_pswap
 {
-	t_lazysort	lazy;
+	t_pivot		pivot;
 	t_stack		stack_a;
 	t_stack		stack_b;
 	t_bstnode	*bintree;
@@ -136,7 +137,6 @@ typedef struct s_pswap
 	int			smallest;
 	int			largest;
 	int			desired_pos;
-	int			median;
 	size_t		tonti; //debug code
 }				t_pswap;
 
@@ -161,7 +161,7 @@ void		sequence_stacks(t_pswap *pswap);
 void		merge_sequence(t_pswap *pswap);
 void		merge_sequence_b(t_pswap *pswap);
 
-size_t		miguel_sort(t_pswap *pswap);
+void		push_lowers(t_pswap *pswap);
 
 void		get_relevant_numbers(t_pswap *pswap);
 void		print_instructions(t_pswap *pswap);

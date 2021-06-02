@@ -6,7 +6,7 @@
 /*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/29 08:58:35 by miki              #+#    #+#             */
-/*   Updated: 2021/05/31 10:19:35 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/02 10:19:44 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,9 +356,6 @@ void	merge_sequence(t_pswap *pswap)
 	x = 0;
 	while (stack_a)
 	{
-		// //debug
-		// get_relevant_numbers(pswap);
-		// //debug
 		get_contiguous_numbers(pswap, &contiguous, *(int *)stack_a->content);
 		//contiguous top
 		if (find_in_stack(&pswap->stack_b, &sequence.stack_b, contiguous.top))
@@ -379,6 +376,7 @@ void	merge_sequence(t_pswap *pswap)
 				fastest = proposal;
 		}
 		stack_a = stack_a->next;
+
 		x++;
 	}
 
@@ -405,6 +403,9 @@ void	merge_sequence(t_pswap *pswap)
 	// //debug code
 	pa_move(pswap);
 
+		// //debug code
+		// print_instructions(pswap);
+		// //debug code
 	// //debug code
 	// printf("---------MARRIAGE PROPOSAL---------\n");
 	// for (size_t i = 0; i < 6; i++)

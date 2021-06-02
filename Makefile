@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
+#    By: miki <miki@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/06/01 20:18:03 by mrosario         ###   ########.fr        #
+#    Updated: 2021/06/02 10:31:28 by miki             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ PSH =	$(PSHDIR)/push_swap.c $(PSHDIR)/generate_instructions.c \
 		$(PSHDIR)/sort_conditions.c $(PSHDIR)/vector.c \
 		$(PSHDIR)/generate_position_map.c $(PSHDIR)/get_relevant_numbers.c \
 		$(PSHDIR)/generate_stacks.c $(PSHDIR)/sequence_stacks.c \
-		$(PSHDIR)/merge_sequence.c $(PSHDIR)/exit.c  $(PSHDIR)/lazy_sort.c \
+		$(PSHDIR)/merge_sequence.c $(PSHDIR)/exit.c $(PSHDIR)/push_lowers.c \
 		$(PSHDIR)/three_numbers.c $(PSHDIR)/six_numbers.c \
 		$(PSHDIR)/moves/s.c $(PSHDIR)/moves/p.c $(PSHDIR)/moves/r.c \
 		$(PSHDIR)/moves/rr.c \
