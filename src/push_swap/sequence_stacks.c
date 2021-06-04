@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sequence_stacks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/02 10:32:08 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/04 18:54:33 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,8 @@ void	sequence_stacks(t_pswap *pswap)
 	if (seq_flag == 2 || seq_flag == 0)
 		while (pswap->stack_a.numbers > 2)
 			push_lowers(pswap);
-	else
-		while (pswap->stack_b.stack)
-			merge_sequence(pswap);
+	while (pswap->stack_b.stack)
+		merge_sequence(pswap);
 
 	// //debug code
 	// printf("SEQUENCING\n");

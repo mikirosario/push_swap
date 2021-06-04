@@ -62,7 +62,7 @@ void	push_lowers(t_pswap *pswap)
 	size_t			i;
 
 	get_range(pswap);
-
+	pswap->pivot.pivot_b = pswap->pivot.range[(pswap->pivot.range_size - 1) / 2];
 	i = pswap->pivot.range_size;
 	stack_a = pswap->stack_a.stack;
 	while (i--)
@@ -72,8 +72,6 @@ void	push_lowers(t_pswap *pswap)
 		else
 			ra_move(pswap);
 		get_relevant_numbers(pswap);
-		if (pswap->stack_b.numbers == 2)
-			pswap->pivot.pivot_b = pswap->pivot.range[(pswap->pivot.range_size - 1) / 2];
 		if (pswap->stack_b.first < pswap->pivot.pivot_b)
 			rb_move(pswap);
 		stack_a = pswap->stack_a.stack;

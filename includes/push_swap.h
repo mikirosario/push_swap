@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/02 17:19:18 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/04 21:34:41 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,21 +120,32 @@ typedef struct	s_pivot
 {
 	int		*range;
 	size_t	range_size;
-	size_t	best_range_size;
 	int		pivot_b;
 }				t_pivot;
+
+typedef struct	s_pbar
+{
+	size_t	len;
+	char	bar[101];
+	char	empty[101];
+}				t_pbar;
+
 
 typedef struct s_pswap
 {
 	t_pivot		pivot;
-	t_list		*stack_a_clone;
 	t_stack		stack_a;
 	t_stack		stack_b;
+	t_pbar		pbar;
+	t_list		*stack_a_clone;
 	t_bstnode	*bintree;
 	t_bstnode	**array_tree;
 	t_list		*instruction;
 	size_t		numbers;
 	size_t		move_counter;
+	size_t		test_range_size;
+	size_t		best_range_size;
+	size_t		best_move_sequence;
 	int			smallest;
 	int			largest;
 	int			desired_pos;
@@ -157,13 +168,13 @@ int			generate_stacks(char **argv, t_pswap *pswap);
 int			generate_instructions(t_pswap *pswap);
 void		generate_position_map(t_pswap *pswap);
 void		sequence_stacks(t_pswap *pswap);
+void		display_progress_bar(t_pswap *pswap);
 
-//guerra de las estrellas
 void		merge_sequence(t_pswap *pswap);
 void		merge_sequence_b(t_pswap *pswap);
 
 void		push_lowers(t_pswap *pswap);
-
+t_list		*clone_stack(t_list *original_stack);
 void		get_relevant_numbers(t_pswap *pswap);
 void		print_instructions(t_pswap *pswap);
 
@@ -180,7 +191,7 @@ t_vector	*vector_new(void);
 char	is_ordered(t_pswap *pswap);
 int		are_contiguous(t_pswap *pswap, int smaller, int larger);
 int		stack_is_sequenced(t_pswap *pswap, t_stack *stack);
-int	stack_b_is_sequenced(t_pswap *pswap, t_stack *stack);
+int		stack_b_is_sequenced(t_pswap *pswap, t_stack *stack);
 //int		stack_b_is_sequenced(t_pswap *pswap);
 void	three_numbers(t_pswap *pswap);
 void	six_numbers(t_pswap *pswap);

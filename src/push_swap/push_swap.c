@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:55:20 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/02 18:23:10 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/04 22:05:25 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ void	print_instructions(t_pswap *pswap)
 		ft_putendl_fd((char *)instructions->content, STDOUT_FILENO);
 		instructions = instructions->next;
 	}
+
+
+	// //debug code
+	// printf("Best Range Size: %zu\n", pswap->best_range_size);
 	// //debug
 	// printf("Number of Movements: %zu\n", pswap->move_counter);
 	// //debug
@@ -72,6 +76,13 @@ void	init(t_pswap *pswap)
 {
 	t_bstnode	*bintree;
 
+	if (pswap->numbers < 51)
+		pswap->test_range_size = 0;
+	else
+		pswap->test_range_size = 10;
+	pswap->pbar.len = 100 - pswap->test_range_size;
+	ft_memset(pswap->pbar.bar, '#', 100);
+	ft_memset(pswap->pbar.empty, '-', 100);
 	pswap->stack_a.mask.vector = ft_calloc(pswap->numbers, sizeof(int));
 	pswap->stack_b.mask.vector = ft_calloc(pswap->numbers, sizeof(int));
 	pswap->stack_a.mask.start_index = 0;
@@ -123,10 +134,23 @@ void	array_my_tree(t_pswap *pswap)
 	// //debug c
 }
 
-// void	clone_stack(t_pswap *pswap)
-// {
-// 	t_list
-// }
+
+
+t_list	*clone_stack(t_list *original_stack)
+{
+	t_list	*clone_stack;
+
+	clone_stack = NULL;
+	while (original_stack)
+	{
+		if (clone_stack == NULL)
+			clone_stack = ft_lstnew(original_stack->content);
+		else
+			ft_lstadd_back(&clone_stack, ft_lstnew(original_stack->content));
+		original_stack = original_stack->next;
+	}
+	return (clone_stack);
+}
 
 /*
 ** First we declare the pswap struct and zero it.
@@ -155,7 +179,8 @@ int	main(int argc, char **argv)
 	(void)argc;
 	ft_bzero(&pswap, sizeof(t_pswap));
 	generate_stacks(argv, &pswap);
-	//clone_stack(&pswap);
+	pswap.stack_a_clone = clone_stack(pswap.stack_a.stack);
+	pswap.best_move_sequence = SIZE_MAX;
 	count_numbers(&pswap);
 	array_my_tree(&pswap);
 	if (pswap.numbers > 1)
