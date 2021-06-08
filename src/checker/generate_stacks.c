@@ -6,29 +6,11 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/08 20:36:10 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/14 21:51:48 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/08 23:37:03 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "checker.h"
-
-static void	debug_func(t_checker *checker)
-{
-	//DEBUG CODE
-	// ft_bintree_print(checker->bintree, 0);
-	printf("UNSORTED STACK A:\n");
-	for (t_list *tmp = checker->stack_a; tmp; tmp = tmp->next)
-	{
-		if (tmp->content)
-			printf("%d\n", *(int *)tmp->content);
-	}
-	for (t_list *tmp = checker->stack_b; tmp; tmp = tmp->next)
-	{
-		if (tmp->content)
-			printf("%d\n", *(int *)tmp->content);
-	}
-	//DEBUG CODE
-}
 
 /*
 ** This function generates an empty stack_b, with space for the same number of
@@ -160,7 +142,7 @@ static char	*generate_stack_a(t_checker *checker, char *num)
 ** call instruction...
 */
 
-int	generate_stacks(char **argv, t_checker *checker)
+void	generate_stacks(char **argv, t_checker *checker)
 {
 	char		**args;
 	char		*num;
@@ -173,10 +155,4 @@ int	generate_stacks(char **argv, t_checker *checker)
 			num = generate_stack_a(checker, num);
 	}
 	generate_stack_b(checker);
-
-	//DEBUG CODE
-	debug_func(checker);
-	//DEBUG CODE
-
-	return (1);
 }

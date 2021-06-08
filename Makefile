@@ -6,7 +6,7 @@
 #    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/06/04 21:20:15 by mrosario         ###   ########.fr        #
+#    Updated: 2021/06/08 23:39:47 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,12 +24,12 @@ CHK =	$(CHKDIR)/main.c $(CHKDIR)/generate_stacks.c \
 		$(CHKDIR)/moves/rr.c \
 
 PSH =	$(PSHDIR)/push_swap.c $(PSHDIR)/generate_instructions.c \
-		$(PSHDIR)/sort_conditions.c $(PSHDIR)/vector.c \
-		$(PSHDIR)/generate_position_map.c $(PSHDIR)/get_relevant_numbers.c \
-		$(PSHDIR)/generate_stacks.c $(PSHDIR)/sequence_stacks.c \
-		$(PSHDIR)/merge_sequence.c $(PSHDIR)/exit.c $(PSHDIR)/push_lowers.c \
+		$(PSHDIR)/sort_conditions.c $(PSHDIR)/generate_position_map.c \
+		$(PSHDIR)/get_relevant_numbers.c $(PSHDIR)/generate_stacks.c \
+		$(PSHDIR)/sequence_stacks.c $(PSHDIR)/merge_sequence.c \
+		$(PSHDIR)/exit.c $(PSHDIR)/push_lowers.c $(PSHDIR)/progress_bar.c \
 		$(PSHDIR)/three_numbers.c $(PSHDIR)/six_numbers.c \
-		$(PSHDIR)/progress_bar.c \
+		$(PSHDIR)/many_numbers.c \
 		$(PSHDIR)/moves/s.c $(PSHDIR)/moves/p.c $(PSHDIR)/moves/r.c \
 		$(PSHDIR)/moves/rr.c \
 

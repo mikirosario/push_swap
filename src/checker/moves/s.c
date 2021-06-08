@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   s.c                                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/09 21:49:13 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/10 17:45:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/08 23:36:20 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	sb_move(t_checker *checker)
 {
-	int tmp;
+	int	tmp;
 
 	if (!checker->stack_b || !checker->stack_b->next)
 		return ;
@@ -25,7 +25,7 @@ void	sb_move(t_checker *checker)
 
 void	sa_move(t_checker *checker)
 {
-	int tmp;
+	int	tmp;
 
 	if (!checker->stack_a || !checker->stack_a->next)
 		return ;

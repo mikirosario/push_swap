@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sort_conditions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/16 22:05:11 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/31 10:48:16 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/08 21:31:07 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /*
 ** Determines whether two numbers are contiguous in the series. The binary tree
 ** is used for traversal to save time. Equal values are not allowed by the
-** program so that should never happen, but just in case I have the function
+** program so that should never happen, but just in case I have the program
 ** throw a conspicuous error if it ever did.
 **
 ** Although int arguments are labelled smaller and larger, the function will
@@ -125,22 +125,19 @@ char	is_ordered(t_pswap *pswap)
 	size_t	stack_b_numbers;
 
 	generate_position_map(pswap);
-	//ALL MASK_B POSITION NUMBERS ARE AT ZERO POSITION
 	i = pswap->stack_b.mask.start_index;
 	while (i < pswap->numbers)
 		if (pswap->stack_b.mask.vector[i++])
 			return (0);
-	//ALL MASK_A POSITION NUMBERS ARE AT ZERO POSITION
 	i = pswap->stack_a.mask.start_index;
 	while (i < pswap->numbers)
 		if (pswap->stack_a.mask.vector[i++])
 			return (0);
-	//ADD PA * NUMBERS_IN_STACK_B MOVEMENTS
 	i = 0;
 	stack_b_numbers = pswap->stack_b.numbers;
 	while (i++ < stack_b_numbers)
 		pa_move(pswap);
-return (1);
+	return (1);
 }
 
 /*
@@ -148,20 +145,20 @@ return (1);
 ** the stack passed as stack is sequenced, though not necessarily ordered. That
 ** is, counting from the smallest number (stack->smallest) downward and looping
 ** around to the top at the end of the stack, all numbers are in sequential
-** ascending order.
+** DESCENDING order. So this is to be used with stack b.
 **
 ** If true, then the sort_rotate function can be used to finalize the sorting.
 **
 ** Two of the relevant numbers we generate are the smallest and largest integers
 ** in the stack. Except for the transition from the largest to the smallest, we
-** require the stack to go in ascending order. If we hit any neighbouring
-** numbers in which a number is greater than the subsequent number, we ask if it
-** is true that the number is the largest in the stack and the subsequent number
-** is the smallest in the stack. If it is NOT true, we return 0. If the whole
+** require the stack to go in DESCENDING order. If we hit any neighbouring
+** numbers in which a number is lesser than the subsequent number, we ask if it
+** is true that the number is the smallest in the stack and the subsequent number
+** is the largest in the stack. If it is NOT true, we return 0. If the whole
 ** stack is traversed then we return 1 to indicate that it is sequenced. If the
-** stack being queried does not exist them we also return 1. 
+** stack being queried does not exist them we also return 1, as non-existent
+** stacks are considered ordered within program logic.
 */
-
 
 int	stack_b_is_sequenced(t_pswap *pswap, t_stack *stack)
 {
@@ -182,15 +179,35 @@ int	stack_b_is_sequenced(t_pswap *pswap, t_stack *stack)
 			posterior = *(int *)stack->stack->content;
 		else
 			posterior = *(int *)stk->next->content;
-		if (anterior < posterior
-		 && !(anterior == stack->smallest && posterior == stack->largest))
+		if (anterior < posterior && \
+		!(anterior == stack->smallest && posterior == stack->largest))
 			return (0);
 		stk = stk->next;
 	}
 	return (1);
 }
 
-int	stack_is_sequenced(t_pswap *pswap, t_stack *stack)
+/*
+** This function will determine whether or not a given series of numbers in
+** the stack passed as stack is sequenced, though not necessarily ordered. That
+** is, counting from the smallest number (stack->smallest) downward and looping
+** around to the top at the end of the stack, all numbers are in sequential
+** ASCENDING order. So this is to be used with stack a.
+**
+** If true, then the sort_rotate function can be used to finalize the sorting.
+**
+** Two of the relevant numbers we generate are the smallest and largest integers
+** in the stack. Except for the transition from the largest to the smallest, we
+** require the stack to go in ASCENDING order. If we hit any neighbouring
+** numbers in which a number is greater than the subsequent number, we ask if it
+** is true that the number is the largest in the stack and the subsequent number
+** is the smallest in the stack. If it is NOT true, we return 0. If the whole
+** stack is traversed then we return 1 to indicate that it is sequenced. If the
+** stack being queried does not exist them we also return 1, as non-existent
+** stacks are considered ordered within program logic.
+*/
+
+int	stack_a_is_sequenced(t_pswap *pswap, t_stack *stack)
 {
 	t_list	*stk;
 	size_t	i;
@@ -209,8 +226,8 @@ int	stack_is_sequenced(t_pswap *pswap, t_stack *stack)
 			posterior = *(int *)stack->stack->content;
 		else
 			posterior = *(int *)stk->next->content;
-		if (anterior > posterior
-		 && !(anterior == stack->largest && posterior == stack->smallest))
+		if (anterior > posterior && \
+		!(anterior == stack->largest && posterior == stack->smallest))
 			return (0);
 		stk = stk->next;
 	}

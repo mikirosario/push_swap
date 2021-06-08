@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/15 18:53:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/04 22:17:36 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/08 22:12:02 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,19 +91,6 @@ void	sort_rotate_stack_a(t_pswap *pswap)
 }
 
 /*
-** Quick recurisve to free the ordered list without touching the content.
-*/
-
-t_list	*lst_reset(t_list *list)
-{
-	if (list->next)
-		list = lst_reset(list->next);
-	else
-		list = ft_del(list);
-	return (list);
-}
-
-/*
 ** First the is_ordered function checks to see if the numbers are already
 ** ordered. If they are it will return true, and this function will return 0 to
 ** indicate to the calling function that instruction generation has ended. The
@@ -121,12 +108,14 @@ t_list	*lst_reset(t_list *list)
 ** the solvers.
 **
 ** The solver three_numbers will solve for two and three numbers. The solver
-** six_numbers will solve for four to six numbers.
+** six_numbers will solve for four to six numbers. The solver many_numbers will
+** solve for any amount of numbers above six.
 */
 
 int	generate_instructions(t_pswap *pswap)
 {
-	if (pswap->stack_b.stack == NULL && stack_is_sequenced(pswap, &pswap->stack_a))
+	if (pswap->stack_b.stack == NULL && \
+	stack_a_is_sequenced(pswap, &pswap->stack_a))
 		sort_rotate_stack_a(pswap);
 	if (is_ordered(pswap))
 		return (0);
@@ -135,42 +124,6 @@ int	generate_instructions(t_pswap *pswap)
 	else if (pswap->numbers <= 6)
 		six_numbers(pswap);
 	else
-	{
-		write(STDERR_FILENO, "\e[?25l\n\n", 8);
-		while (++pswap->test_range_size <= 100)
-		{
-			pswap->pivot.range_size = pswap->test_range_size;
-			pswap->move_counter = 0;
-			sequence_stacks(pswap);
-			if (pswap->move_counter < pswap->best_move_sequence)
-			{
-				pswap->best_move_sequence = pswap->move_counter;
-				pswap->best_range_size = pswap->test_range_size;
-			}
-			pswap->stack_a.stack = lst_reset(pswap->stack_a.stack);
-			pswap->stack_a.stack = clone_stack(pswap->stack_a_clone);
-			if (pswap->instruction)
-				ft_lstclear(&pswap->instruction, free);
-			display_progress_bar(pswap);
-				//debug code
-		// printf("Range Size: %zu\n", pswap->test_range_size);
-		// //debug
-		// printf("Number of Movements: %zu\n\n", pswap->move_counter);
-		// //debug
-		}
-		write(STDERR_FILENO, "\e[?25h", 6);
-		pswap->move_counter = 0;
-		pswap->stack_a.stack = lst_reset(pswap->stack_a.stack);
-		pswap->stack_a.stack = clone_stack(pswap->stack_a_clone);
-		pswap->pivot.range_size = pswap->best_range_size;
-		sequence_stacks(pswap);
-	}
-	// else
-	// 	sequence_stacks(pswap);
-
-
-	// //debug code
-	// pswap->tonti++; //keeps track of iterations for debugging purposes
-	// //debug code
+		many_numbers(pswap);
 	return (1);
 }

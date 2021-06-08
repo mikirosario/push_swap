@@ -6,23 +6,31 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/04 18:54:33 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/08 21:23:58 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
 /*
-** An unsequenced number pair is any descending pair of numbers except the
-** smallest and largest. Incidentally, this means that largest/smallest pairs
-** are unsequenced if they are *ascending*. :) The first member of the pair is
-** passed as the integer anterior and the second is passed as the integer
-** posterior.
+** This function reports whether or not a given pair of integers within a stack
+** is sequenced.
+**
+** A SEQUENCED number pair is any ASCENDING pair of numbers, EXCEPT the smallest
+** and largest in the stack. Incidentally, this means that the smallest/largest
+** pair is sequenced if it is DESCENDING. :) So, for the stack 1 2 0, 0 and 2
+** 0 are sequenced, while for the stack 2 1 0, 1 and 0 are unsequenced.
+**
+** This distinction is important as sequenced stacks can be rotated into order.
+
+** The first member of the pair to be analysed is passed as the integer anterior
+** and the second is passed as the integer posterior.
 */
 
 int	pair_is_sequenced(t_stack *stack, int anterior, int posterior)
 {
-	if (anterior > posterior && !(anterior == stack->largest && posterior == stack->smallest))
+	if (anterior > posterior && !(anterior == stack->largest && \
+	posterior == stack->smallest))
 		return (0);
 	return (1);
 }
@@ -45,14 +53,15 @@ int	pair_is_sequenced(t_stack *stack, int anterior, int posterior)
 
 void	find_next_unsequenced_pair(t_stack *stack, t_sequence *sequence)
 {
-	t_list *stk;
+	t_list	*stk;
 	size_t	i;
 
 	stk = stack->stack;
 	i = 0;
 	while (stk->next)
 	{
-		if (!pair_is_sequenced(stack, *(int *)stk->content, *(int *)stk->next->content))
+		if (!pair_is_sequenced(stack, *(int *)stk->content, \
+		*(int *)stk->next->content))
 			break ;
 		stk = stk->next;
 		i++;
@@ -130,7 +139,7 @@ void	sequence_stacks(t_pswap *pswap)
 {
 	char	seq_flag;
 
-	seq_flag = (char)(stack_is_sequenced(pswap, &pswap->stack_a) \
+	seq_flag = (char)(stack_a_is_sequenced(pswap, &pswap->stack_a) \
 	 | (stack_b_is_sequenced(pswap, &pswap->stack_b) << 1));
 	get_relevant_numbers(pswap);
 	if (seq_flag == 2 || seq_flag == 0)
@@ -138,18 +147,4 @@ void	sequence_stacks(t_pswap *pswap)
 			push_lowers(pswap);
 	while (pswap->stack_b.stack)
 		merge_sequence(pswap);
-
-	// //debug code
-	// printf("SEQUENCING\n");
-	// print_instructions(pswap);
-	// 	printf("SEQ FLAG %d\n", seq_flag);
-	// 	if (seq_flag == 0)
-	// 		printf("Neither stack sequenced\n");
-	// 	else if (seq_flag == 1)
-	// 		printf("Stack B unsequenced\n");
-	// 	else if (seq_flag == 2)
-	// 		printf("Stack A unsequenced\n");
-	// 	else if (seq_flag == 3)
-	// 		printf("Both stacks are sequenced\n");
-	// //debug code
 }
