@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_relevant_numbers.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 04:43:06 by miki              #+#    #+#             */
-/*   Updated: 2021/05/27 12:37:00 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/14 16:42:14 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void	get_relevant_stack_a_numbers(t_pswap *pswap)
 
 void	get_relevant_numbers(t_pswap *pswap)
 {
-
 	if (pswap->stack_a.stack)
 		get_relevant_stack_a_numbers(pswap);
 	if (pswap->stack_b.stack)

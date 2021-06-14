@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 03:58:49 by miki              #+#    #+#             */
-/*   Updated: 2021/05/29 18:49:36 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/14 16:42:06 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	get_stack_b_pos(t_pswap *pswap, int num)
 	while (stack)
 	{
 		if (*(int *)stack->content == num)
-		//0 == numbers - 1
 			return (pswap->stack_b.numbers - (i + 1));
 		i++;
 		stack = stack->next;
@@ -73,9 +72,7 @@ void	record_offset(t_pswap *pswap, int desired_pos, int num)
 {
 	int	actual_pos;
 
-	//IF IS IN STACK A; STACK A POS IN MASK A
 	actual_pos = get_stack_a_pos(pswap, num);
-	//IF IS IN STACK B; STACK B POS IN MASK B
 	if (actual_pos < 0)
 		actual_pos = get_stack_b_pos(pswap, num);
 	pswap->stack_a.mask.vector[actual_pos] = desired_pos - actual_pos;
@@ -95,7 +92,6 @@ static void	in_order_traversal(t_pswap *pswap, t_bstnode *root)
 	if (root != NULL)
 	{
 		in_order_traversal(pswap, root->left);
-		//printf("NUM: %d POS: %d\n", (int)root->data, pswap->desired_pos++);
 		record_offset(pswap, pswap->desired_pos++, (int)root->data);
 		in_order_traversal(pswap, root->right);
 	}
@@ -186,20 +182,4 @@ void	generate_position_map(t_pswap *pswap)
 	{
 		*ptr++ = pswap->stack_a.mask.vector[i];
 	}
-
-	// //debug code
-	// print_instructions(pswap);
-	// printf("ITERATION: %zu\n", pswap->tonti);
-	// printf("STACK A POS MAP:\n");
-	// for(size_t x = pswap->stack_a.mask.start_index; x < pswap->stack_a.mask.end_index; x++)
-	// {
-	// 	printf("%d\n", pswap->stack_a.mask.vector[x]);
-	// }
-	// printf("STACK B POS MAP:\n");
-	// for(size_t x = pswap->stack_b.mask.start_index; x < pswap->stack_b.mask.end_index; x++)
-	// {
-	// 	printf("%d\n", pswap->stack_b.mask.vector[x]);
-	// }
-	// //debug code
-
 }

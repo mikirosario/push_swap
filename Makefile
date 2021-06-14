@@ -6,7 +6,7 @@
 #    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/06/08 23:39:47 by mrosario         ###   ########.fr        #
+#    Updated: 2021/06/14 20:23:59 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ PSH =	$(PSHDIR)/push_swap.c $(PSHDIR)/generate_instructions.c \
 		$(PSHDIR)/get_relevant_numbers.c $(PSHDIR)/generate_stacks.c \
 		$(PSHDIR)/sequence_stacks.c $(PSHDIR)/merge_sequence.c \
 		$(PSHDIR)/exit.c $(PSHDIR)/push_lowers.c $(PSHDIR)/progress_bar.c \
+		$(PSHDIR)/process_moves.c $(PSHDIR)/find_fastest.c \
 		$(PSHDIR)/three_numbers.c $(PSHDIR)/six_numbers.c \
 		$(PSHDIR)/many_numbers.c \
 		$(PSHDIR)/moves/s.c $(PSHDIR)/moves/p.c $(PSHDIR)/moves/r.c \

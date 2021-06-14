@@ -6,29 +6,11 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 05:42:59 by miki              #+#    #+#             */
-/*   Updated: 2021/05/29 18:51:54 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/14 21:03:20 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-// static void	debug_func(t_pswap *pswap)
-// {
-// 	//DEBUG CODE
-// 	// ft_bintree_print(pswap->bintree, 0);
-// 	printf("UNSORTED STACK A:\n");
-// 	for (t_list *tmp = pswap->stack_a.stack; tmp; tmp = tmp->next)
-// 	{
-// 		if (tmp->content)
-// 			printf("%d\n", *(int *)tmp->content);
-// 	}
-// 	for (t_list *tmp = pswap->stack_b.stack; tmp; tmp = tmp->next)
-// 	{
-// 		if (tmp->content)
-// 			printf("%d\n", *(int *)tmp->content);
-// 	}
-// 	//DEBUG CODE
-// }
 
 /*
 ** For numbers of 10 digits, we check to make sure they don't exceed INT_MAX or
@@ -162,10 +144,5 @@ int	generate_stacks(char **argv, t_pswap *pswap)
 			num = generate_stack_a(pswap, num);
 	}
 	pswap->stack_b.stack = NULL;
-
-	// //DEBUG CODE
-	// debug_func(pswap);
-	// //DEBUG CODE
-
 	return (1);
 }

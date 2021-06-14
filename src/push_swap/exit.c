@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 05:41:21 by miki              #+#    #+#             */
-/*   Updated: 2021/06/02 10:23:43 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/14 23:49:27 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@ void	freeme(t_pswap *pswap)
 		ft_lstclear(&pswap->stack_a.stack, free);
 	if (pswap->stack_b.stack)
 		ft_lstclear(&pswap->stack_b.stack, free);
+	if (pswap->stack_a_clone)
+		pswap->stack_a_clone = lst_reset(pswap->stack_a_clone);
 	if (pswap->stack_a.mask.vector)
 		pswap->stack_a.mask.vector = ft_del(pswap->stack_a.mask.vector);
-	if (!pswap->stack_b.mask.vector)
+	if (pswap->stack_b.mask.vector)
 		pswap->stack_b.mask.vector = ft_del(pswap->stack_b.mask.vector);
 	pswap->bintree = ft_bintree_free(pswap->bintree);
 	if (pswap->bintree)
@@ -51,5 +53,6 @@ void	exit_failure(char *error_msg, t_pswap *pswap)
 void	exit_success(t_pswap *pswap)
 {
 	freeme(pswap);
+	system("leaks push_swap");
 	exit(EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/08 21:23:58 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/14 22:30:41 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,33 +71,6 @@ void	find_next_unsequenced_pair(t_stack *stack, t_sequence *sequence)
 }
 
 /*
-** This function finds the next unsequenced pair in the stack. An unsequenced
-** is any pair of numbers when the top number is larger than the bottom number,
-** except for the transition between stack->largest and stack->smallest, in
-** which case the pair is unsequenced if the smallest is above the largest. So
-** this has a special condition.
-**
-** I use the t_contiguous struct like in merge_sequence, though I won't use its
-** middle integer here, just top and bottom. If the pair is unsequenced, the
-** function returns 1. If it is already sequenced, the function returns 0.
-**
-** Once we find an unsequenced pair we enter
-*/
-// static int unsequenced_pair(t_pswap *pswap, t_stack *stack, t_list *top, t_contiguous *pair)
-// {
-// 	get_relevant_numbers(pswap);
-// 	pair->top = *(int *)top->content;
-// 	if (top->next == NULL)
-// 		pair->bottom = stack->first;
-// 	else
-// 		pair->bottom = *(int *)top->next->content;
-// 	//if (anterior > posterior && !(anterior == stack->largest && posterior == stack->smallest))
-// 	if (pair->top > pair->bottom && !(pair->top == stack->largest && pair->bottom == stack->smallest))
-// 		return (1);
-// 	return 0;
-// }
-
-/*
 ** This function uses the last two bits of the seq_flag to identify whether
 ** stack_a and stack_b are "sequenced". A stack is considered sequenced when
 ** it is in ascending order except for the transition between the smallest
@@ -133,7 +106,6 @@ void	find_next_unsequenced_pair(t_stack *stack, t_sequence *sequence)
 ** After both stacks are sequenced we can now merge_sort Stack_B back into
 ** Stack_A...
 */
-
 
 void	sequence_stacks(t_pswap *pswap)
 {

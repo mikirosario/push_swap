@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/08 23:13:00 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/14 23:24:46 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,10 @@ int					generate_instructions(t_pswap *pswap);
 void				generate_position_map(t_pswap *pswap);
 void				display_progress_bar(t_pswap *pswap);
 void				merge_sequence(t_pswap *pswap);
+void				process_moves(t_pswap *pswap, t_fastest_rotation *fastest);
 void				push_lowers(t_pswap *pswap);
 t_list				*clone_stack(t_list *original_stack);
+t_list				*lst_reset(t_list *list);
 void				get_relevant_numbers(t_pswap *pswap);
 void				print_instructions(t_pswap *pswap);
 t_fastest_rotation	find_fastest_double_rotate_solution(t_sequence *stack_a, \

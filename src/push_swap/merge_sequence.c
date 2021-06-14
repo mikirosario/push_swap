@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/29 08:58:35 by miki              #+#    #+#             */
-/*   Updated: 2021/06/08 23:24:54 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/14 20:51:54 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,171 +81,55 @@ void	get_contiguous_numbers(t_pswap *pswap, t_contiguous *cont, int num)
 }
 
 /*
-** This function submits an initial proposal for an r_move or rotate move set.
+** This function checks stack_b for the contiguous numbers of the integer in
+** stack_a at position x. If either the top or bottom contiguous number is found
+** in stack_b, the number of moves to get that integer (in the case of the top
+** number) or the integer below it (in the case of a bottom number) to the top
+** of the stack is saved to the sequence struct. The find_in_struct function
+** does this for stack_b. For stack_a, the number of rotate moves is equal to
+** the position of the integer in the stack, and the number of reverse rotate
+** moves is equal to the number of integers in the stack minus the number of
+** rotate moves.
 **
-** It will propose the shortest number of rr_moves and/or ra_moves and/or
-** rb_moves to get both target numbers to the top of their respective stacks.
-** First we must identify who is the tortoise and who is the hare, that is, who
-** will get to the top slowest and who will get there fastest with the rotate
-** moves, the number in stack_a or the number in stack_b. Depending on the
-** answer we fashion a move 'proposal'. We use a special struct for that.
-**
-** First we zero the proposal struct.
-**
-** Then we ask if stack_a is the tortoise by asking if a's r_moves are greater
-** than b's r_moves. If stack_a is the tortoise then that makes stack_b the hare
-** so the total rr_moves will be the hare's (b's) r_moves. These double moves
-** count as a single move, so we subtract them from the tortoise's total. The
-** remaining tortoise moves are independent, so we make them ra_moves.
-**
-** The same logic holds if stack_b is the tortoise.
-**
-** If both numbers will arrive at the same time (lucky!), it doesn't matter
-** where they are calculated, as the tortoise - hare subtraction will return 0
-** for 0 additional independent moves.
-**
-** Then we tally up the moves for convenience and send back the proposal.
+** These data are then used to generate a proposal. If the proposal has less
+** moves than the existing fastest proposal, it replaces the existing fastest
+** proposal. See merge_sequence description for more details.
 */
 
-t_fastest_rotation	get_rotate_moves(size_t a_moves, size_t b_moves)
+void	update_fastest(t_pswap *pswap, t_contiguous *contiguous, \
+t_fastest_rotation *fastest, size_t x)
 {
+	t_merge_sequence	sequence;
 	t_fastest_rotation	proposal;
 
-	ft_bzero(&proposal, sizeof(t_fastest_rotation));
-	if (a_moves > b_moves)
+	ft_bzero(&sequence, sizeof(t_merge_sequence));
+	if (find_in_stack(&pswap->stack_b, &sequence.stack_b, contiguous->top))
 	{
-		proposal.rr_move = b_moves;
-		proposal.ra_move = a_moves - b_moves;
+		sequence.stack_a.r_moves = x;
+		sequence.stack_a.rr_moves = \
+		pswap->stack_a.numbers - sequence.stack_a.r_moves;
+		proposal = find_fastest_double_rotate_solution(&sequence.stack_a, \
+		&sequence.stack_b);
+		if (fastest->total_moves > proposal.total_moves)
+			*fastest = proposal;
 	}
-	else
+	if (find_in_stack(&pswap->stack_b, &sequence.stack_b, contiguous->bottom))
 	{
-		proposal.rr_move = a_moves;
-		proposal.rb_move = b_moves - a_moves;
+		sequence.stack_a.r_moves = x + 1;
+		sequence.stack_a.rr_moves = \
+		pswap->stack_a.numbers - sequence.stack_a.r_moves;
+		proposal = find_fastest_double_rotate_solution(&sequence.stack_a, \
+		&sequence.stack_b);
+		if (fastest->total_moves > proposal.total_moves)
+			*fastest = proposal;
 	}
-	proposal.total_moves = proposal.rr_move + \
-	proposal.ra_move + proposal.rb_move;
-	return (proposal);
 }
 
 /*
-** This function is the same as get_rotate_moves, but looks at reverse_rotate
-** moves instead.
-*/
-
-t_fastest_rotation	get_reverse_rotate_moves(size_t a_moves, size_t b_moves)
-{
-	t_fastest_rotation	proposal;
-
-	ft_bzero(&proposal, sizeof(t_fastest_rotation));
-	if (a_moves > b_moves)
-	{
-		proposal.rrr_move = b_moves;
-		proposal.rra_move = a_moves - b_moves;
-	}
-	else
-	{
-		proposal.rrr_move = a_moves;
-		proposal.rrb_move = b_moves - a_moves;
-	}
-	proposal.total_moves = proposal.rrr_move + \
-	proposal.rra_move + proposal.rrb_move;
-	return (proposal);
-}
-
-/*
-** This function queries the number of moves needed to rotate the numbers in
-** stack_a and stack_b to the top in OPPOSITE directions (for example, ra_move
-** in one stack and rrb_move in the other).
-**
-** Sometimes the fastest independent path for one number is in the opposite
-** direction as the fastest independent path for the other. In that case, we say
-** they are 'DIVERGENT'. Otherwise, we say they are 'CONVERGENT'.
-**
-** If they are divergent, we're interested in knowing whether the divergent
-** solution (the one where each number is rotated in the opposite direction,
-** independently) is faster (has less moves) than the convergent one (the one
-** where at least some of the moves are shared via rr_move or rrr_move).
-**
-** If they are convergent (they both prefer the same direction anyway), we don't
-** need to check the divergent solution, so we just return the incumbent
-** proposal. If they are divergent, however, we do check and return our own
-** divergent proposal with the total moves tallied up at the end. If it turns
-** out to be shorter than the convergent proposals, it will be favoured.
-*/
-
-t_fastest_rotation	get_divergent_moves(t_sequence *stack_a, \
-					t_sequence *stack_b, t_fastest_rotation incumbent)
-{
-	t_fastest_rotation	proposal;
-	char				stack_a_preference;
-	char				stack_b_preference;
-
-	ft_bzero(&proposal, sizeof(t_fastest_rotation));
-	if (stack_a->r_moves < stack_a->rr_moves)
-		stack_a_preference = '<';
-	else
-		stack_a_preference = '>';
-	if (stack_b->r_moves < stack_b->rr_moves)
-		stack_b_preference = '<';
-	else
-		stack_b_preference = '>';
-	if (stack_a_preference == stack_b_preference)
-		return (incumbent);
-	if (stack_a_preference == '<')
-	{
-		proposal.ra_move = stack_a->r_moves;
-		proposal.rrb_move = stack_b->rr_moves;
-	}
-	else
-	{
-		proposal.rra_move = stack_a->rr_moves;
-		proposal.rb_move = stack_b->r_moves;
-	}
-	proposal.total_moves = proposal.ra_move + proposal.rb_move + \
-	proposal.rra_move + proposal.rrb_move;
-	return (proposal);
-}
-
-/*
-** In this function we'll find the fastest solution to get a pair of numbers
-** in stack_a and stack_b to the top of their respective stacks! We'll divide
-** the numbers into two: the tortoise and the hare. The tortoise is the number
-** that takes the longest to get to the top and the hare is the one that gets
-** there quickest. So long as the numbers are moving in tandem, using rr_move or
-** rrr_move, their movements count as single movements, so we want to remove
-** all of the movements that count as single movements from the movement tally.
-**
-** Therefore: tortoise_moves - hare_moves = carry_moves (number of extra moves
-** needed by the tortoise). If both numbers will get there in the same number
-** of moves, it doesn't matter who is tortoise and who is hare as the
-** subtraction will return carry_moves = 0 and the total moves will be just the
-** sum of the joint moves.
-**
-** If two proposals have the same number of moves, the incumbent proposal will
-** be preferred.
-*/
-
-t_fastest_rotation	find_fastest_double_rotate_solution(t_sequence *stack_a, t_sequence *stack_b)
-{
-	t_fastest_rotation	fastest;
-	t_fastest_rotation	proposal;
-
-	fastest = get_rotate_moves(stack_a->r_moves, stack_b->r_moves);
-	proposal = get_reverse_rotate_moves(stack_a->rr_moves, stack_b->rr_moves);
-	if (proposal.total_moves < fastest.total_moves)
-		fastest = proposal;
-	proposal = get_divergent_moves(stack_a, stack_b, fastest);
-	if (proposal.total_moves < fastest.total_moves)
-		fastest = proposal;
-	return (fastest);
-}
-
-/*
-** So the game here is very similar to sequence_stacks, only this time instead
-** of two unsequenced pairs, one in stack_a and one in stack_b, that we want to
-** move to the top to double-swap, we have a single pair of contiguous numbers,
-** one in stack_a and one in stack_b, and we want to move them to the top to
-** push the one in stack_b into sequence in stack_a.
+** So the game here is that we ideally want find the two contiguous integers
+** in stack_a and stack_b that we can combine in stack_a with the least number
+** moves, taking into account that we can save moves by double-rotating before
+** pushing to stack_a.
 **
 ** We want to insert the contiguous pair that requires the lowest number of
 ** moves to position at the top. So we need to calculate the optimal moves for
@@ -256,12 +140,9 @@ t_fastest_rotation	find_fastest_double_rotate_solution(t_sequence *stack_a, t_se
 ** nearest one? The function are_contiguous will check whether two numbers are
 ** contiguous using the binary tree, but in this case what I really want is a
 ** function that will return the contiguous numbers of any number in the tree.
-** In a binary tree, the contiguous values to any node are the highest value
-** in the negative direction (usually left) and the lowest value in the positive
-** direction (usually right). You can get to either value by just going left
-** from the root and then selecting all the right children until the end, and
-** going right from the root and selecting all the left children until the end.
-** So I'm going to do it that way. :)
+** I create an ordered ascending array pointing to the tree integers at the
+** beginning of the program so I use that to easily find the contiguous integers
+** of any integer in the series.
 **
 ** First I take the first member of stack_a and query get_contiguous_numbers for
 ** its contiguous values in the series, which should be saved in the contiguous
@@ -272,28 +153,42 @@ t_fastest_rotation	find_fastest_double_rotate_solution(t_sequence *stack_a, t_se
 ** value in stack_b in the appropriate contiguous position in stack_a. This
 ** means rotating one or both stacks until the pair are at the top and doing
 ** pa_move. If we can't find a value in stack_b, we know it must be in stack_a,
-** and since merge_sort is triggered after sequence_stacks, we also know it must
-** already be sequenced. So we ignore it.
+** and so we ignore it.
 **
 ** Here is where things get tricky. Depending on where the two values are in
 ** both stacks relative to each other, it may be more convenient for either of
 ** them to 'double rotate' to save moves, even if it means going the long way
-** 'round. The logic is the same as in sequence stacks. The find_in_stack
-** function will tell us how many rotate and reverse rotate moves we'd need to
-** rotate the contiguous number to the top. The number of iterations in the
-** stack_a while is likewise equal to the number of r_moves we would need to
-** bring the current stack_a number to the top of stack a. So we'll use
-** sequence_a.r_moves as a counter. As with stack_b, we use
-** stack->numbers - r_moves to calculate rr_moves. We'll only bother doing this
-** if we find a contiguous value in stack_b, though.
+** 'round. The find_in_stack function will tell us how many rotate and reverse
+** rotate moves we'd need to rotate the contiguous numbers to the top of their
+** stacks and save the result in sequence.stack_a and sequence.stack_b,
+** respectively.
 **
-** Now that we have all that, we need to know the carry_values again. That is,
-** if we rotate both numbers together in either direction, how many extra moves
-** will the straggler need to make it to the top.
+** The number of iterations in the stack_a while is equal to the number of
+** normal rotates (r_moves) we would need to bring the current stack_a number
+** to the top of stack_a becaue we iterate through stack_a from the top down.
+** So sequence_a.r_moves is equal to our counter. If the contiguous pair in
+** stack_b is a 'top', since pushing it to stack_a will put it on top of the
+** partner, we want both of them at the top of the stack. If it is a 'bottom',
+** however, we want the integer below the one in stack_a on the top, so we pass
+** x + 1 as the integer we want to raise to the top. :)
 **
-** We have three options. The first two are CONVERGENT (both stacks move in the
-** same direction), while the final one is DIVERGENT (both stacks move in
-** opposite directions).
+** We then derive the number of reverse rotate moves from the number of rotate
+** moves by subtracting the number of rotate moves from the total number of
+** integers in the stack.
+**
+** The function find_in_stack does this for stack_b too.
+**
+** Now that we have all that, we need to know the carry_values. That is, if we
+** rotate both numbers together in either direction and one of them reaches the
+** top first, how many extra individual moves will the straggler need to make it
+** to the top?
+**
+** In terms of which solution we decide is best to get the two numbers to the
+** top of their stacks, we have three options.
+**
+** The first two are CONVERGENT (both stacks move in the same direction), while
+** the final one is DIVERGENT (both stacks move in opposite directions). Here
+** they are:
 **
 ** 1.	Move the pair together in the rr_move direction, then finish with
 **		ra/rb_moves as needed.
@@ -301,8 +196,40 @@ t_fastest_rotation	find_fastest_double_rotate_solution(t_sequence *stack_a, t_se
 **		rra/rrb moves as needed.
 ** 3.	Move the pair independently in opposite directions.
 **
+** We calculate how many total moves result from each version.
+**
 ** Least moves wins. :) If one of the three options results in less moves, we
-** favour it.
+** favour it. That is what find_fastest_double_rotation does.
+**
+** So the get_proposal function is passed the size_t index x, which is the
+** number from the top of the current stack_a integer being analysed and so
+** equivalent to the r_moves needed to bring that integer to the top, and a
+** pointer to the sequence struct, which contains the r_moves and rr_moves to
+** get the contiguous integer in stack_b to the top, and returns a PROPOSAL. The
+** proposal contains the most efficient move plan for a given pair of contiguous
+** numbers.
+**
+** We create a proposal for the top contiguous number and the bottom contiguous
+** number. The highest and lowest integer in the series are considered
+** contiguous. If we want to insert the bottom contiguous number, since it needs
+** to go BELOW the integer in stack_a when it is pushed, the integer we want to
+** bring to the top is actually the one BELOW the integer being analysed, so
+** that the integer at the top of stack_b will be pushed on top of it and
+** beneath the contiguous integer in stack_a. So we pass x + 1. No overflow risk
+** because the number is just used to determine rotate moves, and it's circular.
+**
+** We continue running down the list of numbers in stack_a and generate proposal
+** for every contiguous pair. When we get a new proposal, we compare it to the
+** existing fastest proposal. If it is better (less moves), then we replace the
+** old fastest proposal with the new fastest proposal. Otherwise it is
+** discarded.
+**
+** The fastest proposal struct variables are initialized at SIZE_MAX so any
+** initial proposal that is not a literal overflow will be better. Actually,
+** they're initialized to INT_MAX, because memset wants an INT_MAX. But if I
+** had taken this a bit more seriously and bothered to create another memset,
+** they would TOTALLY be initialized to SIZE_MAX. xD Anyway, they're
+** initialized to a Very Large Number(tm). ;)
 **
 ** //CALCULATING CONVERGENT MOVES\\
 ** For the joint moves, we just need to figure out who gets to the top first.
@@ -335,73 +262,19 @@ void	merge_sequence(t_pswap *pswap)
 {
 	t_list				*stack_a;
 	t_contiguous		contiguous;
-	t_merge_sequence	sequence;
 	t_fastest_rotation	fastest;
-	t_fastest_rotation	proposal;
 	size_t				x;
 
 	stack_a = pswap->stack_a.stack;
-	ft_bzero (&sequence, sizeof(t_merge_sequence));
 	ft_memset(&fastest, INT_MAX, sizeof(t_fastest_rotation));
 	x = 0;
 	while (stack_a)
 	{
 		get_contiguous_numbers(pswap, &contiguous, *(int *)stack_a->content);
-		//contiguous top
-		if (find_in_stack(&pswap->stack_b, &sequence.stack_b, contiguous.top))
-		{
-			sequence.stack_a.r_moves = x;
-			sequence.stack_a.rr_moves = pswap->stack_a.numbers - sequence.stack_a.r_moves;
-			proposal = find_fastest_double_rotate_solution(&sequence.stack_a, &sequence.stack_b);
-			if (fastest.total_moves > proposal.total_moves)
-				fastest = proposal;
-		}
-		//contiguous bottom
-		if (find_in_stack(&pswap->stack_b, &sequence.stack_b, contiguous.bottom))
-		{
-			sequence.stack_a.r_moves = x + 1;
-			sequence.stack_a.rr_moves = pswap->stack_a.numbers - sequence.stack_a.r_moves;
-			proposal = find_fastest_double_rotate_solution(&sequence.stack_a, &sequence.stack_b);
-			if (fastest.total_moves > proposal.total_moves)
-				fastest = proposal;
-		}
+		update_fastest(pswap, &contiguous, &fastest, x);
 		stack_a = stack_a->next;
-
 		x++;
 	}
-
-	void (*move[6])(t_pswap *);
-	size_t	i;
-
-	move[0] = rr_move;
-	move[1] = rrr_move;
-	move[2] = ra_move;
-	move[3] = rb_move;
-	move[4] = rra_move;
-	move[5] = rrb_move;
-	i = 0;
-
-	while (i < 6)
-	{
-		while (((size_t *)(&fastest))[i]--)
-			move[i](pswap);
-		i++;
-	}
-
-	// //debugcode
-	// get_relevant_numbers(pswap);
-	// //debug code
+	process_moves(pswap, &fastest);
 	pa_move(pswap);
-
-		// //debug code
-		// print_instructions(pswap);
-		// //debug code
-	// //debug code
-	// printf("---------MARRIAGE PROPOSAL---------\n");
-	// for (size_t i = 0; i < 6; i++)
-	// {
-	// 	printf("%zu\n", ((size_t *)(&fastest))[i]);
-	// }
-	// printf("%zu\n", fastest.total_moves);
-	// //debug code
 }
