@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   many_numbers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 21:41:38 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/08 22:27:58 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/15 17:11:22 by miki             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-/*
-** Quick recursive to free the ordered list without touching the content. I need
-** this to keep resetting the stack using the clone stack, since I run this
-** function multiple times with different range sizes until I get the best
-** result, so the stack needs to be reset to the way it was in the beginning.
-*/
-
-t_list	*lst_reset(t_list *list)
-{
-	if (list->next)
-		list = lst_reset(list->next);
-	else
-		list = ft_del(list);
-	return (list);
-}
 
 /*
 ** This function takes the stack in stack_a and sorts it using the algorithm in
