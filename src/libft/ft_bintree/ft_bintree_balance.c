@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/10 06:48:50 by miki              #+#    #+#             */
-/*   Updated: 2021/04/10 20:18:31 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/15 20:01:29 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ void	left_rotation(t_bstnode **root, t_bstnode *node)
 ** rotation was applied, it will end up pointing to the grandparent.
 */
 
-t_bstnode	*left_case(t_bstnode *new_node, t_bstnode *parent, t_bstnode *granny, \
-t_bstnode **root)
+t_bstnode	*left_case(t_bstnode *new_node, t_bstnode *parent, \
+t_bstnode *granny, t_bstnode **root)
 {
 	unsigned char	tmpc;
 
@@ -120,8 +120,8 @@ t_bstnode **root)
 ** rotation was applied, it will end up pointing to the grandparent.
 */
 
-t_bstnode	*right_case(t_bstnode *new_node, t_bstnode *parent, t_bstnode *granny, \
-t_bstnode **root)
+t_bstnode	*right_case(t_bstnode *new_node, t_bstnode *parent, \
+t_bstnode *granny, t_bstnode **root)
 {
 	unsigned char	tmpc;
 

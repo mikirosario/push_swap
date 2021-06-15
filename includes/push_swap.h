@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/14 21:56:06 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/15 16:59:18 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/15 20:08:16 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,7 @@ void				exit_success(t_pswap *pswap);
 ** Toolbox
 */
 
+void				array_my_tree(t_pswap *pswap);
 int					generate_stacks(char **argv, t_pswap *pswap);
 int					generate_instructions(t_pswap *pswap);
 void				generate_position_map(t_pswap *pswap);

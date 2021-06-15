@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/08 20:36:10 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/08 23:37:03 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/15 20:28:55 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,15 +131,17 @@ static char	*generate_stack_a(t_checker *checker, char *num)
 }
 
 /*
-** In case of an error the progam will print Error to stderr and terminate.
+** This function generates both stacks. A red-black binary tree is also created
+** out of the integers to check for duplicates. This is just a voluntary
+** exercise on my part to practise writing and using binary tree functions. :)
 **
-** A red-black binary tree is created out of the integers to check for
-** duplicates. This is just a voluntary exercise on my part to practise writing
-** and using binary tree functions. :)
-**
-** The function returns 1 if successful, because it will probably be further
-** split and rewritten to return 0 if unsuccessful for a single exit_failure
-** call instruction...
+** The args pointer points to the second argument in the argv list. Then we have
+** the num pointer point to each individual member of each argument and iterate
+** through them until the end of the string, move on to the next string, until
+** all the strings have been analysed. For every byte in each string we run
+** generate_stack_a, which parses the string for a number and checks the number,
+** adding it to the stack if it is valid, and then returns the address of the
+** next element in the list (skipping any spaces).
 */
 
 void	generate_stacks(char **argv, t_checker *checker)

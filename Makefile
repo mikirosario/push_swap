@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: miki <miki@student.42.fr>                  +#+  +:+       +#+         #
+#    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/06/15 17:04:37 by miki             ###   ########.fr        #
+#    Updated: 2021/06/15 20:09:57 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ PSH =	$(PSHDIR)/push_swap.c $(PSHDIR)/generate_instructions.c \
 		$(PSHDIR)/sequence_stacks.c $(PSHDIR)/merge_sequence.c \
 		$(PSHDIR)/exit.c $(PSHDIR)/push_lowers.c $(PSHDIR)/progress_bar.c \
 		$(PSHDIR)/process_moves.c $(PSHDIR)/find_fastest.c \
+		$(PSHDIR)/array_my_tree.c \
 		$(PSHDIR)/three_numbers.c $(PSHDIR)/six_numbers.c \
 		$(PSHDIR)/many_numbers.c \
 		$(PSHDIR)/moves/s.c $(PSHDIR)/moves/p.c $(PSHDIR)/moves/r.c \

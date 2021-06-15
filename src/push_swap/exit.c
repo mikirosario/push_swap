@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miki <miki@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 05:41:21 by miki              #+#    #+#             */
-/*   Updated: 2021/06/15 17:16:22 by miki             ###   ########.fr       */
+/*   Updated: 2021/06/15 19:58:35 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
 
 /*
 ** Quick recursive to free the ordered list without touching the content. I need
@@ -88,6 +87,5 @@ void	exit_failure(char *error_msg, t_pswap *pswap)
 void	exit_success(t_pswap *pswap)
 {
 	freeme(pswap);
-	system("leaks push_swap");
 	exit(EXIT_SUCCESS);
 }

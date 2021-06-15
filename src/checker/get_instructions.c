@@ -6,7 +6,7 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/12 19:50:35 by mrosario          #+#    #+#             */
-/*   Updated: 2021/05/12 22:52:27 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/15 20:31:18 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void	get_instructions(t_checker *checker)
 	char	*content;
 	t_list	*new;
 
+	buf = NULL;
 	ret = ft_get_next_line(STDIN_FILENO, &buf);
 	while (ret > 0 || *buf)
 	{
@@ -78,4 +79,6 @@ void	get_instructions(t_checker *checker)
 		buf = ft_del(buf);
 		ret = ft_get_next_line(STDIN_FILENO, &buf);
 	}
+	if (buf)
+		buf = ft_del(buf);
 }
