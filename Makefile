@@ -6,7 +6,7 @@
 #    By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/05 20:32:49 by miki              #+#    #+#              #
-#    Updated: 2021/06/15 20:09:57 by mrosario         ###   ########.fr        #
+#    Updated: 2021/06/15 21:23:51 by mrosario         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,9 +41,13 @@ CFLAG = -Wall -Werror -Wextra
 
 LIBS = -I ./includes -I ./src/libft/includes -L ./src/libft -lft -ltermcap
 
-$(NAME): $(LIBFT)
-	gcc $(CFLAG) $(CHK) -o $(CHKNAME) $(LIBS)
+$(NAME): $(LIBFT) $(CHKNAME) $(PSHNAME)
+
+$(PSHNAME):
 	gcc $(CFLAG) $(PSH) -o $(PSHNAME) $(LIBS)
+
+$(CHKNAME):
+	gcc $(CFLAG) $(CHK) -o $(CHKNAME) $(LIBS)
 
 $(LIBFT):
 	make -C ./src/libft

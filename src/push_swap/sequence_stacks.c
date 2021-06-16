@@ -6,69 +6,11 @@
 /*   By: mrosario <mrosario@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/25 22:24:55 by mrosario          #+#    #+#             */
-/*   Updated: 2021/06/14 22:30:41 by mrosario         ###   ########.fr       */
+/*   Updated: 2021/06/15 21:30:35 by mrosario         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-
-/*
-** This function reports whether or not a given pair of integers within a stack
-** is sequenced.
-**
-** A SEQUENCED number pair is any ASCENDING pair of numbers, EXCEPT the smallest
-** and largest in the stack. Incidentally, this means that the smallest/largest
-** pair is sequenced if it is DESCENDING. :) So, for the stack 1 2 0, 0 and 2
-** 0 are sequenced, while for the stack 2 1 0, 1 and 0 are unsequenced.
-**
-** This distinction is important as sequenced stacks can be rotated into order.
-
-** The first member of the pair to be analysed is passed as the integer anterior
-** and the second is passed as the integer posterior.
-*/
-
-int	pair_is_sequenced(t_stack *stack, int anterior, int posterior)
-{
-	if (anterior > posterior && !(anterior == stack->largest && \
-	posterior == stack->smallest))
-		return (0);
-	return (1);
-}
-
-/*
-** Identifies the next unsequenced pair from the top moving downwards in the
-** stack. The distance from the top to the first member of the pair is counted.
-** This corresponds to the r-distance, or distance in r-moves from the top. The
-** distance in rr-moves is the inverse of the distance in r-moves, given by
-** stack->numbers - r-moves.
-**
-** The r_moves and rr_moves from the next unsequenced pair to the top are saved
-** in the struct to which the sequence pointer points. A pointer to the smallest
-** of the two is also saved as the shortest path. If both paths are the same
-** length, a pointer to NULL is saved. This function assumes there *are*
-** unsequenced pairs in the stack and that the stack in question exists so DON'T
-** use it unless it is behind a stack_is_sequenced query that returns false. It
-** also assumes the sequence structure exists.
-*/
-
-void	find_next_unsequenced_pair(t_stack *stack, t_sequence *sequence)
-{
-	t_list	*stk;
-	size_t	i;
-
-	stk = stack->stack;
-	i = 0;
-	while (stk->next)
-	{
-		if (!pair_is_sequenced(stack, *(int *)stk->content, \
-		*(int *)stk->next->content))
-			break ;
-		stk = stk->next;
-		i++;
-	}
-	sequence->r_moves = i;
-	sequence->rr_moves = stack->numbers - i;
-}
 
 /*
 ** This function uses the last two bits of the seq_flag to identify whether
